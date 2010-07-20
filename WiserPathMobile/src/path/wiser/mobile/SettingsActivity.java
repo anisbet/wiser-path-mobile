@@ -3,23 +3,38 @@
  */
 package path.wiser.mobile;
 
+
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.widget.TextView;
+import android.preference.Preference;
+import android.preference.PreferenceActivity;
+import android.preference.Preference.OnPreferenceClickListener;
+import android.widget.Toast;
 
 /**
  * @author andrewnisbet
  *
  */
-public class SettingsActivity extends Activity
+public class SettingsActivity extends PreferenceActivity
 {
-	/** Called when the activity is first created. */
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-    	super.onCreate(savedInstanceState);
+	@Override
+    protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.xml.preferences);
+            // Get the custom preference
+            Preference customPref = (Preference) findPreference("customPref");
+            customPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
-        TextView textview = new TextView(this);
-        textview.setText("This is the Settings tab");
-        setContentView(textview);
+            	public boolean onPreferenceClick(Preference preference) {
+            		Toast.makeText(getBaseContext(), "The custom preference has been clicked", Toast.LENGTH_LONG).show();
+                    SharedPreferences customSharedPreference = getSharedPreferences("myCustomSharedPrefs", Activity.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = customSharedPreference.edit();
+                    editor.putString("myCustomPref", "The preference has been clicked");
+                    editor.commit();
+                    return true;
+                }
+
+            });
     }
 }
