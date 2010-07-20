@@ -9,9 +9,6 @@ public class TraceActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
-
-        TextView textview = new TextView(this);
-        textview.setText("This is the Trace tab");
-        setContentView(textview);
+    	setContentView(R.layout.trace_tab);
     }
 }
