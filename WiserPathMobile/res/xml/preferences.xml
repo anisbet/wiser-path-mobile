@@ -1,46 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen  xmlns:android="http://schemas.android.com/apk/res/android">
-	<PreferenceCategory
-                android:title="First Category">
-                <CheckBoxPreference
-                        android:title="Checkbox Preference"
-                        android:defaultValue="false"
-                        android:summary="This preference can be true or false"
-                        android:key="checkboxPref" />
-                <!--  <ListPreference
-                        android:title="List Preference"
-                        android:summary="This preference allows to select an item in a array"
-                        android:key="listPref"
-                        android:defaultValue="digiGreen"
-                        android:entries="@array/listArray"
-                        android:entryValues="@array/listValues" /> -->
-        </PreferenceCategory>
-        <PreferenceCategory
-                android:title="Second Category">
-        <EditTextPreference
-                android:name="EditText Preference"
-                android:summary="This allows you to enter a string"
-                android:defaultValue="Nothing"
-                android:title="Edit This Text"
-                android:key="editTextPref" />
-        <RingtonePreference
-                android:name="Ringtone Preference"
-                android:summary="Select a ringtone"
-                android:title="Ringtones"
-                android:key="ringtonePref" />
-        <PreferenceScreen
-                android:key="SecondPrefScreen"
-                android:title="Second PreferenceScreen"
-                android:summary="This is a second PreferenceScreen">
-                <EditTextPreference
-                        android:name="An other EditText Preference"
-                        android:summary="This is a preference in the second PreferenceScreen"
-                        android:title="Edit text"
-                        android:key="SecondEditTextPref" />
-        </PreferenceScreen>
-        <Preference
-                android:title="Custom Preference"
-                android:summary="This works almost like a button"
-                android:key="customPref" />
-        </PreferenceCategory>
+	<PreferenceCategory android:title="Wiser Path Login">
+		<PreferenceScreen
+            android:title="Create / Manage Account"
+            android:summary="Use this to create an account or change users"
+            android:key="login">
+			<EditTextPreference
+	            android:name="User Name"
+	            android:summary="Enter your Wiser Path user name"
+	            android:defaultValue=""
+	            android:title="User Name"
+	            android:key="userName" />
+	        <EditTextPreference
+	            android:name="Password"
+	            android:summary="Enter your Wiser Path password"
+	            android:defaultValue=""
+	            android:title="Password"
+	            android:key="userPassword" />
+			<EditTextPreference
+				android:name="Reenter Password"
+	            android:summary="Confirm your Wiser Path password"
+	            android:defaultValue=""
+	            android:enabled="false"
+	            android:title="Re-enter Password"
+	            android:key="userPasswordReenter" />
+		</PreferenceScreen>
+	</PreferenceCategory>
+	<PreferenceCategory android:title="Settings">
+        <CheckBoxPreference
+			android:title="Work online"
+			android:defaultValue="true"
+			android:summary="Connect with Wiser Path on line when possible?"
+			android:key="online"/>
+		<CheckBoxPreference
+		   android:title="Use Location"
+		   android:defaultValue="true"
+		   android:summary="Use your GPS to record information"
+		   android:key="useLocation" />
+	 <!--  <ListPreference
+	        android:title="Units"
+	        android:summary="Select desired recording units"
+	        android:key="unitsPref"
+	        android:defaultValue="kms"
+	        android:entries="@array/listArray"
+	        android:entryValues="@array/listValues" /> -->
+    
+    <!--  <RingtonePreference
+            android:name="Ringtone Preference"
+            android:summary="Select a ringtone"
+            android:title="Ringtones"
+            android:key="ringtonePref" /> -->
+    </PreferenceCategory>
 </PreferenceScreen>
