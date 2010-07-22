@@ -1,7 +1,7 @@
 /**
  * 
  */
-package path.wiser.mobile;
+package path.wiser.mobile.util;
 
 /**
  * @author andrew nisbet
@@ -13,5 +13,5 @@ package path.wiser.mobile;
  */
 public class LoginManager
 {
-
+	public final static String	WISERPATH_URI	= "http://www.google.com";	// "http://wiserpath.bus.ualberta.ca/user/login";
 }
