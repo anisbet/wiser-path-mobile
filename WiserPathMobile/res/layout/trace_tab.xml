@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout 
+<AbsoluteLayout 
 	android:id="@+id/LinearLayout01" 
 	android:layout_width="fill_parent" 
-	android:layout_height="fill_parent" 
+	android:layout_height="fill_parent"
 	xmlns:android="http://schemas.android.com/apk/res/android">
 	
 	<EditText 
@@ -11,45 +11,117 @@
 		android:id="@+id/TraceTitle" 
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content"/>
-
-	<EditText 
-		android:text="Blog your trace here" 
-		android:id="@+id/TraceBlog" 
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content"/>
-		
-	<!--<TableLayout 
+	<TableLayout 
 		android:id="@+id/TraceOutput" 
-		android:layout_width="wrap_content" 
+		android:layout_y="45px"
+		android:layout_width="fill_parent" 
+		android:layout_height="fill_parent">
+		<TableRow android:id="@+id/Row1" 
+		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content">
-		<TableRow android:id="@+id/Speed" android:layout_width="wrap_content" android:layout_height="wrap_content">
 			<TextView 
 			android:text="Speed" 
 			android:id="@+id/TextViewSpeed" 
-			android:layout_width="wrap_content" 
+			android:layout_width="150px" 
 			android:layout_height="wrap_content"/>
 			<TextView 
 			android:text="30.3 kmh" 
-			android:id="@+id/SpeedResult" 
-			android:layout_width="wrap_content" 
+			android:id="@+id/Speed" 
+			android:layout_width="150px" 
 			android:layout_height="wrap_content"/>
 		</TableRow>
-		<TableRow android:id="@+id/Distance" android:layout_width="wrap_content" android:layout_height="wrap_content">
+		<TableRow android:id="@+id/Row2"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content">
 			<TextView 
 			android:text="Distance" 
 			android:id="@+id/TextViewDistance" 
-			android:layout_width="wrap_content" 
+			android:layout_width="150px" 
 			android:layout_height="wrap_content"/>
 			<TextView 
 			android:text="5 kms" 
-			android:id="@+id/DistanceResult" 
-			android:layout_width="wrap_content" 
+			android:id="@+id/Distance" 
+			android:layout_width="150px" 
+			android:layout_height="wrap_content"/>
+		</TableRow>
+		<TableRow android:id="@+id/Row3"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content">
+			<TextView 
+			android:text="Latitude" 
+			android:id="@+id/TextViewLatitude" 
+			android:layout_width="150px" 
+			android:layout_height="wrap_content"/>
+			<TextView 
+			android:text="10001944" 
+			android:id="@+id/Latitude" 
+			android:layout_width="150px" 
+			android:layout_height="wrap_content"/>
+		</TableRow>
+		<TableRow android:id="@+id/Longitude"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content">
+			<TextView 
+			android:text="Longitude" 
+			android:id="@+id/TextViewLongitude" 
+			android:layout_width="150px" 
+			android:layout_height="wrap_content"/>
+			<TextView 
+			android:text="11001921" 
+			android:id="@+id/Longitude" 
+			android:layout_width="150px" 
+			android:layout_height="wrap_content"/>
+		</TableRow>
+		<TableRow android:id="@+id/Time"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content">
+			<TextView 
+			android:text="Time" 
+			android:id="@+id/TextViewLongitude" 
+			android:layout_width="150px" 
+			android:layout_height="wrap_content"/>
+			<TextView 
+			android:text="23:12:45.1" 
+			android:id="@+id/Time" 
+			android:layout_width="150px" 
+			android:layout_height="wrap_content"/>
+		</TableRow>
+		<TableRow android:id="@+id/Direction"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content">
+			<TextView 
+			android:text="Direction" 
+			android:id="@+id/TextViewDirection" 
+			android:layout_width="150px" 
+			android:layout_height="wrap_content"/>
+			<TextView 
+			android:text="210" 
+			android:id="@+id/Direction" 
+			android:layout_width="150px" 
+			android:layout_height="wrap_content"/>
+		</TableRow>
+		<TableRow android:id="@+id/Pace"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content">
+			<TextView 
+			android:text="Pace" 
+			android:id="@+id/TextViewPace" 
+			android:layout_width="150px" 
+			android:layout_height="wrap_content"/>
+			<TextView 
+			android:text="2.3 kph" 
+			android:id="@+id/Pace" 
+			android:layout_width="150px" 
 			android:layout_height="wrap_content"/>
 		</TableRow>
 	</TableLayout>
-
-
-
-
--->
-</LinearLayout>
+	<LinearLayout 
+	android:id="@+id/LinearLayout01" 
+	android:layout_width="fill_parent" 
+	android:layout_height="wrap_content"
+	android:layout_y="320px"
+	android:layout_x="75px">
+		<ToggleButton android:id="@+id/StartStop" android:textOff="Start" android:textOn="Stop" android:layout_width="150px" 
+			android:layout_height="wrap_content"/>
+	</LinearLayout>
+</AbsoluteLayout>
