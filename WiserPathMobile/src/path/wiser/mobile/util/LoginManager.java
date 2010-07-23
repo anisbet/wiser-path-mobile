@@ -13,5 +13,5 @@ package path.wiser.mobile.util;
  */
 public class LoginManager
 {
-	public final static String	WISERPATH_URI	= "http://www.google.com";	// "http://wiserpath.bus.ualberta.ca/user/login";
+	public final static String	WISERPATH_URI	= "http://wiserpath.bus.ualberta.ca/user/login";
 }

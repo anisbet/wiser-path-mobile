@@ -39,6 +39,11 @@ public class SettingsActivity extends PreferenceActivity
 		// does their user name and password authenticate?
 	}
 
+	/**
+	 * This method creates a Toast with the supplied message.
+	 * 
+	 * @param message
+	 */
 	protected void showMessage( String message )
 	{
 		LayoutInflater inflater = getLayoutInflater();
