@@ -115,12 +115,19 @@
 			android:layout_height="wrap_content"/>
 		</TableRow>
 	</TableLayout>
+	<EditText 
+		android:text="Describe your trace" 
+		android:id="@+id/Blog" 
+		android:layout_width="fill_parent" 
+		android:layout_height="90px"
+		android:layout_y="190px"
+		android:layout_x="2px"/>
 	<LinearLayout 
-	android:id="@+id/LinearLayout01" 
-	android:layout_width="fill_parent" 
-	android:layout_height="wrap_content"
-	android:layout_y="320px"
-	android:layout_x="75px">
+		android:id="@+id/LinearLayout01" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:layout_y="320px"
+		android:layout_x="75px">
 		<ToggleButton android:id="@+id/StartStop" android:textOff="Start" android:textOn="Stop" android:layout_width="150px" 
 			android:layout_height="wrap_content"/>
 	</LinearLayout>
