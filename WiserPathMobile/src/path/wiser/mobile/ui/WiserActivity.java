@@ -20,8 +20,13 @@ import android.widget.Toast;
  *         something important.
  * 
  */
-public class WiserActivity extends Activity
+public abstract class WiserActivity extends Activity
 {
+	/**
+	 * Creates a customized Toast with the wiser logo.
+	 * 
+	 * @param message
+	 */
 	protected void showMessage( String message )
 	{
 		LayoutInflater inflater = getLayoutInflater();
@@ -39,4 +44,30 @@ public class WiserActivity extends Activity
 		toast.setView( layout );
 		toast.show();
 	}
+
+	/**
+	 * Selects the previous Activity for display if any.
+	 */
+	abstract protected void previous();
+
+	/**
+	 * Uploads the Activity, deletes the current activity on success and if any.
+	 */
+	abstract protected void upload();
+
+	/**
+	 * Deletes the current activity Activity if any. If none a new activity
+	 * is created.
+	 */
+	abstract protected void delete();
+
+	/**
+	 * Saves the current activity.
+	 */
+	abstract protected void save();
+
+	/**
+	 * Selects the next Activity for display if any.
+	 */
+	abstract protected void next();
 }
