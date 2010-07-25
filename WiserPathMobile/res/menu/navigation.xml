@@ -4,7 +4,7 @@
   
 <item android:title="Previous" android:id="@+id/Previous" android:titleCondensed="Previous"/>
 <item android:title="Upload" android:id="@+id/Upload" android:titleCondensed="Upload"/>
-<item android:title="Delete" android:id="@+id/Delete" android:titleCondensed="Delete selection"/>
+<item android:title="Delete" android:id="@+id/Delete" android:titleCondensed="Delete"/>
 <item android:title="Save" android:id="@+id/Save" android:titleCondensed="Save"/>
 <item android:title="Next" android:id="@+id/Next" android:titleCondensed="Next"/>
 </menu>
