@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 /**
  * This class represents the Point of Interest screen on the Android.
@@ -24,9 +23,12 @@ public class PointOfInterestActivity extends WiserActivity
 	{
 		super.onCreate( savedInstanceState );
 
-		TextView textview = new TextView( this );
-		textview.setText( greeting );
-		setContentView( textview );
+		// Context context = this.getBaseContext();
+		// Drawable image = Drawable.createFromPath( "edmonton.png" );
+		// ImageView imgView = new ImageView( context );
+		// imgView = (ImageView) findViewById( R.id.Poi_Photo );
+		// imgView.setImageDrawable( image );
+		setContentView( R.layout.poi_tab );
 	}
 
 	@Override

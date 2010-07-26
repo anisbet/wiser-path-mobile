@@ -1,6 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="wrap_content"
-  android:layout_height="wrap_content">
-</LinearLayout>
+
+<AbsoluteLayout 
+	android:id="@+id/Poi_Layout" 
+	android:layout_width="fill_parent" 
+	android:layout_height="fill_parent" 
+	xmlns:android="http://schemas.android.com/apk/res/android">
+	
+	<EditText 
+		android:id="@+id/Poi_Title" 
+		android:text="Title"  
+		android:layout_height="wrap_content" 
+		android:layout_width="fill_parent"/>
+
+	<ImageView 
+		android:layout_y="45px"
+		android:layout_x="50px"
+		android:layout_height="150px" 
+		android:id="@+id/Poi_Photo" 
+		android:layout_width="150px"/>
+	
+	<ImageButton 
+		android:layout_y="140px" 
+		android:layout_x="250px" 
+		android:layout_height="wrap_content" 
+		android:id="@+id/Poi_Camera" 
+		android:layout_width="wrap_content"/>
+		
+	<EditText 
+		android:id="@+id/Poi_Blog" 
+		android:text="Blog here" 
+		android:layout_y="200px" 
+		android:layout_height="120px" 
+		android:layout_width="fill_parent"/>
+	
+</AbsoluteLayout>
