@@ -4,7 +4,6 @@
 package path.wiser.mobile.ui;
 
 import path.wiser.mobile.R;
-import path.wiser.mobile.util.HttpManager;
 import path.wiser.mobile.util.LoginManager;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
@@ -23,7 +22,7 @@ import android.widget.Toast;
  */
 public class SettingsActivity extends PreferenceActivity
 {
-	LoginManager	loginManager;
+	private LoginManager	loginManager;
 
 	@Override
 	protected void onCreate( Bundle savedInstanceState )
@@ -31,8 +30,7 @@ public class SettingsActivity extends PreferenceActivity
 		super.onCreate( savedInstanceState );
 		addPreferencesFromResource( R.xml.preferences );
 		Log.i( getLocalClassName(), "hello there $$$$$$" );
-		HttpManager httpManager = new HttpManager( LoginManager.WISERPATH_URI );
-		httpManager.postLogin( "anisbet", "password" );
+		loginManager = new LoginManager();
 		// Check if user has access to WIFI?
 		// Does user have access through phone?
 		// does user want access via either?

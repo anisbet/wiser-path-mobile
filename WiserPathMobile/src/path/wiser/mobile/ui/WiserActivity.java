@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -70,4 +71,20 @@ public abstract class WiserActivity extends Activity
 	 * Selects the next Activity for display if any.
 	 */
 	abstract protected void next();
+
+	/**
+	 * Convieniece class that helps improve readability of the code.
+	 */
+	protected class ClearTextView implements OnClickListener
+	{
+
+		@Override
+		public void onClick( View v )
+		{
+			( (TextView) v ).setText( "" );
+
+		}
+
+	}
+
 }

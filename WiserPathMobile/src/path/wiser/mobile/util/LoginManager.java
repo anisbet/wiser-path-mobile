@@ -13,5 +13,14 @@ package path.wiser.mobile.util;
  */
 public class LoginManager
 {
-	public final static String	WISERPATH_URI	= "http://wiserpath.bus.ualberta.ca/user/login";
+
+	public final static String	LOGIN_PATH	= "/user/login";
+	private HttpManager			httpManager	= null;
+
+	public LoginManager()
+	{
+		httpManager = new HttpManager( LOGIN_PATH );
+		httpManager.postLogin( "anisbet", "password" );
+	}
+
 }

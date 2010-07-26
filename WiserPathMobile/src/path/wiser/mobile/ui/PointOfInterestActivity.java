@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 /**
  * This class represents the Point of Interest screen on the Android.
@@ -22,13 +23,26 @@ public class PointOfInterestActivity extends WiserActivity
 	public void onCreate( Bundle savedInstanceState )
 	{
 		super.onCreate( savedInstanceState );
-
-		// Context context = this.getBaseContext();
-		// Drawable image = Drawable.createFromPath( "edmonton.png" );
-		// ImageView imgView = new ImageView( context );
-		// imgView = (ImageView) findViewById( R.id.Poi_Photo );
-		// imgView.setImageDrawable( image );
+		// set content view so you can grab stuff in it.
 		setContentView( R.layout.poi_tab );
+		// TODO add handling of images. Default image, From Camera and saving.
+		// ImageView imageView = (ImageView) findViewById( R.id.Poi_Photo );
+
+		// add a onClick listener to the text screens so we can remove the
+		// existing text and allow the user to start entering text.
+		TextView textView = (TextView) findViewById( R.id.Poi_Title );
+		textView.setOnClickListener( new ClearTextView() );
+		// clear the blog text aswell.
+		textView = (TextView) findViewById( R.id.Poi_Blog );
+		textView.setOnClickListener( new ClearTextView() );
+
+	}
+
+	public void onResume()
+	{
+		super.onResume();
+		// TextView tv = (TextView) findViewById( R.id.Poi_Title );
+		// tv.setText( "Changed Value" );
 	}
 
 	@Override
@@ -99,4 +113,12 @@ public class PointOfInterestActivity extends WiserActivity
 		// TODO Auto-generated method stub
 
 	}
+
+	@Override
+	public void onPause()
+	{
+		// TODO store data before we move away from this screen.
+		super.onPause();
+	}
+
 }

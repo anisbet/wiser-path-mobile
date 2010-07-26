@@ -4,8 +4,10 @@
 package path.wiser.mobile.util;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,24 +26,31 @@ import android.util.Log;
 /**
  * @author anisbet
  *         This class manages the communication to and from a website specified
- *         by the WISERPATH_URI in the
+ *         by the LOGIN_PATH in the
  *         constructor or by supplying different URIs via the setURI() method.
  */
 public class HttpManager
 {
+	public final static String	IP				= "129.128.94.61";
 	private URI					uri				= null;
 	private WiserHttpResponse	wiserResponse	= new WiserHttpResponse();
 
-	public HttpManager( String destination )
+	public HttpManager( String path )
 	{
 		try
 		{
-			uri = new URI( destination );
+			URL url = new URL( "http", IP, path );
+			uri = url.toURI();
 		}
 		catch (URISyntaxException e)
 		{
 			wiserResponse.setStatus( ResponseType.FAIL_INVALID_URI );
-			Log.e( "HttpManager", "URISyntaxException thrown in constructor" );
+			Log.e( "HttpManager:Constructor", uri.toString() + e.toString() );
+		}
+		catch (MalformedURLException e)
+		{
+			wiserResponse.setStatus( ResponseType.FAIL_INVALID_URI );
+			Log.e( "HttpManager:Constructor", uri.toString() + e.toString() );
 		}
 		wiserResponse.setStatus( ResponseType.OK );
 	}
@@ -80,6 +89,7 @@ public class HttpManager
 		}
 		catch (IOException e)
 		{
+			Log.i( "HttpManager", uri.toASCIIString() );
 			Log.e( "HttpManager", "IOException thrown" + e );
 		}
 

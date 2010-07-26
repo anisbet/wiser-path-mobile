@@ -8,7 +8,7 @@
 	
 	<EditText 
 		android:text="Title" 
-		android:id="@+id/TraceTitle" 
+		android:id="@+id/Trace_Title" 
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content"/>
 	<TableLayout 
@@ -58,7 +58,7 @@
 			android:layout_width="150px" 
 			android:layout_height="wrap_content"/>
 		</TableRow>
-		<TableRow android:id="@+id/Longitude"
+		<TableRow android:id="@+id/Row4"
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content">
 			<TextView 
@@ -72,7 +72,7 @@
 			android:layout_width="150px" 
 			android:layout_height="wrap_content"/>
 		</TableRow>
-		<TableRow android:id="@+id/Time"
+		<TableRow android:id="@+id/Row5"
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content">
 			<TextView 
@@ -86,7 +86,7 @@
 			android:layout_width="150px" 
 			android:layout_height="wrap_content"/>
 		</TableRow>
-		<TableRow android:id="@+id/Direction"
+		<TableRow android:id="@+id/Row6"
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content">
 			<TextView 
@@ -100,7 +100,7 @@
 			android:layout_width="150px" 
 			android:layout_height="wrap_content"/>
 		</TableRow>
-		<TableRow android:id="@+id/Pace"
+		<TableRow android:id="@+id/Row7"
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content">
 			<TextView 
@@ -117,7 +117,7 @@
 	</TableLayout>
 	<EditText 
 		android:text="Describe your trace" 
-		android:id="@+id/Blog" 
+		android:id="@+id/Trace_Blog" 
 		android:layout_width="fill_parent" 
 		android:layout_height="90px"
 		android:layout_y="190px"
@@ -128,7 +128,11 @@
 		android:layout_height="wrap_content"
 		android:layout_y="320px"
 		android:layout_x="75px">
-		<ToggleButton android:id="@+id/StartStop" android:textOff="Start" android:textOn="Stop" android:layout_width="150px" 
+		<ToggleButton 
+			android:id="@+id/Trace_StartStop" 
+			android:textOff="Start" 
+			android:textOn="Stop" 
+			android:layout_width="150px" 
 			android:layout_height="wrap_content"/>
 	</LinearLayout>
 </AbsoluteLayout>

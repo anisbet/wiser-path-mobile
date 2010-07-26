@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 /**
  * @author anisbet
@@ -18,6 +19,11 @@ public class TraceActivity extends WiserActivity
 	{
 		super.onCreate( savedInstanceState );
 		setContentView( R.layout.trace_tab );
+
+		TextView textView = (TextView) findViewById( R.id.Trace_Blog );
+		textView.setOnClickListener( new ClearTextView() );
+		textView = (TextView) findViewById( R.id.Trace_Title );
+		textView.setOnClickListener( new ClearTextView() );
 	}
 
 	@Override
@@ -86,6 +92,15 @@ public class TraceActivity extends WiserActivity
 	protected void upload()
 	{
 		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onPause()
+	{
+		// TODO Save current state to the database when the user selects moves
+		// away from this screens
+		super.onPause();
 
 	}
 }
