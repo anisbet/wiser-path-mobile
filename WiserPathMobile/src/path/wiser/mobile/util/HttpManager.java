@@ -37,6 +37,7 @@ public class HttpManager
 
 	public HttpManager( String path )
 	{
+		System.setProperty( "java.net.preferIPv6Addresses", "false" );
 		try
 		{
 			URL url = new URL( "http", IP, path );

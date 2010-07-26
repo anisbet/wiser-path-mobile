@@ -7,7 +7,6 @@ import path.wiser.mobile.R;
 import path.wiser.mobile.util.LoginManager;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,8 +28,8 @@ public class SettingsActivity extends PreferenceActivity
 	{
 		super.onCreate( savedInstanceState );
 		addPreferencesFromResource( R.xml.preferences );
-		Log.i( getLocalClassName(), "hello there $$$$$$" );
 		loginManager = new LoginManager();
+		System.out.println( loginManager.toString() );
 		// Check if user has access to WIFI?
 		// Does user have access through phone?
 		// does user want access via either?

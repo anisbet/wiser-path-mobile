@@ -14,7 +14,7 @@ package path.wiser.mobile.util;
 public class LoginManager
 {
 
-	public final static String	LOGIN_PATH	= "/user/login";
+	public final static String	LOGIN_PATH	= "";	// "/user/login";
 	private HttpManager			httpManager	= null;
 
 	public LoginManager()
