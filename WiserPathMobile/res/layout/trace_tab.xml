@@ -122,11 +122,18 @@
 		android:layout_height="90px"
 		android:layout_y="190px"
 		android:layout_x="2px"/>
+	<EditText 
+		android:text="tags" 
+		android:id="@+id/Trace_Tag" 
+		android:layout_width="fill_parent" 
+		android:layout_height="40px"
+		android:layout_y="285px"
+		android:layout_x="2px"/>
 	<LinearLayout 
-		android:id="@+id/LinearLayout01" 
+		android:id="@+id/LLButton" 
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content"
-		android:layout_y="320px"
+		android:layout_y="330px"
 		android:layout_x="75px">
 		<ToggleButton 
 			android:id="@+id/Trace_StartStop" 

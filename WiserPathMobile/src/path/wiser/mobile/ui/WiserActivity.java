@@ -7,8 +7,9 @@ import path.wiser.mobile.R;
 import android.app.Activity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -75,14 +76,25 @@ public abstract class WiserActivity extends Activity
 	/**
 	 * Convieniece class that helps improve readability of the code.
 	 */
-	protected class ClearTextView implements OnClickListener
+	protected class ClearTextView implements OnTouchListener // ,
+																// OnClickListener
 	{
 
-		@Override
-		public void onClick( View v )
-		{
-			( (TextView) v ).setText( "" );
+		// @Override
+		// public void onClick( View v )
+		// {
+		// ( (TextView) v ).setText( "" );
+		//
+		// }
 
+		@Override
+		public boolean onTouch( View v, MotionEvent event )
+		{
+			if (event.getAction() == MotionEvent.ACTION_MOVE)
+			{
+				( (TextView) v ).setText( "" );
+			}
+			return false;
 		}
 
 	}

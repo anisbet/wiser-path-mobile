@@ -32,5 +32,12 @@
 		android:layout_y="200px" 
 		android:layout_height="120px" 
 		android:layout_width="fill_parent"/>
+		
+	<EditText 
+		android:id="@+id/Poi_Tag" 
+		android:text="tags" 
+		android:layout_y="330px" 
+		android:layout_height="45px" 
+		android:layout_width="fill_parent"/>
 	
 </AbsoluteLayout>

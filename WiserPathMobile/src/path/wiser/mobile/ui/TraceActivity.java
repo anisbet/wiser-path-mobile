@@ -21,9 +21,11 @@ public class TraceActivity extends WiserActivity
 		setContentView( R.layout.trace_tab );
 
 		TextView textView = (TextView) findViewById( R.id.Trace_Blog );
-		textView.setOnClickListener( new ClearTextView() );
+		textView.setOnTouchListener( new ClearTextView() );
 		textView = (TextView) findViewById( R.id.Trace_Title );
-		textView.setOnClickListener( new ClearTextView() );
+		textView.setOnTouchListener( new ClearTextView() );
+		textView = (TextView) findViewById( R.id.Trace_Tag );
+		textView.setOnTouchListener( new ClearTextView() );
 	}
 
 	@Override

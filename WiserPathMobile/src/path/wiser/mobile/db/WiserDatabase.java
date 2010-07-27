@@ -1,26 +1,35 @@
-package path.wiser.mobile.geo;
+package path.wiser.mobile.db;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
-public class TraceDatabase extends WiserDatabase
+public class WiserDatabase
 {
-	public static final String	KEY_ROWID		= "_id";
-	public static final String	KEY_ISBN		= "isbn";
-	public static final String	KEY_TITLE		= "title";
-	public static final String	KEY_PUBLISHER	= "publisher";
+	private final static String	TAG					= "WiserDatabase";
+	private final static String	DATABASE_NAME		= "books";
+	private final static String	DATABASE_TABLE		= "titles";
+	private final static int	DATABASE_VERSION	= 1;
+	private final static String	DATABASE_CREATE		= "create table titles (_id integer primary key autoincrement, "
+														+ "isbn text not null, title text not null, "
+														+ "publisher text not null);";
+	public static final String	KEY_ROWID			= "_id";
+	public static final String	KEY_ISBN			= "isbn";
+	public static final String	KEY_TITLE			= "title";
+	public static final String	KEY_PUBLISHER		= "publisher";
 
-	private Context				context			= null;
-	private DatabaseHelper		DBHelper		= null;
-	private SQLiteDatabase		db				= null;
+	private Context				context				= null;
+	private DatabaseHelper		DBHelper			= null;
+	private SQLiteDatabase		db					= null;
 
 	/**
 	 * @param context
 	 */
-	public TraceDatabase( Context context )
+	public WiserDatabase( Context context )
 	{
 		this.context = context;
 		DBHelper = new DatabaseHelper( this.context );
@@ -116,6 +125,33 @@ public class TraceDatabase extends WiserDatabase
 		args.put( KEY_TITLE, title );
 		args.put( KEY_PUBLISHER, publisher );
 		return db.update( DATABASE_TABLE, args, KEY_ROWID + "=" + rowId, null ) > 0;
+	}
+
+	/**
+	 * @author anisbet
+	 * 
+	 */
+	protected static class DatabaseHelper extends SQLiteOpenHelper
+	{
+		DatabaseHelper( Context context )
+		{
+			super( context, DATABASE_NAME, null, DATABASE_VERSION );
+		}
+
+		@Override
+		public void onCreate( SQLiteDatabase db )
+		{
+			db.execSQL( DATABASE_CREATE );
+		}
+
+		@Override
+		public void onUpgrade( SQLiteDatabase db, int oldVersion, int newVersion )
+		{
+			Log.w( TAG, "Upgrading database from version " + oldVersion
+				+ " to " + newVersion + ", which will destroy all old data" );
+			db.execSQL( "DROP TABLE IF EXISTS titles" );
+			onCreate( db );
+		}
 	}
 
 }

@@ -13,7 +13,7 @@ import android.widget.TextView;
 /**
  * This class represents the Point of Interest screen on the Android.
  * 
- * @author andrew nisbet
+ * @author anisbet
  * 
  */
 public class PointOfInterestActivity extends WiserActivity
@@ -31,11 +31,12 @@ public class PointOfInterestActivity extends WiserActivity
 		// add a onClick listener to the text screens so we can remove the
 		// existing text and allow the user to start entering text.
 		TextView textView = (TextView) findViewById( R.id.Poi_Title );
-		textView.setOnClickListener( new ClearTextView() );
+		textView.setOnTouchListener( new ClearTextView() );
 		// clear the blog text aswell.
 		textView = (TextView) findViewById( R.id.Poi_Blog );
-		textView.setOnClickListener( new ClearTextView() );
-
+		textView.setOnTouchListener( new ClearTextView() );
+		textView = (TextView) findViewById( R.id.Poi_Tag );
+		textView.setOnTouchListener( new ClearTextView() );
 	}
 
 	public void onResume()
