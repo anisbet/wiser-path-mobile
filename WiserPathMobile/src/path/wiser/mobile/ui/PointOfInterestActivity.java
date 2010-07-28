@@ -37,6 +37,9 @@ public class PointOfInterestActivity extends WiserActivity
 		textView.setOnTouchListener( new ClearTextView() );
 		textView = (TextView) findViewById( R.id.Poi_Tag );
 		textView.setOnTouchListener( new ClearTextView() );
+
+		// ImageButton takePhoto = (ImageButton) findViewById( R.id.Poi_Photo );
+		// takePhoto.setOnClickListener( new TakePhoto() );
 	}
 
 	public void onResume()

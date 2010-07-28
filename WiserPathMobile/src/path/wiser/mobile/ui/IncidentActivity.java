@@ -22,10 +22,20 @@ public class IncidentActivity extends PointOfInterestActivity
 	public void onCreate( Bundle savedInstanceState )
 	{
 		super.onCreate( savedInstanceState );
-		greeting = "This is the Incident tab";
-		TextView textview = new TextView( this );
-		textview.setText( greeting );
-		setContentView( textview );
+		// set content view so you can grab stuff in it.
+		setContentView( R.layout.incident_tab );
+		// TODO add handling of images. Default image, From Camera and saving.
+		// ImageView imageView = (ImageView) findViewById( R.id.Poi_Photo );
+
+		// add a onClick listener to the text screens so we can remove the
+		// existing text and allow the user to start entering text.
+		TextView textView = (TextView) findViewById( R.id.Incident_Title );
+		textView.setOnTouchListener( new ClearTextView() );
+		// clear the blog text aswell.
+		textView = (TextView) findViewById( R.id.Incident_Blog );
+		textView.setOnTouchListener( new ClearTextView() );
+		textView = (TextView) findViewById( R.id.Incident_Tag );
+		textView.setOnTouchListener( new ClearTextView() );
 	}
 
 	@Override

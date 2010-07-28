@@ -76,16 +76,8 @@ public abstract class WiserActivity extends Activity
 	/**
 	 * Convieniece class that helps improve readability of the code.
 	 */
-	protected class ClearTextView implements OnTouchListener // ,
-																// OnClickListener
+	protected class ClearTextView implements OnTouchListener
 	{
-
-		// @Override
-		// public void onClick( View v )
-		// {
-		// ( (TextView) v ).setText( "" );
-		//
-		// }
 
 		@Override
 		public boolean onTouch( View v, MotionEvent event )
