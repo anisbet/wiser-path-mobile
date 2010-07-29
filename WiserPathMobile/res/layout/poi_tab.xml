@@ -12,6 +12,7 @@
 		android:layout_height="wrap_content" 
 		android:layout_width="fill_parent"/>
 
+<!-- TODO fix this so the image is dynamically loaded from the database. -->
 	<ImageView 
 		android:layout_y="45px"
 		android:layout_x="50px"

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 /**
@@ -20,6 +21,7 @@ public class PointOfInterestActivity extends WiserActivity
 {
 	protected String	greeting	= "This is the POI tab";
 
+	@Override
 	public void onCreate( Bundle savedInstanceState )
 	{
 		super.onCreate( savedInstanceState );
@@ -38,8 +40,9 @@ public class PointOfInterestActivity extends WiserActivity
 		textView = (TextView) findViewById( R.id.Poi_Tag );
 		textView.setOnTouchListener( new ClearTextView() );
 
-		// ImageButton takePhoto = (ImageButton) findViewById( R.id.Poi_Photo );
-		// takePhoto.setOnClickListener( new TakePhoto() );
+		ImageButton cameraButton = (ImageButton) findViewById( R.id.Poi_Camera );
+		cameraButton.setOnClickListener( new CameraActivity() );
+
 	}
 
 	public void onResume()
