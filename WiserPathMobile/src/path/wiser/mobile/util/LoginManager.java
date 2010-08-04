@@ -3,8 +3,6 @@
  */
 package path.wiser.mobile.util;
 
-import org.apache.http.HttpResponse;
-
 import android.util.Log;
 
 /**
@@ -28,11 +26,14 @@ public class LoginManager
 		httpManager = new HttpManager( LOGIN_PATH );
 		String[] args =
 		{ LOGIN_NAME, "anisbet", LOGIN_PASSWORD, "WiserPathPassword_1234" };
-		HttpResponse response = httpManager.post( args );
-		System.out.println( "Login form post: " + response.getStatusLine() );
+
+		System.out.println( "Login form post status VALUE = " + httpManager.post( args ) );
 		String[] cookies = httpManager.getCookies();
 
 		Log.i( "LoginManager", cookies.toString() );
+
+		// This deallocates resources after your done with the httpManager.
+		httpManager.finish();
 
 	}
 }
