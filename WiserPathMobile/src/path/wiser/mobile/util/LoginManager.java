@@ -3,6 +3,10 @@
  */
 package path.wiser.mobile.util;
 
+import org.apache.http.HttpResponse;
+
+import android.util.Log;
+
 /**
  * @author andrew nisbet
  * 
@@ -14,13 +18,21 @@ package path.wiser.mobile.util;
 public class LoginManager
 {
 
-	public final static String	LOGIN_PATH	= "";	// "/user/login";
-	private HttpManager			httpManager	= null;
+	public final static String	LOGIN_PATH		= "/user/login";
+	public final static String	LOGIN_NAME		= "name";
+	public final static String	LOGIN_PASSWORD	= "pass";
+	private HttpManager			httpManager		= null;
 
 	public LoginManager()
 	{
 		httpManager = new HttpManager( LOGIN_PATH );
-		httpManager.postLogin( "anisbet", "password" );
-	}
+		String[] args =
+		{ LOGIN_NAME, "anisbet", LOGIN_PASSWORD, "WiserPathPassword_1234" };
+		HttpResponse response = httpManager.post( args );
+		System.out.println( "Login form post: " + response.getStatusLine() );
+		String[] cookies = httpManager.getCookies();
 
+		Log.i( "LoginManager", cookies.toString() );
+
+	}
 }

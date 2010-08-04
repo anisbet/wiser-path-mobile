@@ -4,21 +4,21 @@
 package path.wiser.mobile.util;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
 
 import path.wiser.mobile.util.WiserHttpResponse.ResponseType;
 import android.util.Log;
@@ -31,94 +31,145 @@ import android.util.Log;
  */
 public class HttpManager
 {
-	public final static String	IP				= "129.128.94.61";
+	public final static String	HOST			= "wiserpath.bus.ualberta.ca";
 	private URI					uri				= null;
 	private WiserHttpResponse	wiserResponse	= new WiserHttpResponse();
+	private String[]			cookies			= null;
+	public final static String	EMPTY			= "[]";
 
+	/**
+	 * @return the cookies from the last transaction
+	 */
+	public String[] getCookies()
+	{
+		return cookies;
+	}
+
+	/**
+	 * @param path Constructs a {@link HttpManager} object using the default
+	 *        domain and
+	 *        argument path to form a URL.
+	 */
 	public HttpManager( String path )
 	{
+		// this version of android SDK has reported problems with IPv6. One
+		// suggestion was to set this value false.
 		System.setProperty( "java.net.preferIPv6Addresses", "false" );
 		try
 		{
-			URL url = new URL( "http", IP, path );
-			uri = url.toURI();
+			uri = new URI( "http", HOST, path, null );
 		}
 		catch (URISyntaxException e)
 		{
 			wiserResponse.setStatus( ResponseType.FAIL_INVALID_URI );
 			Log.e( "HttpManager:Constructor", uri.toString() + e.toString() );
 		}
-		catch (MalformedURLException e)
-		{
-			wiserResponse.setStatus( ResponseType.FAIL_INVALID_URI );
-			Log.e( "HttpManager:Constructor", uri.toString() + e.toString() );
-		}
+
 		wiserResponse.setStatus( ResponseType.OK );
 	}
 
 	/**
 	 * 
-	 * @param userName
-	 * @param password
+	 * @param strings
 	 * @return wiserResponse with message and status.
 	 */
-	public HttpResponse postLogin( String userName, String password )
+	public HttpResponse post( String[] strings )
 	{
-		// Create a new HttpClient and Post Header
-		HttpClient httpclient = new DefaultHttpClient();
-		HttpPost httppost = new HttpPost( uri );
+		HttpPost httpost = new HttpPost( uri );
+		DefaultHttpClient httpClient = new DefaultHttpClient();
 		HttpResponse response = null;
+		HttpEntity entity = null;
+
 		try
 		{
-			// Add your data
-			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(
-				2 );
-			nameValuePairs.add( new BasicNameValuePair( "id", "edit-name" ) );
-			nameValuePairs
-				.add( new BasicNameValuePair( "stringdata", userName ) );
-			httppost.setEntity( new UrlEncodedFormEntity( nameValuePairs ) );
-
-			// Execute HTTP Post Request
-			response = httpclient.execute( httppost );
-			Log.i( "HttpManager:", "======> response: "
-				+ response.getEntity().getContent() );
-
+			httpost.setEntity( new UrlEncodedFormEntity( getPairs( strings ), HTTP.UTF_8 ) );
 		}
-		catch (ClientProtocolException e)
+		catch (UnsupportedEncodingException e)
 		{
-			Log.e( "HttpManager", "ClientProtocolException thrown" + e );
+			Log.i( "HttpManager", e.toString() );
 		}
-		catch (IOException e)
+
+		try
 		{
-			Log.i( "HttpManager", uri.toASCIIString() );
-			Log.e( "HttpManager", "IOException thrown" + e );
+			response = httpClient.execute( httpost );
 		}
+		catch (Exception e)
+		{
+			Log.i( "HttpManager", e.toString() );
+		}
+
+		entity = response.getEntity();
+
+		if (entity != null)
+		{
+			try
+			{
+				entity.consumeContent();
+			}
+			catch (IOException e)
+			{
+				Log.i( "LoginManager", e.toString() );
+			}
+		}
+
+		setCookies( httpClient.getCookieStore().getCookies() );
+
+		// When HttpClient instance is no longer needed,
+		// shut down the connection manager to ensure
+		// immediate deallocation of all system resources
+		httpClient.getConnectionManager().shutdown();
 
 		return response;
 	}
 
 	/**
-	 * @return the isValidUri
+	 * Sets the cookies from the last transaction.
+	 * 
+	 * @param cookies
 	 */
-	public boolean isSuccessful()
+	private void setCookies( List<Cookie> cookies )
 	{
-		return wiserResponse.isSuccessful();
+		if (cookies.isEmpty())
+		{
+			this.cookies = new String[1];
+			this.cookies[0] = EMPTY;
+		}
+		else
+		{
+			this.cookies = new String[cookies.size()];
+			for (int i = 0; i < cookies.size(); i++)
+			{
+				this.cookies[i] = cookies.get( i ).toString();
+			}
+		}
 	}
 
 	/**
-	 * @param destinationURI the uri to set allows the user to reset the uri for
-	 *        this object and reuse the object
+	 * Parses out the array of strings into name value pairs and returns the
+	 * array of {@link NameValuePair}s.
+	 * 
+	 * @param string
+	 * @return nameValuePairs used to post to a server using the POST command.
 	 */
-	public void setURI( String destinationURI )
+	private List<NameValuePair> getPairs( String[] string )
 	{
-		try
+		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		if (string.length == 0)
 		{
-			uri = new URI( destinationURI );
+			Log.e( "HttpManager", "0 length name value pair string." );
+			return nameValuePairs;
 		}
-		catch (URISyntaxException e)
+		if (string.length % 2 != 0)
 		{
-			wiserResponse.setStatus( ResponseType.FAIL_INVALID_URI );
+			throw new IllegalArgumentException( "Mismatch name value pair. Too many names not enough values." );
 		}
-		wiserResponse.setStatus( ResponseType.OK );
+		// snag out each name and value and make a pair.
+		for (int i = 0; i < string.length; i += 2)
+		{
+			nameValuePairs.add( new BasicNameValuePair( string[i], string[i + 1] ) );
+		}
+
+		return nameValuePairs;
 	}
+
 }
