@@ -13,6 +13,8 @@ import java.util.List;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
@@ -33,12 +35,13 @@ import android.util.Log;
  */
 public class HttpManager
 {
-	public final static String	HOST		= "wiserpath.bus.ualberta.ca";
-	public final static String	EMPTY		= "[]";
+	public final static String	HOST				= "wiserpath.bus.ualberta.ca";
+	public final static String	EMPTY				= "[]";
+	public final static int		AUTHENTICATION_PORT	= 80;
 
-	private URI					uri			= null;
-	private HttpResponse		response	= null;
-	private DefaultHttpClient	httpClient	= null;
+	private URI					uri					= null;
+	private HttpResponse		response			= null;
+	private DefaultHttpClient	httpClient			= null;
 
 	/**
 	 * @param path Constructs a {@link HttpManager} object using the default
@@ -85,6 +88,49 @@ public class HttpManager
 	}
 
 	/**
+	 * Authenticates a user with name and password on {@link HttpManager#HOST}
+	 * and {@link HttpManager#AUTHENTICATION_PORT}.
+	 * 
+	 * @param name
+	 * @param password
+	 * @return int status of the transaction.
+	 */
+	public int authenticate( String name, String password )
+	{
+		httpClient = new DefaultHttpClient();
+
+		httpClient.getCredentialsProvider().setCredentials( new AuthScope( HOST, AUTHENTICATION_PORT ),
+			new UsernamePasswordCredentials( name, password ) );
+
+		HttpPost httpGet = new HttpPost( uri );
+		try
+		{
+			response = httpClient.execute( httpGet );
+			System.out.println( "executing request" + httpGet.getRequestLine() );
+		}
+		catch (Exception e)
+		{
+			Log.e( "HttpManager", e.toString() );
+		}
+
+		HttpEntity entity = response.getEntity();
+
+		if (entity != null)
+		{
+			try
+			{
+				entity.consumeContent();
+			}
+			catch (IOException e)
+			{
+				Log.e( "HttpManager", e.toString() );
+			}
+		}
+
+		return response.getStatusLine().getStatusCode();
+	}
+
+	/**
 	 * Releases all resources used in communication. Don't forget to call this
 	 * or you will end up with a resource leak.
 	 */
@@ -97,6 +143,15 @@ public class HttpManager
 		{
 			httpClient.getConnectionManager().shutdown();
 		}
+	}
+
+	/**
+	 * @return length of the content returned by POST or GET.
+	 */
+	public long getContentLength()
+	{
+		if (response == null) return 0;
+		return response.getEntity().getContentLength();
 	}
 
 	/**
@@ -229,35 +284,37 @@ public class HttpManager
 	 * array index 2n+1.
 	 * 
 	 * @param cookies
+	 * @return List of cookies
 	 */
-	public String[] getCookies()
+	public List<Cookie> getCookies()
 	{
-		String[] cookieStrings = null;
-		if (httpClient == null)
-		{
-			cookieStrings = new String[1];
-			cookieStrings[0] = EMPTY;
-			return cookieStrings;
-		}
-
-		List<Cookie> cookies = httpClient.getCookieStore().getCookies();
-
-		if (cookies.isEmpty())
-		{
-			cookieStrings = new String[1];
-			cookieStrings[0] = EMPTY;
-			return cookieStrings;
-		}
-
-		cookieStrings = new String[cookies.size() * 2];
-
-		for (int i = 0; i < cookies.size(); i++)
-		{
-			cookieStrings[2 * i] = cookies.get( i ).getName();
-			cookieStrings[2 * i + 1] = cookies.get( i ).getValue();
-		}
-
-		return cookieStrings;
+		// String[] cookieStrings = null;
+		// if (httpClient == null)
+		// {
+		// cookieStrings = new String[1];
+		// cookieStrings[0] = EMPTY;
+		// return cookieStrings;
+		// }
+		//
+		// List<Cookie> cookies = httpClient.getCookieStore().getCookies();
+		//
+		// if (cookies.isEmpty())
+		// {
+		// cookieStrings = new String[1];
+		// cookieStrings[0] = EMPTY;
+		// return cookieStrings;
+		// }
+		//
+		// cookieStrings = new String[cookies.size() * 2];
+		//
+		// for (int i = 0; i < cookies.size(); i++)
+		// {
+		// cookieStrings[2 * i] = cookies.get( i ).getName();
+		// cookieStrings[2 * i + 1] = cookies.get( i ).getValue();
+		// }
+		//
+		// return cookieStrings;
+		return httpClient.getCookieStore().getCookies();
 	}
 
 	/**

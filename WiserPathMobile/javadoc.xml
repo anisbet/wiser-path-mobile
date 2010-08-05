@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="javadoc">
+    <target name="javadoc">
+        <javadoc access="protected" author="true" classpath="." destdir="doc" doctitle="Wiser Path Mobile Documentation" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" overview="/Users/andrewnisbet/Documents/workspace/WiserPathMobile/doc/overview.html" packagenames="path.wiser.mobile,path.wiser.mobile.ui,path.wiser.mobile.db,path.wiser.mobile.geo,path.wiser.mobile.util" source="1.6" sourcepath="src:gen" splitindex="true" use="true" version="true">
+            <link href="file:/Users/andrewnisbet/Documents/workspace/WiserPathMobile/doc/"/>
+        </javadoc>
+    </target>
+</project>

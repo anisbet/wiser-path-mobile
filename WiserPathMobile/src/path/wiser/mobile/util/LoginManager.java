@@ -3,6 +3,10 @@
  */
 package path.wiser.mobile.util;
 
+import java.util.List;
+
+import org.apache.http.cookie.Cookie;
+
 import android.util.Log;
 
 /**
@@ -28,7 +32,7 @@ public class LoginManager
 		{ LOGIN_NAME, "anisbet", LOGIN_PASSWORD, "WiserPathPassword_1234" };
 
 		System.out.println( "Login form post status VALUE = " + httpManager.post( args ) );
-		String[] cookies = httpManager.getCookies();
+		List<Cookie> cookies = httpManager.getCookies();
 
 		Log.i( "LoginManager", cookies.toString() );
 
