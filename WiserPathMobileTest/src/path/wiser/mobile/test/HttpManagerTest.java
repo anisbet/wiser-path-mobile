@@ -20,7 +20,7 @@ public class HttpManagerTest extends TestCase {
 	public void testPost() {
 		HttpManager httpManager = new HttpManager("/user/login");
 		String[] args =	{ LoginManager.LOGIN_NAME, "anisbet", LoginManager.LOGIN_PASSWORD, "WiserPathPassword_1234" };
-		assertNotNull(httpManager.getCookies());
+		assertNull(httpManager.getCookies());
 		httpManager.post(args);
 		List<Cookie> retValues = httpManager.getCookies();
 		assertNotNull(retValues);
@@ -48,10 +48,10 @@ public class HttpManagerTest extends TestCase {
 	public void testGetCookies() {
 		HttpManager httpManager = new HttpManager("/user/login");
 		String[] args =	{ LoginManager.LOGIN_NAME, "anisbet", LoginManager.LOGIN_PASSWORD, "WiserPathPassword_1234" };
-		assertNotNull(httpManager.getCookies());
+		assertNull(httpManager.getCookies());
 		httpManager.post(args);
 		List<Cookie> retValues = httpManager.getCookies();
-		assertNotNull(retValues);
+		assertTrue(retValues.size() >= 1);
 		for (int i = 0; i < retValues.size(); i++)
 		{
 			System.out.println("Cookie " + i + " " + retValues.get(i).toString());
