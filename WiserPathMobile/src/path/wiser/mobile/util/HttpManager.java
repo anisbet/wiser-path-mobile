@@ -284,7 +284,7 @@ public class HttpManager
 	 * array index 2n+1.
 	 * 
 	 * @param cookies
-	 * @return List of cookies
+	 * @return List of cookies or null if the HttpClient was null.
 	 */
 	public List<Cookie> getCookies()
 	{
@@ -314,6 +314,7 @@ public class HttpManager
 		// }
 		//
 		// return cookieStrings;
+		if (httpClient == null) return null;
 		return httpClient.getCookieStore().getCookies();
 	}
 
