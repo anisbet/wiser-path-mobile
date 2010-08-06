@@ -6,45 +6,46 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+/**
+ * This is the database for all data stored on the device. All the traces and
+ * images are stored in this and then it is saved to memory.
+ * This handles all the query transactions to and from the database. Activity
+ * specific queries can be found in their own classes.
+ * 
+ * @author anisbet
+ * 
+ */
 public class WiserDatabase
 {
-	public final static String	TAG						= "WiserDB";
-	public final static String	DATABASE_NAME			= "WiserPathDatabase";
-	public final static int		DATABASE_VERSION		= 1;
+	public final static String			TAG						= "WiserDB";
+	public final static String			DATABASE_NAME			= "WiserPathDatabase";
+	public final static int				DATABASE_VERSION		= 1;
 
-	// tables in the database.
-	public final static String	POI_INCIDENT_TABLE		= "PoiTable";
-	public final static String	TRACE_TABLE				= "TraceTable";
-	public final static String	TRACE_LOCATION_TABLE	= "TraceLocationTable";
-	public final static String	POI_LOCATION_TABLE		= "PoiLocationTable";
-	public final static String	TRACE_POI_ID_TABLE		= "TracePoiIdTable";
-	public final static String	TAGS_TABLE				= "TagsTable";
+	public static WiserDatabaseTable	poi						= null;
 
-	public final static String	DATABASE_CREATE			= "create table titles (_id integer primary key autoincrement, "
-															+ "isbn text not null, title text not null, "
-															+ "publisher text not null);";
+	// TraceTable
+	public final static String			TRACE_TABLE				= "TraceTable";
 
-	// POI_INCIDENT_TABLE Record
-	public final static String	PI_ID					= "_id";
-	public final static String	PI_TITLE				= "title";
-	public final static String	PI_BLOG					= "blog";
-	public final static String	PI_IMAGE				= "image";
-	public final static String	PI_IS_INCIDENT			= "isIncident";
+	// TraceLocationTable
+	public final static String			TRACE_LOCATION_TABLE	= "TraceLocationTable";
 
-	// public final static String TRACE_TABLE = "TraceTable";
-	// public final static String TRACE_LOCATION_TABLE = "TraceLocationTable";
-	// public final static String POI_LOCATION_TABLE = "PoiLocationTable";
-	// public final static String TRACE_POI_ID_TABLE = "TracePoiIdTable";
-	// public final static String TAGS_TABLE = "TagsTable";
+	// PoiLocationTable
+	public final static String			POI_LOCATION_TABLE		= "PoiLocationTable";
 
-	public static final String	KEY_ROWID				= "_id";
-	public static final String	KEY_ISBN				= "isbn";
-	public static final String	KEY_TITLE				= "title";
-	public static final String	KEY_PUBLISHER			= "publisher";
+	// TracePoiIdTable
+	public final static String			TRACE_POI_ID_TABLE		= "TracePoiIdTable";
 
-	private Context				context					= null;
-	private DatabaseHelper		DBHelper				= null;
-	private SQLiteDatabase		db						= null;
+	// TagsTable
+	public final static String			TAGS_TABLE				= "TagsTable";
+
+	// public final static String DATABASE_CREATE =
+	// "create table titles (_id integer primary key autoincrement, "
+	// + "isbn text not null, title text not null, " +
+	// "publisher text not null);";
+
+	private Context						context					= null;
+	private DatabaseHelper				DBHelper				= null;
+	private SQLiteDatabase				db						= null;
 
 	/**
 	 * @param context
@@ -52,6 +53,7 @@ public class WiserDatabase
 	public WiserDatabase( Context context )
 	{
 		this.context = context;
+		this.poi = new PoiIncedent();
 		DBHelper = new DatabaseHelper( this.context );
 	}
 
@@ -70,6 +72,7 @@ public class WiserDatabase
 	 */
 	public void close()
 	{
+		// TODO serialize database to memory
 		DBHelper.close();
 	}
 
@@ -148,7 +151,19 @@ public class WiserDatabase
 	// }
 
 	/**
-	 * @author anisbet
+	 * A helper class to manage database creation and version management.
+	 * 
+	 * You create a subclass implementing onCreate(SQLiteDatabase),
+	 * onUpgrade(SQLiteDatabase, int, int) and optionally
+	 * onOpen(SQLiteDatabase), and this class takes care of opening the database
+	 * if it exists, creating it if it does not, and upgrading it as necessary.
+	 * Transactions are used to make sure the database is always in a sensible
+	 * state.
+	 * 
+	 * This class makes it easy for ContentProvider implementations to defer
+	 * opening and upgrading the database until first use, to avoid blocking
+	 * application startup with long-running database upgrades.
+	 * 
 	 * 
 	 */
 	protected static class DatabaseHelper extends SQLiteOpenHelper
@@ -161,15 +176,17 @@ public class WiserDatabase
 		@Override
 		public void onCreate( SQLiteDatabase db )
 		{
-			db.execSQL( DATABASE_CREATE );
+			db.execSQL( poi.toString() );
 		}
 
 		@Override
 		public void onUpgrade( SQLiteDatabase db, int oldVersion, int newVersion )
 		{
-			Log.w( TAG, "Upgrading database from version " + oldVersion
-				+ " to " + newVersion + ", which will destroy all old data" );
-			db.execSQL( "DROP TABLE IF EXISTS titles" );
+			Log.w( TAG, "Upgrading database from version " + oldVersion + " to " + newVersion + ", which will destroy all old data" );
+			// TODO we should allow for the uploading of data, this next command
+			// will
+			// just drop the table.
+			db.execSQL( "DROP TABLE IF EXISTS " + PoiIncedent.TABLE_NAME );
 			onCreate( db );
 		}
 	}
