@@ -19,7 +19,16 @@ import android.widget.TextView;
  */
 public class PointOfInterestActivity extends WiserActivity
 {
-	protected String	greeting	= "This is the POI tab";
+
+	public PointOfInterestActivity()
+	{
+		super( "POIActivity" );
+	}
+
+	public PointOfInterestActivity( String tag )
+	{
+		super( tag );
+	}
 
 	@Override
 	public void onCreate( Bundle savedInstanceState )

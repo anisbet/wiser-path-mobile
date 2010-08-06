@@ -17,6 +17,11 @@ import android.widget.TextView;
 public class IncidentActivity extends PointOfInterestActivity
 {
 
+	public IncidentActivity()
+	{
+		super( "IncidentActivity" );
+	}
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate( Bundle savedInstanceState )

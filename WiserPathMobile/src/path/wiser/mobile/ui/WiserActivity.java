@@ -24,6 +24,19 @@ import android.widget.Toast;
  */
 public abstract class WiserActivity extends Activity
 {
+
+	private String	tag	= "WiserActivity";
+
+	/**
+	 * Base constructor
+	 * 
+	 * @param tag
+	 */
+	public WiserActivity( String tag )
+	{
+		this.tag = tag;
+	}
+
 	/**
 	 * Creates a customized Toast with the wiser logo.
 	 * 
@@ -32,8 +45,7 @@ public abstract class WiserActivity extends Activity
 	protected void showMessage( String message )
 	{
 		LayoutInflater inflater = getLayoutInflater();
-		View layout = inflater.inflate( R.layout.custom_toast_layout,
-			(ViewGroup) findViewById( R.id.custom_toast_layout_root ) );
+		View layout = inflater.inflate( R.layout.custom_toast_layout, (ViewGroup) findViewById( R.id.custom_toast_layout_root ) );
 
 		ImageView image = (ImageView) layout.findViewById( R.id.image );
 		image.setImageResource( R.drawable.icon );
@@ -89,6 +101,19 @@ public abstract class WiserActivity extends Activity
 			return false;
 		}
 
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 * Convient way to output tag for error and information reporting when
+	 * writing to Losg.
+	 */
+	@Override
+	public String toString()
+	{
+		return tag;
 	}
 
 }

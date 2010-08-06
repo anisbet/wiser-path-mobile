@@ -13,6 +13,11 @@ import android.widget.TextView;
  */
 public class TraceActivity extends WiserActivity
 {
+	public TraceActivity()
+	{
+		super( "TraceActivity" );
+	}
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate( Bundle savedInstanceState )
