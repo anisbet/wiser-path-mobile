@@ -90,6 +90,12 @@ public class WiserDatabase
 	// initialValues.put( KEY_PUBLISHER, publisher );
 	// return db.insert( POI_INCIDENT_TABLE, null, initialValues );
 	// }
+
+	public long insert( WiserDatabaseTable wdbt )
+	{
+		return db.insert( wdbt.getName(), null, wdbt.getContentValues() );
+	}
+
 	//
 	// // ---deletes a particular title---
 	// /**
@@ -176,7 +182,7 @@ public class WiserDatabase
 		@Override
 		public void onCreate( SQLiteDatabase db )
 		{
-			db.execSQL( poi.toString() );
+			db.execSQL( poi.create() );
 		}
 
 		@Override

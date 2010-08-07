@@ -3,6 +3,8 @@
  */
 package path.wiser.mobile.db;
 
+import android.content.ContentValues;
+
 /**
  * @author andrewnisbet
  * 
@@ -22,15 +24,73 @@ public class PoiIncedent implements WiserDatabaseTable
 														+ " text not null," + PI_BLOG + " text, " + PI_IMAGE + " blob," + PI_IS_INCIDENT
 														+ " integer); ";
 
+	private ContentValues		contentValues		= null;
+
+	/**
+	 * Creates a PoiIncedent object.
+	 */
+	public PoiIncedent()
+	{
+		this.contentValues = new ContentValues();
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
-	public String toString()
+	public String create()
 	{
 		return POI_TABLE_CREATE;
+	}
+
+	@Override
+	public ContentValues getContentValues()
+	{
+		return this.contentValues;
+	}
+
+	@Override
+	public String getName()
+	{
+		return TABLE_NAME;
+	}
+
+	/**
+	 * @return the piTitle
+	 */
+	public void setTitle( String title )
+	{
+		contentValues.put( PI_TITLE, title );
+	}
+
+	/**
+	 * @return the piBlog
+	 */
+	public void setBlog( String blog )
+	{
+		contentValues.put( PI_BLOG, blog );
+	}
+
+	/**
+	 * @return the piImage
+	 */
+	public void setImage( byte[] img )
+	{
+		contentValues.put( PI_IMAGE, img );
+	}
+
+	/**
+	 * Sets the IS_INCIDENT flag for this record.
+	 */
+	public void setPiIsIncident( Boolean isIncident )
+	{
+		if (isIncident)
+		{
+			contentValues.put( PI_IS_INCIDENT, 1 );
+		}
+		contentValues.put( PI_IS_INCIDENT, 0 );
 	}
 
 }
