@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.apache.http.cookie.Cookie;
 
-import android.util.Log;
 import path.wiser.mobile.util.HttpManager;
 import path.wiser.mobile.util.LoginManager;
 import junit.framework.TestCase;
