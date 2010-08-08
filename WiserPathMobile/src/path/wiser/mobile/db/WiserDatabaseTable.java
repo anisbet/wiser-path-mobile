@@ -26,7 +26,12 @@ public interface WiserDatabaseTable
 	public abstract String getName();
 
 	/**
-	 * @return the field names and value pairs for a record.
+	 * @return the field and value pairs for a record in a table.
 	 */
 	public abstract ContentValues getContentValues();
+
+	/**
+	 * Creates a new record, wipes the old one.
+	 */
+	public abstract void newRecord();
 }

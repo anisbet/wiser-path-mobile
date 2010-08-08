@@ -45,7 +45,7 @@ public class WiserDatabase
 
 	private Context						context					= null;
 	private DatabaseHelper				DBHelper				= null;
-	private SQLiteDatabase				db						= null;
+	protected SQLiteDatabase				db						= null;
 
 	/**
 	 * @param context
@@ -93,6 +93,7 @@ public class WiserDatabase
 
 	public long insert( WiserDatabaseTable wdbt )
 	{
+		if (db == null) System.out.println( "What the hell the db is null!!" );
 		return db.insert( wdbt.getName(), null, wdbt.getContentValues() );
 	}
 
