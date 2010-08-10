@@ -1,6 +1,7 @@
 package path.wiser.mobile.db;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -29,9 +30,6 @@ public class WiserDatabase
 	// TraceLocationTable
 	public final static String			TRACE_LOCATION_TABLE	= "TraceLocationTable";
 
-	// PoiLocationTable
-	public final static String			POI_LOCATION_TABLE		= "PoiLocationTable";
-
 	// TracePoiIdTable
 	public final static String			TRACE_POI_ID_TABLE		= "TracePoiIdTable";
 
@@ -45,7 +43,7 @@ public class WiserDatabase
 
 	private Context						context					= null;
 	private DatabaseHelper				DBHelper				= null;
-	protected SQLiteDatabase				db						= null;
+	protected SQLiteDatabase			db						= null;
 
 	/**
 	 * @param context
@@ -109,16 +107,17 @@ public class WiserDatabase
 	// 0;
 	// }
 	//
-	// // ---retrieves all the titles---
-	// /**
-	// * @return
-	// */
-	// public Cursor getAllTitles()
-	// {
-	// return db.query( POI_INCIDENT_TABLE, new String[]
-	// { KEY_ROWID, KEY_ISBN, KEY_TITLE, KEY_PUBLISHER }, null, null, null,
-	// null, null );
-	// }
+	// ---retrieves all the titles---
+	/**
+	 * @return
+	 */
+	public Cursor getAllTitles( WiserQuery query )
+	{
+		// return db.query( table, columns, selection, selectionArgs, groupBy,
+		// having, orderBy );
+		return null;
+	}
+
 	//
 	// // ---retrieves a particular title---
 	// /**
