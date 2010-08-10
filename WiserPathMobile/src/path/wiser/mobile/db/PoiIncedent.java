@@ -16,20 +16,20 @@ public class PoiIncedent implements WiserDatabaseTable
 {
 	public final static String		TABLE_NAME			= "PoiIncident";
 
-	public final static String[]	FIELDS				=
+	public final static String[]	COLUMNS				=
 														{ "p_id", "title", "blog", "image", "isIncident" };
-
 	// POI_INCIDENT_TABLE Fields
-	public final static String		PI_ID				= "p_id";
-	public final static String		PI_TITLE			= "title";
-	public final static String		PI_BLOG				= "blog";
-	public final static String		PI_IMAGE			= "image";
-	public final static String		PI_IS_INCIDENT		= "isIncident";
-	// POI table creation string.
-	private final static String		POI_TABLE_CREATE	= "create table " + TABLE_NAME + " (" + PI_ID + " integer primary key autoincrement, "
-															+ PI_TITLE + " text not null," + PI_BLOG + " text, " + PI_IMAGE + " blob,"
-															+ PI_IS_INCIDENT + " integer); ";
+	private static final int		ID					= 0;
+	private static final int		TITLE				= 1;
+	private static final int		BLOG				= 2;
+	private static final int		IMAGE				= 3;
+	private static final int		IS_INCIDENT			= 4;
 
+	// POI table creation string.
+	public final static String		CREATE	= "create table " + TABLE_NAME + " (" + COLUMNS[ID] + " integer primary key autoincrement, "
+															+ COLUMNS[TITLE] + " text not null," + COLUMNS[BLOG] + " text, " + COLUMNS[IMAGE]
+															+ " blob," + COLUMNS[IS_INCIDENT] + " integer); ";
+	// TODO add fields for lat long and time.
 	private ContentValues			contentValues		= null;
 
 	/**
@@ -49,7 +49,7 @@ public class PoiIncedent implements WiserDatabaseTable
 	@Override
 	public String create()
 	{
-		return POI_TABLE_CREATE;
+		return CREATE;
 	}
 
 	/*
@@ -74,7 +74,7 @@ public class PoiIncedent implements WiserDatabaseTable
 	 */
 	public void setTitle( String title )
 	{
-		contentValues.put( PI_TITLE, title );
+		contentValues.put( COLUMNS[TITLE], title );
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class PoiIncedent implements WiserDatabaseTable
 	 */
 	public void setBlog( String blog )
 	{
-		contentValues.put( PI_BLOG, blog );
+		contentValues.put( COLUMNS[BLOG], blog );
 	}
 
 	/**
@@ -90,7 +90,7 @@ public class PoiIncedent implements WiserDatabaseTable
 	 */
 	public void setImage( byte[] img )
 	{
-		contentValues.put( PI_IMAGE, img );
+		contentValues.put( COLUMNS[IMAGE], img );
 	}
 
 	/**
@@ -100,9 +100,9 @@ public class PoiIncedent implements WiserDatabaseTable
 	{
 		if (isIncident)
 		{
-			contentValues.put( PI_IS_INCIDENT, 1 );
+			contentValues.put( COLUMNS[IS_INCIDENT], 1 );
 		}
-		contentValues.put( PI_IS_INCIDENT, 0 );
+		contentValues.put( COLUMNS[IS_INCIDENT], 0 );
 	}
 
 	/*

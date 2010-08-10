@@ -95,27 +95,41 @@ public class WiserDatabase
 		return db.insert( wdbt.getName(), null, wdbt.getContentValues() );
 	}
 
-	//
+	// //
 	// // ---deletes a particular title---
 	// /**
 	// * @param rowId
 	// * @return
 	// */
-	// public boolean deleteTitle( long rowId )
+	// public boolean delete( long rowId )
 	// {
-	// return db.delete( POI_INCIDENT_TABLE, KEY_ROWID + "=" + rowId, null ) >
-	// 0;
+	// // return db.delete( POI_INCIDENT_TABLE, KEY_ROWID + "=" + rowId, null )
+	// // >
+	// // 0;
+	// return false;
 	// }
-	//
-	// ---retrieves all the titles---
+
 	/**
-	 * @return
+	 * @param q
+	 * @return True if at least one item matching the query deleted and false
+	 *         otherwise.
 	 */
-	public Cursor getAllTitles( WiserQuery query )
+	public boolean delete( WiserQuery q )
 	{
-		// return db.query( table, columns, selection, selectionArgs, groupBy,
-		// having, orderBy );
-		return null;
+		// TODO finish me
+		// return db.delete( POI_INCIDENT_TABLE, KEY_ROWID + "=" + rowId, null )
+		// >
+		// 0;
+		return false;
+	}
+
+	/**
+	 * @return Cursor of results.
+	 */
+	public Cursor query( WiserQuery q )
+	{
+		return db.query( q.isDistinct(), q.getTable(), q.getColumns(), q.getSelection(), q.getSelectionArgs(), q.getGroupBy(), q.getHaving(),
+			q.getOrderBy(), q.getLimit() );
 	}
 
 	//
