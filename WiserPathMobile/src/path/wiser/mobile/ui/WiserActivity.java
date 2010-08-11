@@ -60,32 +60,6 @@ public abstract class WiserActivity extends Activity
 	}
 
 	/**
-	 * Selects the previous Activity for display if any.
-	 */
-	abstract protected void previous();
-
-	/**
-	 * Uploads the Activity, deletes the current activity on success and if any.
-	 */
-	abstract protected void upload();
-
-	/**
-	 * Deletes the current activity Activity if any. If none a new activity
-	 * is created.
-	 */
-	abstract protected void delete();
-
-	/**
-	 * Saves the current activity.
-	 */
-	abstract protected void save();
-
-	/**
-	 * Selects the next Activity for display if any.
-	 */
-	abstract protected void next();
-
-	/**
 	 * Convieniece class that helps improve readability of the code.
 	 */
 	protected class ClearTextView implements OnTouchListener

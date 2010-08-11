@@ -1,6 +1,7 @@
 package path.wiser.mobile.ui;
 
 import path.wiser.mobile.R;
+import path.wiser.mobile.db.Queryable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -11,7 +12,7 @@ import android.widget.TextView;
  * @author anisbet
  *         This class represents the trace screen.
  */
-public class TraceActivity extends WiserActivity
+public class TraceActivity extends Queryable
 {
 	public TraceActivity()
 	{
@@ -68,28 +69,16 @@ public class TraceActivity extends WiserActivity
 	}
 
 	@Override
-	protected void delete()
+	public void onPause()
 	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	protected void next()
-	{
-		// TODO Auto-generated method stub
+		// TODO Save current state to the database when the user selects moves
+		// away from this screens
+		super.onPause();
 
 	}
 
 	@Override
 	protected void previous()
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	protected void save()
 	{
 		// TODO Auto-generated method stub
 
@@ -103,11 +92,23 @@ public class TraceActivity extends WiserActivity
 	}
 
 	@Override
-	public void onPause()
+	protected void delete()
 	{
-		// TODO Save current state to the database when the user selects moves
-		// away from this screens
-		super.onPause();
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	protected void save()
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	protected void next()
+	{
+		// TODO Auto-generated method stub
 
 	}
 }

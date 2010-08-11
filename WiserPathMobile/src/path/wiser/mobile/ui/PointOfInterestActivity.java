@@ -4,6 +4,8 @@
 package path.wiser.mobile.ui;
 
 import path.wiser.mobile.R;
+import path.wiser.mobile.db.Queryable;
+import path.wiser.mobile.ui.WiserActivity.ClearTextView;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,7 +19,7 @@ import android.widget.TextView;
  * @author anisbet
  * 
  */
-public class PointOfInterestActivity extends WiserActivity
+public class PointOfInterestActivity extends Queryable
 {
 
 	public PointOfInterestActivity()

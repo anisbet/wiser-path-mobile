@@ -3,6 +3,8 @@
  */
 package path.wiser.mobile.db;
 
+import path.wiser.mobile.ui.WiserActivity;
+
 /**
  * This object houses all the queries you can do with the {@link WiserDatabase}.
  * To simplify what you have to do, there are a set of template queries that are
@@ -21,7 +23,7 @@ public class WiserQuery
 
 	public static enum QueryType
 	{
-		T_LAST_LOC, T_FIRST_LOC, T_NEXT, T_PREV, P_NEXT, P_PREV, I_NEXT, I_PREV, P_ALL_BY_T_ID, I_ALL_BY_T_ID, USER_DEF
+		T_LAST_LOC, T_FIRST_LOC, T_NEXT, T_PREV, P_NEXT, P_PREV, I_NEXT, I_PREV, P_ALL_BY_T_ID, I_ALL_BY_T_ID, P_DEL, T_DEL, I_DEL, USER_DEF
 	}
 
 	private boolean		isDistinct		= false;
@@ -48,14 +50,12 @@ public class WiserQuery
 	 * @param query The query string to execute.
 	 * @param description
 	 */
-	public WiserQuery( QueryType queryType )
+	public WiserQuery( QueryType queryType, WiserActivity activity )
 	{
 
 		switch (queryType)
 		{
-		case T_LAST_LOC:
-			table = Trace.TABLE_NAME;
-			this.columns = Trace.COLUMNS;
+		case T_LAST_LOC: // last location
 			return;
 		case T_FIRST_LOC:
 			return;
@@ -74,6 +74,12 @@ public class WiserQuery
 		case P_ALL_BY_T_ID:
 			return;
 		case I_ALL_BY_T_ID:
+			return;
+		case P_DEL:
+			return;
+		case I_DEL:
+			return;
+		case T_DEL:
 			return;
 		case USER_DEF:
 		default:
