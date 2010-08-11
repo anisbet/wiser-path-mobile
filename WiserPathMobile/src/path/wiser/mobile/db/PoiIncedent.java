@@ -14,23 +14,21 @@ import android.content.ContentValues;
  */
 public class PoiIncedent implements WiserDatabaseTable
 {
-	public final static String		TABLE_NAME			= "PoiIncident";
+	public final static String		TABLE_NAME		= "PoiIncident";
 
-	public final static String[]	COLUMNS				=
-														{ "p_id", "title", "blog", "image", "isIncident" };
+	public final static String[]	COLUMNS			=
+													{ "title", "blog", "image", "isIncident" };
 	// POI_INCIDENT_TABLE Fields
-	private static final int		ID					= 0;
-	private static final int		TITLE				= 1;
-	private static final int		BLOG				= 2;
-	private static final int		IMAGE				= 3;
-	private static final int		IS_INCIDENT			= 4;
+	private static final int		TITLE			= 0;
+	private static final int		BLOG			= 1;
+	private static final int		IMAGE			= 2;
+	private static final int		IS_INCIDENT		= 3;
 
 	// POI table creation string.
-	public final static String		CREATE	= "create table " + TABLE_NAME + " (" + COLUMNS[ID] + " integer primary key autoincrement, "
-															+ COLUMNS[TITLE] + " text not null," + COLUMNS[BLOG] + " text, " + COLUMNS[IMAGE]
-															+ " blob," + COLUMNS[IS_INCIDENT] + " integer); ";
+	public final static String		CREATE			= "create table " + TABLE_NAME + " (" + COLUMNS[TITLE] + " text not null," + COLUMNS[BLOG]
+														+ " text, " + COLUMNS[IMAGE] + " blob," + COLUMNS[IS_INCIDENT] + " integer); ";
 	// TODO add fields for lat long and time.
-	private ContentValues			contentValues		= null;
+	private ContentValues			contentValues	= null;
 
 	/**
 	 * Creates a PoiIncedent object.

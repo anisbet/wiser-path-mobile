@@ -22,10 +22,8 @@ public class WiserDatabase
 	public final static String			DATABASE_NAME			= "WiserPathDatabase";
 	public final static int				DATABASE_VERSION		= 1;
 
-	public static WiserDatabaseTable	poi						= null;
-
-	// TraceTable
-	public final static String			TRACE_TABLE				= "TraceTable";
+	public static WiserDatabaseTable	poiTable				= null;
+	public static WiserDatabaseTable	traceTable				= null;
 
 	// TraceLocationTable
 	public final static String			TRACE_LOCATION_TABLE	= "TraceLocationTable";
@@ -51,7 +49,7 @@ public class WiserDatabase
 	public WiserDatabase( Context context )
 	{
 		this.context = context;
-		this.poi = new PoiIncedent();
+		this.poiTable = new PoiIncedent();
 		DBHelper = new DatabaseHelper( this.context );
 	}
 
@@ -196,7 +194,7 @@ public class WiserDatabase
 		@Override
 		public void onCreate( SQLiteDatabase db )
 		{
-			db.execSQL( poi.create() );
+			db.execSQL( poiTable.create() );
 		}
 
 		@Override

@@ -7,12 +7,21 @@ import path.wiser.mobile.ui.WiserActivity;
 import android.database.Cursor;
 
 /**
- * @author andrewnisbet
+ * The Queryable object remembers which record it is displaying and how to find
+ * the next one and previous one. It basically scrolls through
+ * a {@link Cursor} object results set. Each time the current displayed object
+ * becomes the current so it can be referenced on Activity startup.
+ * 
+ * This encapsulates the menu operations away from the activity screen.
+ * 
+ * @author anisbet
  * 
  */
 public abstract class Queryable extends WiserActivity
 {
-	protected Cursor	cursor	= null;
+	protected Cursor	cursor			= null;
+	private long		currentRecordId	= 0L;	// This is unique to each row in
+												// each table.
 
 	public Queryable( String tag )
 	{
@@ -45,5 +54,13 @@ public abstract class Queryable extends WiserActivity
 	 * Selects the next Activity for display if any.
 	 */
 	protected abstract void next();
+
+	/**
+	 * @return the currentRecordId
+	 */
+	public long getCurrentId()
+	{
+		return currentRecordId;
+	}
 
 }

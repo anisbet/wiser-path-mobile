@@ -12,16 +12,15 @@ import android.content.ContentValues;
 public class Trace implements WiserDatabaseTable
 {
 
-	public static final String		TABLE_NAME		= "Trace";
+	public static final String		TABLE_NAME		= "TraceTable";
 	public final static String[]	COLUMNS			=
-													{ "t_id", "title", "blog" };
-	private final static int		ID				= 0;
-	private final static int		TITLE			= 1;
-	private final static int		BLOG			= 2;
+													{ "title", "blog" };
+	private final static int		TITLE			= 0;
+	private final static int		BLOG			= 1;
 
 	// POI table creation string.
-	public final static String		CREATE			= "create table " + TABLE_NAME + " (" + COLUMNS[ID] + " integer primary key autoincrement, "
-														+ COLUMNS[TITLE] + " text not null," + COLUMNS[BLOG] + " text); ";
+	public final static String		CREATE			= "create table " + TABLE_NAME + " (" + COLUMNS[TITLE] + " text not null," + COLUMNS[BLOG]
+														+ " text); ";
 	// TODO add fields for lat long and time.
 	private ContentValues			contentValues	= null;
 

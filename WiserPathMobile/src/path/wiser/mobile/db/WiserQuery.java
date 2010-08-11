@@ -23,7 +23,7 @@ public class WiserQuery
 
 	public static enum QueryType
 	{
-		T_LAST_LOC, T_FIRST_LOC, T_NEXT, T_PREV, P_NEXT, P_PREV, I_NEXT, I_PREV, P_ALL_BY_T_ID, I_ALL_BY_T_ID, P_DEL, T_DEL, I_DEL, USER_DEF
+		T_LAST_LOC, T_FIRST_LOC, T_ALL, P_ALL, I_ALL, P_ALL_BY_T_ID, I_ALL_BY_T_ID, P_DEL, T_DEL, I_DEL, USER_DEF
 	}
 
 	private boolean		isDistinct		= false;
@@ -36,7 +36,7 @@ public class WiserQuery
 	private String		orderBy			= null;
 	private String		limit			= null;
 
-	// defined query.
+	private int			records			= 0;
 
 	/**
 	 * Use this query if you are defining your own query and use the setters to
@@ -59,19 +59,9 @@ public class WiserQuery
 			return;
 		case T_FIRST_LOC:
 			return;
-		case T_NEXT:
-			return;
-		case T_PREV:
-			return;
-		case P_NEXT:
-			return;
-		case P_PREV:
-			return;
-		case I_NEXT:
-			return;
-		case I_PREV:
-			return;
 		case P_ALL_BY_T_ID:
+			this.table = PoiIncedent.TABLE_NAME;
+			this.columns = PoiIncedent.COLUMNS;
 			return;
 		case I_ALL_BY_T_ID:
 			return;
@@ -229,5 +219,13 @@ public class WiserQuery
 	public void setLimit( String limit )
 	{
 		this.limit = limit;
+	}
+
+	/**
+	 * @return the number of records in query result.
+	 */
+	public int getRecords()
+	{
+		return records;
 	}
 }
