@@ -56,9 +56,9 @@ public abstract class Queryable extends WiserActivity
 	protected abstract void next();
 
 	/**
-	 * @return the currentRecordId
+	 * @return the currentRecordId of the activity.
 	 */
-	public long getCurrentId()
+	public long getId()
 	{
 		return currentRecordId;
 	}

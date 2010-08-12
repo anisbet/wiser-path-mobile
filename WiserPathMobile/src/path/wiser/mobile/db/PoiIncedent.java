@@ -75,6 +75,11 @@ public class PoiIncedent implements WiserDatabaseTable
 		contentValues.put( COLUMNS[TITLE], title );
 	}
 
+	public String getTitle()
+	{
+		return contentValues.getAsString( COLUMNS[TITLE] );
+	}
+
 	/**
 	 * @return the piBlog
 	 */
@@ -83,12 +88,23 @@ public class PoiIncedent implements WiserDatabaseTable
 		contentValues.put( COLUMNS[BLOG], blog );
 	}
 
-	/**
-	 * @return the piImage
-	 */
+	public String getBlog()
+	{
+		return contentValues.getAsString( COLUMNS[BLOG] );
+	}
+
 	public void setImage( byte[] img )
 	{
 		contentValues.put( COLUMNS[IMAGE], img );
+	}
+
+	/**
+	 * @return the piImage
+	 */
+	public byte[] getImage()
+	{
+		// TODO do we want to convert to an image here ready to display?
+		return contentValues.getAsByteArray( COLUMNS[IMAGE] );
 	}
 
 	/**
@@ -101,6 +117,11 @@ public class PoiIncedent implements WiserDatabaseTable
 			contentValues.put( COLUMNS[IS_INCIDENT], 1 );
 		}
 		contentValues.put( COLUMNS[IS_INCIDENT], 0 );
+	}
+
+	public boolean isIncident()
+	{
+		return contentValues.getAsBoolean( COLUMNS[IS_INCIDENT] );
 	}
 
 	/*

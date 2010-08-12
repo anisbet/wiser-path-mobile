@@ -126,6 +126,9 @@ public class WiserDatabase
 	 */
 	public Cursor query( WiserQuery q )
 	{
+		Cursor c = db.query( q.isDistinct(), q.getTable(), q.getColumns(), q.getSelection(), q.getSelectionArgs(), q.getGroupBy(), q.getHaving(),
+			q.getOrderBy(), q.getLimit() );
+		System.out.println( "cursor count: " + c.getCount() );
 		return db.query( q.isDistinct(), q.getTable(), q.getColumns(), q.getSelection(), q.getSelectionArgs(), q.getGroupBy(), q.getHaving(),
 			q.getOrderBy(), q.getLimit() );
 	}

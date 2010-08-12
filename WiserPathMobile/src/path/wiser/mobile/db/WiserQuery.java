@@ -3,8 +3,6 @@
  */
 package path.wiser.mobile.db;
 
-import path.wiser.mobile.ui.WiserActivity;
-
 /**
  * This object houses all the queries you can do with the {@link WiserDatabase}.
  * To simplify what you have to do, there are a set of template queries that are
@@ -28,13 +26,13 @@ public class WiserQuery
 
 	private boolean		isDistinct		= false;
 	private String[]	columns			= null;
-	private String		table			= null;
-	private String		selection		= null;
+	private String		table			= "null";
+	private String		selection		= "null";
 	private String[]	selectionArgs	= null;
-	private String		groupBy			= null;
-	private String		having			= null;
-	private String		orderBy			= null;
-	private String		limit			= null;
+	private String		groupBy			= "null";
+	private String		having			= "null";
+	private String		orderBy			= "null";
+	private String		limit			= "null";
 
 	private int			records			= 0;
 
@@ -46,25 +44,45 @@ public class WiserQuery
 	{
 	}
 
+	public WiserQuery( QueryType queryType, Queryable queryingActivity )
+	{
+		setWiserQyery( queryType, queryingActivity.getId() );
+	}
+
 	/**
-	 * @param query The query string to execute.
-	 * @param description
+	 * for testing so we don't need to create an activity
+	 * 
+	 * @param queryType
+	 * @param rowId
 	 */
-	public WiserQuery( QueryType queryType, WiserActivity activity )
+	public WiserQuery( QueryType queryType, long rowId )
+	{
+		setWiserQyery( queryType, rowId );
+	}
+
+	private void setWiserQyery( QueryType queryType, long rowId )
 	{
 
 		switch (queryType)
 		{
 		case T_LAST_LOC: // last location
+			// TODO finish this so that we get the last location from the
+			// location table.
 			return;
 		case T_FIRST_LOC:
+			// TODO finish location table so we can get this value.
 			return;
 		case P_ALL_BY_T_ID:
-			this.table = PoiIncedent.TABLE_NAME;
-			this.columns = PoiIncedent.COLUMNS;
 			return;
 		case I_ALL_BY_T_ID:
 			return;
+		case P_ALL:
+			this.table = PoiIncedent.TABLE_NAME;
+			this.columns = PoiIncedent.COLUMNS;
+			// this.selection = " WHERE ROWID='" + String.valueOf( rowId ) +
+			// "'";
+			// System.out.println( ">>>>>" + this.selection );
+			// Where TraceId
 		case P_DEL:
 			return;
 		case I_DEL:
