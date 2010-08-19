@@ -24,17 +24,15 @@ public class WiserQuery
 		T_LAST_LOC, T_FIRST_LOC, T_ALL, P_ALL, I_ALL, P_ALL_BY_T_ID, I_ALL_BY_T_ID, P_DEL, T_DEL, I_DEL, USER_DEF
 	}
 
-	private boolean		isDistinct		= false;
-	private String[]	columns			= null;
-	private String		table			= "null";
-	private String		whereClause		= "null";
+	private boolean		isDistinct	= false;
+	private String[]	columns		= null;
+	private String		table		= "null";
+	private String		whereClause	= "null";
 	private String[]	whereArgs	= null;
-	private String		groupBy			= "null";
-	private String		having			= "null";
-	private String		orderBy			= "null";
-	private String		limit			= "null";
-
-	private int			records			= 0;
+	private String		groupBy		= "null";
+	private String		having		= "null";
+	private String		orderBy		= "null";
+	private String		limit		= "null";
 
 	/**
 	 * Use this query if you are defining your own query and use the setters to
@@ -66,11 +64,8 @@ public class WiserQuery
 		switch (queryType)
 		{
 		case T_LAST_LOC: // last location
-			// TODO finish this so that we get the last location from the
-			// location table.
 			return;
 		case T_FIRST_LOC:
-			// TODO finish location table so we can get this value.
 			return;
 		case P_ALL_BY_T_ID:
 			return;
@@ -79,9 +74,8 @@ public class WiserQuery
 		case P_ALL:
 			this.table = PoiIncedent.TABLE_NAME;
 			this.columns = PoiIncedent.COLUMNS;
-			// this.selection = " WHERE ROWID='" + String.valueOf( rowId ) +
-			// "'";
-			// System.out.println( ">>>>>" + this.selection );
+			this.whereClause = " WHERE ROWID='" + String.valueOf( rowId ) + "'";
+			System.out.println( ">>>>>" + this.toString() );
 			// Where TraceId
 		case P_DEL:
 			return;
@@ -93,6 +87,39 @@ public class WiserQuery
 		default:
 			return;
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString()
+	{
+		StringBuffer sBuff = new StringBuffer();
+		if (table.compareTo( "null" ) != 0) sBuff.append( "SELECT FROM " + table );
+		if (columns != null)
+		{
+			for (int i = 0; i < columns.length; i++)
+			{
+				sBuff.append( " " + columns[i] );
+			}
+		}
+		if (isDistinct) sBuff.append( " distinct" );
+		if (whereClause.compareTo( "null" ) != 0) sBuff.append( "WHERE " + whereClause );
+		if (whereArgs != null)
+		{
+			for (int i = 0; i < whereArgs.length; i++)
+			{
+				sBuff.append( " " + whereArgs[i] );
+			}
+		}
+		if (groupBy.compareTo( "null" ) != 0) sBuff.append( groupBy );
+		if (having.compareTo( "null" ) != 0) sBuff.append( having );
+		if (orderBy.compareTo( "null" ) != 0) sBuff.append( orderBy );
+		if (limit.compareTo( "null" ) != 0) sBuff.append( limit );
+
+		return sBuff.toString();
 	}
 
 	/**
@@ -239,11 +266,4 @@ public class WiserQuery
 		this.limit = limit;
 	}
 
-	/**
-	 * @return the number of records in query result.
-	 */
-	public int getRecords()
-	{
-		return records;
-	}
 }

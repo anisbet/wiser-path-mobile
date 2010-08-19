@@ -29,35 +29,58 @@ public class Trace implements WiserDatabaseTable
 	 */
 	public Trace()
 	{
-		// TODO Auto-generated constructor stub
+		super();
+		this.contentValues = new ContentValues();
 	}
 
 	@Override
 	public String create()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return CREATE;
 	}
 
 	@Override
 	public String getName()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return TABLE_NAME;
 	}
 
 	@Override
 	public ContentValues getContentValues()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return this.contentValues;
 	}
 
 	@Override
 	public void newRecord()
 	{
-		// TODO Auto-generated method stub
+		this.contentValues = new ContentValues();
+	}
 
+	/**
+	 * @return the piTitle
+	 */
+	public void setTitle( String title )
+	{
+		contentValues.put( COLUMNS[TITLE], title );
+	}
+
+	public String getTitle()
+	{
+		return contentValues.getAsString( COLUMNS[TITLE] );
+	}
+
+	/**
+	 * @return the piBlog
+	 */
+	public void setBlog( String blog )
+	{
+		contentValues.put( COLUMNS[BLOG], blog );
+	}
+
+	public String getBlog()
+	{
+		return contentValues.getAsString( COLUMNS[BLOG] );
 	}
 
 }

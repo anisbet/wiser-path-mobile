@@ -87,25 +87,16 @@ public class WiserDatabase
 	// return db.insert( POI_INCIDENT_TABLE, null, initialValues );
 	// }
 
+	/**
+	 * @param wdbt table with row you wish to save.
+	 * @return
+	 */
 	public long insert( WiserDatabaseTable wdbt )
 	{
+		// TODO remove this line when finished testing.
 		if (db == null) System.out.println( "What the hell the db is null!!" );
 		return db.insert( wdbt.getName(), null, wdbt.getContentValues() );
 	}
-
-	// //
-	// // ---deletes a particular title---
-	// /**
-	// * @param rowId
-	// * @return
-	// */
-	// public boolean delete( long rowId )
-	// {
-	// // return db.delete( POI_INCIDENT_TABLE, KEY_ROWID + "=" + rowId, null )
-	// // >
-	// // 0;
-	// return false;
-	// }
 
 	/**
 	 * @param q
@@ -114,13 +105,10 @@ public class WiserDatabase
 	 */
 	public boolean delete( WiserQuery q )
 	{
-		// TODO finish me
 		// return db.delete( POI_INCIDENT_TABLE, KEY_ROWID + "=" + rowId, null )
 		// >
 		// 0;
-		// return db.delete( q.getTable(), q.getWhere(), q.getWhereArgs() ) !=
-		// 0;
-		return false;
+		return db.delete( q.getTable(), q.getWhereClause(), q.getWhereArgs() ) > 0;
 	}
 
 	/**
@@ -128,11 +116,11 @@ public class WiserDatabase
 	 */
 	public Cursor query( WiserQuery q )
 	{
-		Cursor c = db.query( q.isDistinct(), q.getTable(), q.getColumns(), q.getWhereClause(), q.getWhereArgs(), q.getGroupBy(), q.getHaving(), q
-			.getOrderBy(), q.getLimit() );
+		Cursor c = db.query( q.isDistinct(), q.getTable(), q.getColumns(), q.getWhereClause(), q.getWhereArgs(), q.getGroupBy(), q.getHaving(),
+			q.getOrderBy(), q.getLimit() );
 		System.out.println( "cursor count: " + c.getCount() );
-		return db.query( q.isDistinct(), q.getTable(), q.getColumns(), q.getWhereClause(), q.getWhereArgs(), q.getGroupBy(), q.getHaving(), q
-			.getOrderBy(), q.getLimit() );
+		return db.query( q.isDistinct(), q.getTable(), q.getColumns(), q.getWhereClause(), q.getWhereArgs(), q.getGroupBy(), q.getHaving(),
+			q.getOrderBy(), q.getLimit() );
 	}
 
 	//
