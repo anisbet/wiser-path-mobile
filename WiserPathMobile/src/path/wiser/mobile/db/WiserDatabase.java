@@ -118,6 +118,8 @@ public class WiserDatabase
 		// return db.delete( POI_INCIDENT_TABLE, KEY_ROWID + "=" + rowId, null )
 		// >
 		// 0;
+		// return db.delete( q.getTable(), q.getWhere(), q.getWhereArgs() ) !=
+		// 0;
 		return false;
 	}
 
@@ -126,11 +128,11 @@ public class WiserDatabase
 	 */
 	public Cursor query( WiserQuery q )
 	{
-		Cursor c = db.query( q.isDistinct(), q.getTable(), q.getColumns(), q.getSelection(), q.getSelectionArgs(), q.getGroupBy(), q.getHaving(),
-			q.getOrderBy(), q.getLimit() );
+		Cursor c = db.query( q.isDistinct(), q.getTable(), q.getColumns(), q.getWhereClause(), q.getWhereArgs(), q.getGroupBy(), q.getHaving(), q
+			.getOrderBy(), q.getLimit() );
 		System.out.println( "cursor count: " + c.getCount() );
-		return db.query( q.isDistinct(), q.getTable(), q.getColumns(), q.getSelection(), q.getSelectionArgs(), q.getGroupBy(), q.getHaving(),
-			q.getOrderBy(), q.getLimit() );
+		return db.query( q.isDistinct(), q.getTable(), q.getColumns(), q.getWhereClause(), q.getWhereArgs(), q.getGroupBy(), q.getHaving(), q
+			.getOrderBy(), q.getLimit() );
 	}
 
 	//

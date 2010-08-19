@@ -27,8 +27,8 @@ public class WiserQuery
 	private boolean		isDistinct		= false;
 	private String[]	columns			= null;
 	private String		table			= "null";
-	private String		selection		= "null";
-	private String[]	selectionArgs	= null;
+	private String		whereClause		= "null";
+	private String[]	whereArgs	= null;
 	private String		groupBy			= "null";
 	private String		having			= "null";
 	private String		orderBy			= "null";
@@ -130,33 +130,33 @@ public class WiserQuery
 	/**
 	 * @return the selection
 	 */
-	public String getSelection()
+	public String getWhereClause()
 	{
-		return selection;
+		return whereClause;
 	}
 
 	/**
 	 * @param selection the selection to set
 	 */
-	public void setSelection( String selection )
+	public void setWhereClause( String selection )
 	{
-		this.selection = selection;
+		this.whereClause = selection;
 	}
 
 	/**
 	 * @return the selectionArgs
 	 */
-	public String[] getSelectionArgs()
+	public String[] getWhereArgs()
 	{
-		return selectionArgs;
+		return whereArgs;
 	}
 
 	/**
-	 * @param selectionArgs the selectionArgs to set
+	 * @param whereArgs the selectionArgs to set
 	 */
-	public void setSelectionArgs( String[] selectionArgs )
+	public void setWhereArgs( String[] whereArgs )
 	{
-		this.selectionArgs = selectionArgs;
+		this.whereArgs = whereArgs;
 	}
 
 	/**
