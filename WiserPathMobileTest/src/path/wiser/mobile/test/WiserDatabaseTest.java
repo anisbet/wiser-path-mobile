@@ -6,6 +6,8 @@ import org.junit.Test;
 
 import path.wiser.mobile.db.PoiIncedent;
 import path.wiser.mobile.db.WiserDatabase;
+import path.wiser.mobile.db.WiserQuery;
+import android.database.Cursor;
 import android.test.AndroidTestCase;
 import android.util.Log;
 import junit.framework.TestCase;
@@ -27,7 +29,12 @@ public class WiserDatabaseTest extends AndroidTestCase {
 		poi.isIncident(true);
 		wdb.insert(poi);
 		
+		WiserQuery q = new WiserQuery(WiserQuery.QueryType.P_ALL, 0);
 		assertNotNull( wdb );
+		
+		Cursor cursor = wdb.query(q);
+		assertNotNull( cursor );
+		
 	}
 	
 	@After
