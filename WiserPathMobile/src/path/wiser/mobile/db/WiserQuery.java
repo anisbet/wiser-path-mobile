@@ -74,7 +74,7 @@ public class WiserQuery
 		case P_ALL:
 			this.table = PoiIncedent.TABLE_NAME;
 			this.columns = PoiIncedent.COLUMNS;
-			this.whereClause = " WHERE ROWID='" + String.valueOf( rowId ) + "'";
+			this.whereClause = " ROWID='" + String.valueOf( rowId ) + "'";
 			System.out.println( ">>>>>" + this.toString() );
 			// Where TraceId
 		case P_DEL:
