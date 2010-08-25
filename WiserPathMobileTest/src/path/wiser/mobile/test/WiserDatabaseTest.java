@@ -27,14 +27,17 @@ public class WiserDatabaseTest extends AndroidTestCase {
 		PoiIncedent poi = new PoiIncedent();
 		poi.setBlog("This is the Blog string");
 		poi.setTitle("Poi Title");
-		poi.isIncident(true);
+		//poi.isIncident(true);
 		wdb.insert(poi);
 		
 		WiserQuery q = new WiserQuery(WiserQuery.QueryType.P_ALL, 0);
+		Log.i(TAG, q.toString());
+		assertNotNull(q);
 		assertNotNull( wdb );
 		
 		Cursor cursor = wdb.query(q);
 		assertNotNull( cursor );
+		System.out.println(cursor.getCount());
 		
 	}
 	
