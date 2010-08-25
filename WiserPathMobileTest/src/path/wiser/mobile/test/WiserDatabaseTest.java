@@ -22,6 +22,7 @@ public class WiserDatabaseTest extends AndroidTestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		wdb = new WiserDatabase( this.getContext() );
+		assertNotNull( wdb );
 		wdb.open();
 		PoiIncedent poi = new PoiIncedent();
 		poi.setBlog("This is the Blog string");
