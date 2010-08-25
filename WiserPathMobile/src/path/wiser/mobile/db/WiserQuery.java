@@ -74,9 +74,7 @@ public class WiserQuery
 		case P_ALL:
 			this.table = PoiIncedent.TABLE_NAME;
 			this.columns = PoiIncedent.COLUMNS;
-			this.whereClause = " ROWID='" + String.valueOf( rowId ) + "'";
-			System.out.println( ">>>>>" + this.toString() );
-			// Where TraceId
+			this.whereClause = " ROWID='" + "%" /* String.valueOf( rowId ) */+ "'";
 		case P_DEL:
 			return;
 		case I_DEL:
@@ -97,27 +95,33 @@ public class WiserQuery
 	public String toString()
 	{
 		StringBuffer sBuff = new StringBuffer();
-		if (table.compareTo( "null" ) != 0) sBuff.append( "SELECT FROM " + table );
+		sBuff.append( "query( " );
+		if (isDistinct) sBuff.append( "true" );
+		sBuff.append( table + ", " );
 		if (columns != null)
 		{
+			sBuff.append( " {" );
 			for (int i = 0; i < columns.length; i++)
 			{
-				sBuff.append( " " + columns[i] );
+				sBuff.append( " \"" + columns[i] + "\", " );
 			}
+			sBuff.append( "}, " );
 		}
-		if (isDistinct) sBuff.append( " distinct" );
-		if (whereClause.compareTo( "null" ) != 0) sBuff.append( "WHERE " + whereClause );
+		sBuff.append( whereClause + ", " );
 		if (whereArgs != null)
 		{
+			sBuff.append( " {" );
 			for (int i = 0; i < whereArgs.length; i++)
 			{
-				sBuff.append( " " + whereArgs[i] );
+				sBuff.append( " \"" + whereArgs[i] + "\", " );
 			}
+			sBuff.append( "}, " );
 		}
-		if (groupBy.compareTo( "null" ) != 0) sBuff.append( groupBy );
-		if (having.compareTo( "null" ) != 0) sBuff.append( having );
-		if (orderBy.compareTo( "null" ) != 0) sBuff.append( orderBy );
-		if (limit.compareTo( "null" ) != 0) sBuff.append( limit );
+		sBuff.append( groupBy + ", " );
+		sBuff.append( having + ", " );
+		sBuff.append( orderBy + ", " );
+		sBuff.append( limit );
+		sBuff.append( " )" );
 
 		return sBuff.toString();
 	}

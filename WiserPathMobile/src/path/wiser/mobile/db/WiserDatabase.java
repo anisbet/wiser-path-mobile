@@ -95,6 +95,7 @@ public class WiserDatabase
 	{
 		// TODO remove this line when finished testing.
 		if (db == null) System.out.println( "What the hell the db is null!!" );
+		// System.out.println( wdbt.getName() + ":" + wdbt.getContentValues() );
 		return db.insert( wdbt.getName(), null, wdbt.getContentValues() );
 	}
 
@@ -118,11 +119,16 @@ public class WiserDatabase
 	{
 		Cursor c = null;
 		if (q.getLimit().compareTo( "null" ) != 0)
-			c = db.query( q.isDistinct(), q.getTable(), q.getColumns(), q.getWhereClause(), q.getWhereArgs(), q.getGroupBy(), q.getHaving(), q
-				.getOrderBy(), q.getLimit() );
+			c = db.query( q.isDistinct(), q.getTable(), q.getColumns(), q.getWhereClause(), q.getWhereArgs(), q.getGroupBy(), q.getHaving(),
+				q.getOrderBy(), q.getLimit() );
 		else
 			c = db.query( q.getTable(), q.getColumns(), q.getWhereClause(), q.getWhereArgs(), q.getGroupBy(), q.getHaving(), q.getOrderBy() );
-		System.out.println( "cursor count: " + c.getCount() );
+		if (c != null)
+		{
+			c.moveToFirst();
+			System.out.println( "cursor count: " + c.getCount() );
+		}
+
 		return c;
 	}
 
@@ -190,6 +196,7 @@ public class WiserDatabase
 		@Override
 		public void onCreate( SQLiteDatabase db )
 		{
+			System.out.println( "create string: " + poiTable.create() );
 			db.execSQL( poiTable.create() );
 		}
 
