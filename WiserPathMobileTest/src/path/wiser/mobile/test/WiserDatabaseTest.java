@@ -4,9 +4,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import path.wiser.mobile.db.PoiIncedent;
+import path.wiser.mobile.db.PoiRelation;
 import path.wiser.mobile.db.WiserDatabase;
-import path.wiser.mobile.db.WiserQuery;
 import android.database.Cursor;
 import android.test.AndroidTestCase;
 import android.util.Log;
@@ -23,21 +22,6 @@ public class WiserDatabaseTest extends AndroidTestCase {
 		super.setUp();
 		wdb = new WiserDatabase( this.getContext() );
 		assertNotNull( wdb );
-		wdb.open();
-		PoiIncedent poi = new PoiIncedent();
-		poi.setBlog("This is the Blog string");
-		poi.setTitle("Poi Title");
-		//poi.isIncident(true);
-		wdb.insert(poi);
-		
-		WiserQuery q = new WiserQuery(WiserQuery.QueryType.P_ALL, 0);
-		Log.i(TAG, q.toString());
-		assertNotNull(q);
-		assertNotNull( wdb );
-		
-		Cursor cursor = wdb.query(q);
-		assertNotNull( cursor );
-		System.out.println(cursor.getCount());
 		
 	}
 	
