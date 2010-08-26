@@ -1,10 +1,13 @@
 package path.wiser.mobile.db;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
 /**
@@ -18,30 +21,17 @@ import android.util.Log;
  */
 public class WiserDatabase
 {
-	public final static String			TAG						= "WiserDB";
-	public final static String			DATABASE_NAME			= "WiserPathDatabase";
-	public final static int				DATABASE_VERSION		= 1;
+	public final static String	TAG					= "WiserDB";
+	public final static String	DATABASE_NAME		= "WiserPathDatabase";
+	public final static int		DATABASE_VERSION	= 1;
 
-	public static WiserDatabaseTable	poiTable				= null;
-	public static WiserDatabaseTable	traceTable				= null;
+	private Context				context				= null;
+	private DatabaseHelper		dbHelper			= null;
+	protected SQLiteDatabase	db					= null;
 
-	// TraceLocationTable
-	public final static String			TRACE_LOCATION_TABLE	= "TraceLocationTable";
-
-	// TracePoiIdTable
-	public final static String			TRACE_POI_ID_TABLE		= "TracePoiIdTable";
-
-	// TagsTable
-	public final static String			TAGS_TABLE				= "TagsTable";
-
-	// public final static String DATABASE_CREATE =
-	// "create table titles (_id integer primary key autoincrement, "
-	// + "isbn text not null, title text not null, " +
-	// "publisher text not null);";
-
-	private Context						context					= null;
-	private DatabaseHelper				DBHelper				= null;
-	protected SQLiteDatabase			db						= null;
+	public final static String	TABLE_NAME			= "PoiTable";
+	private static final String	INSERT				= "insert into " + TABLE_NAME + "(name) values (?)";
+	private SQLiteStatement		insertStatement		= null;
 
 	/**
 	 * @param context
@@ -49,17 +39,40 @@ public class WiserDatabase
 	public WiserDatabase( Context context )
 	{
 		this.context = context;
-		this.DBHelper = new DatabaseHelper( this.context );
+		this.dbHelper = new DatabaseHelper( this.context );
+		this.db = dbHelper.getWritableDatabase();
+		this.insertStatement = this.db.compileStatement( INSERT );
 	}
 
-	/**
-	 * @return WiserDatabase
-	 * @throws SQLException
-	 */
-	public WiserDatabase open() throws SQLException
+	public long insert( String name )
 	{
-		db = DBHelper.getWritableDatabase();
-		return this;
+		this.insertStatement.bindString( 1, name );
+		return this.insertStatement.executeInsert();
+	}
+
+	public void deleteAll()
+	{
+		this.db.delete( TABLE_NAME, null, null );
+	}
+
+	public List<String> selectAll()
+	{
+		List<String> list = new ArrayList<String>();
+		Cursor cursor = this.db.query( TABLE_NAME, new String[]
+		{ "name" }, null, null, null, null, "id" );
+		if (cursor.moveToFirst())
+		{
+			do
+			{
+				list.add( cursor.getString( 0 ) );
+			}
+			while (cursor.moveToNext());
+		}
+		if (cursor != null && !cursor.isClosed())
+		{
+			cursor.close();
+		}
+		return list;
 	}
 
 	/**
@@ -67,107 +80,8 @@ public class WiserDatabase
 	 */
 	public void close()
 	{
-		// TODO serialize database to memory
-		DBHelper.close();
+		dbHelper.close();
 	}
-
-	// /**
-	// * @param isbn
-	// * @param title
-	// * @param publisher
-	// * @return
-	// */
-	// public long insertTitle( String isbn, String title, String publisher )
-	// {
-	// ContentValues initialValues = new ContentValues();
-	// initialValues.put( KEY_ISBN, isbn );
-	// initialValues.put( KEY_TITLE, title );
-	// initialValues.put( KEY_PUBLISHER, publisher );
-	// return db.insert( POI_INCIDENT_TABLE, null, initialValues );
-	// }
-
-	/**
-	 * @param wdbt table with row you wish to save.
-	 * @return
-	 */
-	public long insert( WiserDatabaseTable wdbt )
-	{
-		// TODO remove this line when finished testing.
-		if (db == null) System.out.println( "What the hell the db is null!!" );
-		// System.out.println( wdbt.getName() + ":" + wdbt.getContentValues() );
-		return db.insert( wdbt.getName(), null, wdbt.getContentValues() );
-	}
-
-	/**
-	 * @param q
-	 * @return True if at least one item matching the query deleted and false
-	 *         otherwise.
-	 */
-	public boolean delete( WiserQuery q )
-	{
-		// return db.delete( POI_INCIDENT_TABLE, KEY_ROWID + "=" + rowId, null )
-		// >
-		// 0;
-		return db.delete( q.getTable(), q.getWhereClause(), q.getWhereArgs() ) > 0;
-	}
-
-	/**
-	 * @return Cursor of results.
-	 */
-	public Cursor query( WiserQuery q )
-	{
-		Cursor c = null;
-		if (q.getLimit().compareTo( "null" ) != 0)
-			c = db.query( q.isDistinct(), q.getTable(), q.getColumns(), q.getWhereClause(), q.getWhereArgs(), q.getGroupBy(), q.getHaving(), q
-				.getOrderBy(), q.getLimit() );
-		else
-			c = db.query( q.getTable(), q.getColumns(), q.getWhereClause(), q.getWhereArgs(), q.getGroupBy(), q.getHaving(), q.getOrderBy() );
-		if (c != null)
-		{
-			c.moveToFirst();
-			System.out.println( "cursor count: " + c.getCount() );
-		}
-
-		return c;
-	}
-
-	//
-	// // ---retrieves a particular title---
-	// /**
-	// * @param rowId
-	// * @return
-	// * @throws SQLException
-	// */
-	// public Cursor getTitle( long rowId ) throws SQLException
-	// {
-	// Cursor mCursor = db.query( true, POI_INCIDENT_TABLE, new String[]
-	// { KEY_ROWID, KEY_ISBN, KEY_TITLE, KEY_PUBLISHER }, KEY_ROWID + "="
-	// + rowId, null, null, null, null, null );
-	// if (mCursor != null)
-	// {
-	// mCursor.moveToFirst();
-	// }
-	// return mCursor;
-	// }
-	//
-	// /**
-	// * @param rowId
-	// * @param isbn
-	// * @param title
-	// * @param publisher
-	// * @return
-	// */
-	// public boolean updateTitle( long rowId, String isbn, String title,
-	// String publisher )
-	// {
-	// ContentValues args = new ContentValues();
-	// args.put( KEY_ISBN, isbn );
-	// args.put( KEY_TITLE, title );
-	// args.put( KEY_PUBLISHER, publisher );
-	// return db.update( POI_INCIDENT_TABLE, args, KEY_ROWID + "=" + rowId, null
-	// ) >
-	// 0;
-	// }
 
 	/**
 	 * A helper class to manage database creation and version management.
@@ -187,7 +101,7 @@ public class WiserDatabase
 	 */
 	protected static class DatabaseHelper extends SQLiteOpenHelper
 	{
-		DatabaseHelper( Context context )
+		protected DatabaseHelper( Context context )
 		{
 			super( context, DATABASE_NAME, null, DATABASE_VERSION );
 		}
@@ -195,18 +109,14 @@ public class WiserDatabase
 		@Override
 		public void onCreate( SQLiteDatabase db )
 		{
-			System.out.println( "create string: " + poiTable.create() );
-			db.execSQL( poiTable.create() );
+			db.execSQL( "CREATE TABLE " + TABLE_NAME + " (id INTEGER PRIMARY KEY, name TEXT)" );
 		}
 
 		@Override
 		public void onUpgrade( SQLiteDatabase db, int oldVersion, int newVersion )
 		{
 			Log.w( TAG, "Upgrading database from version " + oldVersion + " to " + newVersion + ", which will destroy all old data" );
-			// TODO we should allow for the uploading of data, this next command
-			// will
-			// just drop the table.
-			db.execSQL( "DROP TABLE IF EXISTS " + PoiIncedent.TABLE_NAME );
+			db.execSQL( "DROP TABLE IF EXISTS " + PoiRelation.getName() );
 			onCreate( db );
 		}
 	}
