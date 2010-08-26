@@ -49,8 +49,7 @@ public class WiserDatabase
 	public WiserDatabase( Context context )
 	{
 		this.context = context;
-		this.poiTable = new PoiIncedent();
-		DBHelper = new DatabaseHelper( this.context );
+		this.DBHelper = new DatabaseHelper( this.context );
 	}
 
 	/**
@@ -119,8 +118,8 @@ public class WiserDatabase
 	{
 		Cursor c = null;
 		if (q.getLimit().compareTo( "null" ) != 0)
-			c = db.query( q.isDistinct(), q.getTable(), q.getColumns(), q.getWhereClause(), q.getWhereArgs(), q.getGroupBy(), q.getHaving(),
-				q.getOrderBy(), q.getLimit() );
+			c = db.query( q.isDistinct(), q.getTable(), q.getColumns(), q.getWhereClause(), q.getWhereArgs(), q.getGroupBy(), q.getHaving(), q
+				.getOrderBy(), q.getLimit() );
 		else
 			c = db.query( q.getTable(), q.getColumns(), q.getWhereClause(), q.getWhereArgs(), q.getGroupBy(), q.getHaving(), q.getOrderBy() );
 		if (c != null)
