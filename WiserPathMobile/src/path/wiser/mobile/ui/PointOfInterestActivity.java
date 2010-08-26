@@ -3,9 +3,11 @@
  */
 package path.wiser.mobile.ui;
 
+import java.util.List;
+
 import path.wiser.mobile.R;
 import path.wiser.mobile.db.Queryable;
-import path.wiser.mobile.ui.WiserActivity.ClearTextView;
+import path.wiser.mobile.db.WiserDatabase;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,6 +23,7 @@ import android.widget.TextView;
  */
 public class PointOfInterestActivity extends Queryable
 {
+	private WiserDatabase	db	= null;
 
 	public PointOfInterestActivity()
 	{
@@ -38,6 +41,7 @@ public class PointOfInterestActivity extends Queryable
 		super.onCreate( savedInstanceState );
 		// set content view so you can grab stuff in it.
 		setContentView( R.layout.poi_tab );
+
 		// TODO add handling of images. Default image, From Camera and saving.
 		// ImageView imageView = (ImageView) findViewById( R.id.Poi_Photo );
 
@@ -54,13 +58,16 @@ public class PointOfInterestActivity extends Queryable
 		ImageButton cameraButton = (ImageButton) findViewById( R.id.Poi_Camera );
 		cameraButton.setOnClickListener( new CameraActivity() );
 
+		// Get the database
+		this.db = new WiserDatabase( this );
+
 	}
 
+	// This method gets run onCreate() as well.
 	public void onResume()
 	{
 		super.onResume();
-		// TextView tv = (TextView) findViewById( R.id.Poi_Title );
-		// tv.setText( "Changed Value" );
+		previous();
 	}
 
 	@Override
@@ -114,8 +121,16 @@ public class PointOfInterestActivity extends Queryable
 	@Override
 	protected void previous()
 	{
-		// TODO Auto-generated method stub
+		this.db.deleteAll();
+		this.db.insert( "Zainia" );
+		this.db.insert( "Andrew" );
 
+		List<String> names = this.db.selectAll();
+		TextView textView = (TextView) findViewById( R.id.Poi_Title );
+		if (names.size() > 0)
+		{
+			textView.setText( names.get( 0 ) + ", " + names.get( 1 ) );
+		}
 	}
 
 	@Override

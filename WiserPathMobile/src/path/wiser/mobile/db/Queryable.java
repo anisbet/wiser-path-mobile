@@ -30,7 +30,10 @@ public abstract class Queryable extends WiserActivity
 	}
 
 	/**
-	 * Selects the previous Activity for display if any.
+	 * Selects the previous Activity for display if any. This method is called
+	 * when the activity first loads to load the last version of the activity if
+	 * any.
+	 * If there is none this method must set the activity to a new activity.
 	 */
 	protected abstract void previous();
 

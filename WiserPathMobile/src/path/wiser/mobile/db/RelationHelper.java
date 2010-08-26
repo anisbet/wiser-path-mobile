@@ -3,10 +3,8 @@
  */
 package path.wiser.mobile.db;
 
-import android.content.ContentValues;
-
 /**
- * A {@link WiserDatabaseTable} is an object that encapsulates all the rows of a
+ * A {@link RelationHelper} is an object that encapsulates all the rows of a
  * table or relation. The row's names are stored in subclasses of this
  * object. This object can also act as a container of a single row of data for a
  * given table. Be sure to use the {{@link #newRecord()} method to reset the row
@@ -18,25 +16,36 @@ import android.content.ContentValues;
  * @author anisbet
  * 
  */
-public interface WiserDatabaseTable
+public abstract class RelationHelper
 {
+	protected static String		tableName		= "Table";
+	protected static String		createStatement	= "";
+	protected static String[]	columns			= null;
+
+	protected RelationHelper( String tableName )
+	{
+		RelationHelper.tableName = tableName;
+	}
+
 	/**
 	 * @return String SQLite CREATE statement for this table.
 	 */
-	public abstract String create();
+	public static String createTable()
+	{
+		return createStatement;
+	}
 
 	/**
 	 * @return String name of the table.
 	 */
-	public abstract String getName();
+	public static String getName()
+	{
+		return tableName;
+	}
 
-	/**
-	 * @return the field and value pairs for a record in a table.
-	 */
-	public abstract ContentValues getContentValues();
+	public static String[] getColumns()
+	{
+		return columns;
+	}
 
-	/**
-	 * Creates a new record, wipes the old one.
-	 */
-	public abstract void newRecord();
 }
