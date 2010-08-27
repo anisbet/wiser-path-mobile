@@ -122,8 +122,8 @@ public class PointOfInterestActivity extends Queryable
 	protected void previous()
 	{
 		this.db.deleteAll();
-		this.db.insert( "Zainia" );
-		this.db.insert( "Andrew" );
+		this.db.insert( "Zainia", "", null, "" );
+		this.db.insert( "Andrew", "", null, "" );
 
 		List<String> names = this.db.selectAll();
 		TextView textView = (TextView) findViewById( R.id.Poi_Title );

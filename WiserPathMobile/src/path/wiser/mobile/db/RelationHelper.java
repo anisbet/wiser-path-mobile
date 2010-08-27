@@ -3,6 +3,8 @@
  */
 package path.wiser.mobile.db;
 
+import android.database.sqlite.SQLiteStatement;
+
 /**
  * A {@link RelationHelper} is an object that encapsulates all the rows of a
  * table or relation. The row's names are stored in subclasses of this
@@ -18,34 +20,21 @@ package path.wiser.mobile.db;
  */
 public abstract class RelationHelper
 {
-	protected static String		tableName		= "Table";
-	protected static String		createStatement	= "";
-	protected static String[]	columns			= null;
-
-	protected RelationHelper( String tableName )
+	public enum ColumnTypes
 	{
-		RelationHelper.tableName = tableName;
+		STRING, BLOB, DOUBLE, LONG, NULL
 	}
 
 	/**
 	 * @return String SQLite CREATE statement for this table.
 	 */
-	public static String createTable()
-	{
-		return createStatement;
-	}
+	public abstract String createTable();
 
 	/**
 	 * @return String name of the table.
 	 */
-	public static String getName()
-	{
-		return tableName;
-	}
+	public abstract String getName();
 
-	public static String[] getColumns()
-	{
-		return columns;
-	}
+	public abstract SQLiteStatement getPrecompiledInsertStatement();
 
 }

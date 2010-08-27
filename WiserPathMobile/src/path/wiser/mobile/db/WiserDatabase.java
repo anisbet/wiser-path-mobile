@@ -21,17 +21,26 @@ import android.util.Log;
  */
 public class WiserDatabase
 {
-	public final static String	TAG					= "WiserDB";
-	public final static String	DATABASE_NAME		= "WiserPathDatabase";
-	public final static int		DATABASE_VERSION	= 1;
+	public enum Tables // used when we move all the relation helpers to just
+						// arrays of helpers.
+	{
+		POI, TRACE, LOCATION, TAGS, TRACE_POI
+	}
 
-	private Context				context				= null;
-	private DatabaseHelper		dbHelper			= null;
-	protected SQLiteDatabase	db					= null;
+	public final static String		TAG					= "WiserDB";
+	public final static String		DATABASE_NAME		= "WiserPathDatabase";
+	public final static int			DATABASE_VERSION	= 1;
 
-	public final static String	TABLE_NAME			= "PoiTable";
-	private static final String	INSERT				= "insert into " + TABLE_NAME + "(name) values (?)";
-	private SQLiteStatement		insertStatement		= null;
+	private Context					context				= null;
+	private DatabaseHelper			dbHelper			= null;
+	protected SQLiteDatabase		db					= null;
+
+	public final static String		TABLE_NAME			= "PoiTable";
+	// private static final String INSERT = "insert into " + TABLE_NAME +
+	// "(name) values (?)";
+	// private SQLiteStatement insertString = null;
+
+	protected static PoiRelation	poi					= null;
 
 	/**
 	 * @param context
@@ -41,13 +50,14 @@ public class WiserDatabase
 		this.context = context;
 		this.dbHelper = new DatabaseHelper( this.context );
 		this.db = dbHelper.getWritableDatabase();
-		this.insertStatement = this.db.compileStatement( INSERT );
+		poi = new PoiRelation( this.db );
 	}
 
-	public long insert( String name )
+	public long insert( String title, String blog, byte[] image, String tags )
 	{
-		this.insertStatement.bindString( 1, name );
-		return this.insertStatement.executeInsert();
+		SQLiteStatement insertStatement = poi.getPrecompiledInsertStatement();
+		insertStatement.bindString( 1, title );
+		return insertStatement.executeInsert();
 	}
 
 	public void deleteAll()
@@ -59,7 +69,7 @@ public class WiserDatabase
 	{
 		List<String> list = new ArrayList<String>();
 		Cursor cursor = this.db.query( TABLE_NAME, new String[]
-		{ "name" }, null, null, null, null, "id" );
+		{ "name" }, null, null, null, null, "name" );
 		if (cursor.moveToFirst())
 		{
 			do
@@ -109,14 +119,14 @@ public class WiserDatabase
 		@Override
 		public void onCreate( SQLiteDatabase db )
 		{
-			db.execSQL( "CREATE TABLE " + TABLE_NAME + " (id INTEGER PRIMARY KEY, name TEXT)" );
+			db.execSQL( poi.createTable() );
 		}
 
 		@Override
 		public void onUpgrade( SQLiteDatabase db, int oldVersion, int newVersion )
 		{
 			Log.w( TAG, "Upgrading database from version " + oldVersion + " to " + newVersion + ", which will destroy all old data" );
-			db.execSQL( "DROP TABLE IF EXISTS " + PoiRelation.getName() );
+			db.execSQL( "DROP TABLE IF EXISTS " + poi.getName() );
 			onCreate( db );
 		}
 	}
