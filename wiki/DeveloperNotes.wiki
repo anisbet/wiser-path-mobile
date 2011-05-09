@@ -1,14 +1,9 @@
-#summary One-sentence summary of this page.
 #labels Phase-Design
+= Developer Notes =
 
-= Introduction =
-
-Add your content here.
+Since Android V2.1 a number of new features are available for developers. Most interesting is the Fragment class that will allows us to implement the WP activities as more power friendly fragments rather than full-bore activities.
 
 
 = Details =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+TBD
