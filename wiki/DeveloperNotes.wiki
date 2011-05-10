@@ -6,4 +6,6 @@ Since Android V2.1 a number of new features are available for developers. Most i
 
 = Details =
 
-TBD
+= TODO =
+# Authenticate user - tests show that you don't need a token from the form to authenticate but...
+# Uploading a Geotagged Photo - these forms use a token and you must get it and return it with the post request. Also check out the API-key services for uploading images to Drupal.
