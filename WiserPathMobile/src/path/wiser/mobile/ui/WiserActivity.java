@@ -80,6 +80,16 @@ public abstract class WiserActivity extends Activity
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see android.app.Activity#onResume()
+	 */
+	public void onResume()
+	{
+		super.onResume();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 * Convient way to output tag for error and information reporting when
 	 * writing to Losg.
