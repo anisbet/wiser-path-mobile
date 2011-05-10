@@ -3,16 +3,12 @@
  */
 package path.wiser.mobile.ui;
 
-import java.util.List;
-
 import path.wiser.mobile.R;
 import path.wiser.mobile.db.Queryable;
-import path.wiser.mobile.db.WiserDatabase;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 /**
@@ -23,7 +19,7 @@ import android.widget.TextView;
  */
 public class PointOfInterestActivity extends Queryable
 {
-	private WiserDatabase	db	= null;
+	// private WiserDatabase db = null;
 
 	public PointOfInterestActivity()
 	{
@@ -42,31 +38,37 @@ public class PointOfInterestActivity extends Queryable
 		// set content view so you can grab stuff in it.
 		setContentView( R.layout.poi_tab );
 
-		// TODO add handling of images. Default image, From Camera and saving.
-		// ImageView imageView = (ImageView) findViewById( R.id.Poi_Photo );
-
 		// add a onClick listener to the text screens so we can remove the
 		// existing text and allow the user to start entering text.
 		TextView textView = (TextView) findViewById( R.id.Poi_Title );
-		textView.setOnTouchListener( new ClearTextView() );
+		// textView.setOnTouchListener( new ClearTextView() );
 		// clear the blog text aswell.
 		textView = (TextView) findViewById( R.id.Poi_Blog );
 		textView.setOnTouchListener( new ClearTextView() );
 		textView = (TextView) findViewById( R.id.Poi_Tag );
 		textView.setOnTouchListener( new ClearTextView() );
 
-		ImageButton cameraButton = (ImageButton) findViewById( R.id.Poi_Camera );
-		cameraButton.setOnClickListener( new CameraActivity() );
+		// TODO add handling of images. Default image, From Camera and saving.
+		// ImageView imageView = (ImageView) findViewById( R.id.Poi_Photo );
+		// ImageButton cameraButton = (ImageButton) findViewById(
+		// R.id.Poi_Camera );
+		// cameraButton.setOnClickListener( new CameraActivity() );
 
 		// Get the database
-		this.db = new WiserDatabase( this );
+		// this.db = new WiserDatabase( this );
 
 	}
 
 	// This method gets run onCreate() as well.
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see path.wiser.mobile.ui.WiserActivity#onResume()
+	 */
 	public void onResume()
 	{
 		super.onResume();
+		// load previous image.
 		previous();
 	}
 
@@ -121,16 +123,16 @@ public class PointOfInterestActivity extends Queryable
 	@Override
 	protected void previous()
 	{
-		this.db.deleteAll();
-		this.db.insert( "Zainia", "", null, "" );
-		this.db.insert( "Andrew", "", null, "" );
-
-		List<String> names = this.db.selectAll();
-		TextView textView = (TextView) findViewById( R.id.Poi_Title );
-		if (names.size() > 0)
-		{
-			textView.setText( names.get( 0 ) + ", " + names.get( 1 ) );
-		}
+		// this.db.deleteAll();
+		// this.db.insert( "Zainia", "", null, "" );
+		// this.db.insert( "Andrew", "", null, "" );
+		//
+		// List<String> names = this.db.selectAll();
+		// TextView textView = (TextView) findViewById( R.id.Poi_Title );
+		// if (names.size() > 0)
+		// {
+		// textView.setText( names.get( 0 ) + ", " + names.get( 1 ) );
+		// }
 	}
 
 	@Override
