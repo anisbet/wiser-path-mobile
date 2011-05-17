@@ -41,7 +41,9 @@ public class PointOfInterestActivity extends Queryable
 		// add a onClick listener to the text screens so we can remove the
 		// existing text and allow the user to start entering text.
 		TextView textView = (TextView) findViewById( R.id.Poi_Title );
-		// textView.setOnTouchListener( new ClearTextView() );
+		ClearTextView titleClearTextView = new ClearTextView();
+		textView.setOnTouchListener( titleClearTextView );
+		textView.setOnFocusChangeListener( titleClearTextView );
 		// clear the blog text aswell.
 		textView = (TextView) findViewById( R.id.Poi_Blog );
 		textView.setOnTouchListener( new ClearTextView() );
@@ -63,14 +65,14 @@ public class PointOfInterestActivity extends Queryable
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see path.wiser.mobile.ui.WiserActivity#onResume()
+	 * @see path.wiser.mobile.ui.WiserActivityHelper#onResume()
 	 */
-	public void onResume()
-	{
-		super.onResume();
-		// load previous image.
-		previous();
-	}
+	// public void onResume()
+	// {
+	// super.onResume();
+	// // load previous image.
+	// previous();
+	// }
 
 	@Override
 	public boolean onCreateOptionsMenu( Menu menu )
