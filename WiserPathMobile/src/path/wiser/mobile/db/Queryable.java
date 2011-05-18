@@ -3,7 +3,7 @@
  */
 package path.wiser.mobile.db;
 
-import path.wiser.mobile.ui.WiserActivity;
+import path.wiser.mobile.ui.WiserActivityHelper;
 import android.database.Cursor;
 
 /**
@@ -17,7 +17,7 @@ import android.database.Cursor;
  * @author anisbet
  * 
  */
-public abstract class Queryable extends WiserActivity
+public abstract class Queryable extends WiserActivityHelper
 {
 	protected Cursor	cursor			= null;
 	private long		currentRecordId	= 0L;	// This is unique to each row in
