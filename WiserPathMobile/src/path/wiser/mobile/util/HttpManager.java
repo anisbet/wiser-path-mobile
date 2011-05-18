@@ -35,6 +35,7 @@ import android.util.Log;
  */
 public class HttpManager
 {
+	// about.wiserpath-dev.bus.ualberta.ca/user/login
 	public final static String	HOST				= "wiserpath.bus.ualberta.ca";
 	public final static String	EMPTY				= "[]";
 	public final static int		AUTHENTICATION_PORT	= 80;

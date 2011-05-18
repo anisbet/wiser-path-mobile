@@ -29,7 +29,7 @@ public class LoginManager
 	{
 		httpManager = new HttpManager( LOGIN_PATH );
 		String[] args =
-		{ LOGIN_NAME, "anisbet", LOGIN_PASSWORD, "WiserPathPassword_1234" };
+		{ LOGIN_NAME, "anisbet", LOGIN_PASSWORD, "leader1" };
 
 		System.out.println( "Login form post status VALUE = " + httpManager.post( args ) );
 		List<Cookie> cookies = httpManager.getCookies();
