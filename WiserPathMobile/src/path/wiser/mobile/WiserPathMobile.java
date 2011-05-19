@@ -8,6 +8,11 @@ import path.wiser.mobile.ui.PointOfInterestActivity;
 import path.wiser.mobile.ui.SettingsActivity;
 import path.wiser.mobile.ui.TraceActivity;
 import path.wiser.mobile.ui.WiserPathActivity;
+import android.app.TabActivity;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.os.Bundle;
+import android.widget.TabHost;
 
 /**
  * @author andrew nisbet
