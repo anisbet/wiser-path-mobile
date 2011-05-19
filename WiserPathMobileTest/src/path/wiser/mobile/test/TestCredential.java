@@ -5,6 +5,7 @@ import java.io.File;
 import junit.framework.TestCase;
 
 import path.wiser.mobile.services.Credential;
+import path.wiser.mobile.services.Credential.Status;
 
 public class TestCredential extends TestCase{
 
@@ -14,14 +15,19 @@ public class TestCredential extends TestCase{
 		assertTrue(cred.isMember() == false);
 		cred.setUserName("anisbet");
 		cred.setPassword("leader1");
-		cred.serialize();
-		File file = new File(Credential.keyRing);
-		assertTrue(file.exists());
+		cred.setUserStatus(Status.MEMBER);
+		assertTrue(cred.isMember());
 	}
 
 
 	public void testSerialize() {
-		fail("Not yet implemented"); // TODO
+		Credential cred = new Credential();
+		assertTrue(cred.isMember() == false);
+		cred.setUserName("anisbet");
+		cred.setPassword("leader1");
+		cred.serialize();
+		File file = new File(Credential.keyRing);
+		assertTrue(file.exists());
 	}
 
 }
