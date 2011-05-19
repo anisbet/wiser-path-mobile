@@ -29,7 +29,7 @@ public class Credential extends Activity implements Serializable
 	private String				password			= null;
 	private Status				userStatus			= Status.NON_MEMBER;
 	private int					MIN_LENGTH			= 4;
-	public final static String	keyRing				= "/res/raw/keyring.wpm";
+	public final static String	keyRing				= "res/raw/keyring.wpm";
 	private static final int	BUFFER_SIZE			= 64;
 	private byte[]				buffer				= new byte[BUFFER_SIZE + 1];
 
