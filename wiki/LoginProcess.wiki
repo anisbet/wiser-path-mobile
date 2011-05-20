@@ -1,0 +1,11 @@
+= Introduction =
+
+This document includes information about logging into the WiserPath web site.
+
+
+= Details =
+
+Currently the most important class is the services.HTTPService. This class brokers all transactions to the WiserPath website. It uses a Post object to manage the connections, get cookies and answer questions about response codes, and send data to a website. It is not specific to WiserPath. Feel free to extend it for other data types.
+
+The Mobile app connects to the website through the login url [http://wiserpath-dev.bus.ualberta.ca/user/login] via the Post object. The post is formulated as 
+{{{ "name=" + credential.getUserName() + "&pass=" + credential.getPassword() + "&form_id=user_login" }}}
