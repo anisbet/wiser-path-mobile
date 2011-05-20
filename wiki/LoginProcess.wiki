@@ -17,6 +17,7 @@ The Mobile app connects to the website through the login url [http://wiserpath-d
 {{{ 
 "name=" + credential.getUserName() + "&pass=" + credential.getPassword() + "&form_id=user_login&op=log+in" 
 }}}
+Where the post data is not url encoded.
 
 === Tools ===
 Wireshark to diagnose connection and datapassing
