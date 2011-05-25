@@ -15,7 +15,6 @@ public class TestCredential extends TestCase{
 		assertTrue(cred.isMember() == false);
 		cred.setUserName("anisbet");
 		cred.setPassword("leader1");
-		cred.setUserStatus(Status.MEMBER);
 		assertTrue(cred.isMember());
 	}
 
