@@ -32,12 +32,17 @@ public class Credential extends Activity implements Serializable
 	public final static String	keyRing				= "res/raw/keyring.wpm";
 	private static final int	BUFFER_SIZE			= 64;
 	private byte[]				buffer				= new byte[BUFFER_SIZE + 1];
+	private WiserCookie			loginCookie			= null;
 
 	public enum Status
 	{
 		NON_MEMBER, MEMBER
 	}
 
+	/**
+	 * Credential constructor is used to read credentials from a private file on
+	 * the device.
+	 */
 	public Credential()
 	{
 		// retreive the username and password stored on the device.
@@ -45,8 +50,25 @@ public class Credential extends Activity implements Serializable
 	}
 
 	/**
+	 * This constructor is used to create an intial credential which HTTPService
+	 * will use
+	 * to authenticate you to the web site. After that if you are a valid user
+	 * it will
+	 * give this object an authentication cookie which will be used for further
+	 * transactions.
+	 * 
+	 * @param name
+	 * @param password
+	 */
+	public Credential( String name, String password )
+	{
+		this.userName = name;
+		this.password = password;
+	}
+
+	/**
 	 * @return true if the user name and password could be serialized to file
-	 *         and false otherwise.
+	 *         and false otherwise. Does not serialize the cookie.
 	 */
 	public boolean serialize()
 	{
@@ -160,16 +182,28 @@ public class Credential extends Activity implements Serializable
 		this.password = password;
 	}
 
-	/**
-	 * @param userStatus the userStatus to set
-	 */
-	public final void setUserStatus( Status userStatus )
-	{
-		this.userStatus = userStatus;
-	}
-
 	public boolean isMember()
 	{
 		return this.userStatus == Status.MEMBER;
+	}
+
+	/**
+	 * @param wiserCookie
+	 */
+	public void setCookie( WiserCookie wiserCookie )
+	{
+		this.loginCookie = wiserCookie;
+		if (this.loginCookie != null)
+		{
+			this.userStatus = Status.MEMBER;
+		}
+	}
+
+	/**
+	 * @return the loginCookie
+	 */
+	public WiserCookie getLoginCookie()
+	{
+		return loginCookie;
 	}
 }
