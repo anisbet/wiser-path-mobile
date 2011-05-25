@@ -3,11 +3,9 @@
  */
 package path.wiser.mobile.services;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLEncoder;
 
 import android.util.Log;
@@ -52,7 +50,9 @@ public class HTTPService
 		try
 		{
 			URL url = getLoginURL();
-			WiserResponse response = getLoginResponse( url, credential );
+			Post response = getLoginResponse( url, credential );
+			// check response codes to ensure it worked.
+			credential.setCookie( response.getWiserCookie() );
 		}
 		catch (MalformedURLException e)
 		{
@@ -74,21 +74,13 @@ public class HTTPService
 	 * @param credential
 	 * @return
 	 */
-	private static WiserResponse getLoginResponse( URL url, Credential credential )
+	private static Post getLoginResponse( URL url, Credential credential )
 	{
-		// create connection and pass the URL and data to the connection
-		WiserResponse response = null;
-		try
-		{
-			URLConnection connection = url.openConnection();
-			String dataToPost = "name=" + credential.getUserName() + "&pass=" + credential.getPassword() + "&form_id=user_login";
-			response = new WiserResponse( connection, URLEncoder.encode( dataToPost, "UTF-8" ) );
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-		// read the returning headers and place in a WiserResponse.
+		// create the login url.
+		String dataToPost = "name=" + credential.getUserName() + "&pass=" + credential.getPassword() + "&form_id=user_login&op=log+in";
+		Post response = new Post( url );
+		response.post( dataToPost );
+		// read the returning headers and place in a Post.
 		return response;
 	}
 
