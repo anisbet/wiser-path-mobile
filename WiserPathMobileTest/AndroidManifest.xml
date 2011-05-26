@@ -9,6 +9,9 @@
 
     <uses-library android:name="android.test.runner" />
     </application>
-    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="8"/>
-    <instrumentation android:targetPackage="path.wiser.mobile" android:name="android.test.InstrumentationTestRunner" />
+    <uses-sdk android:minSdkVersion="8"/>
+    <instrumentation 
+    android:targetPackage="path.wiser.mobile" 
+    android:name="android.test.InstrumentationTestRunner"
+    android:functionalTest="true" />
 </manifest> 
