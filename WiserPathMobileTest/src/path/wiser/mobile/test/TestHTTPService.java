@@ -12,11 +12,7 @@ public class TestHTTPService extends TestCase {
 
 	@Test
 	public void testHTTPService() {
-		Credential cred = new Credential();
-		cred.setUserName("anisbet");
-		cred.setPassword("leader1");
-		//cred.setUserStatus(Status.MEMBER);
-		//HTTPService service = new HTTPService(cred);
+		
 	}
 
 }
