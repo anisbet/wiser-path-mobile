@@ -5,7 +5,7 @@ A blog can be uploaded to WiserPath. It will be done through the URL:
 {{{
 http://wiserpath-dev.bus.ualberta.ca/node/add/geoblog?location=POINT
 }}}
-where POINT is the coordinate of the device.
+where POINT is the coordinate of the device in 
 
 = Details =
 
