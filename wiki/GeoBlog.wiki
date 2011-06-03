@@ -1,0 +1,14 @@
+#labels Phase-Requirements
+= GeoBlog =
+
+A blog can be uploaded to WiserPath. It will be done through the URL:
+{{{
+http://wiserpath-dev.bus.ualberta.ca/node/add/geoblog?location=POINT
+}}}
+where POINT is the coordinate of the device.
+
+= Details =
+
+When adding content to the above url:
+  # user must be logged in or they are redirected to the login page.
+  # a title, body and form token must be supplied with the posted data. The token can be found as a hidden field {{{name="form_token"}}} and {{{value="token_number"}}}.
