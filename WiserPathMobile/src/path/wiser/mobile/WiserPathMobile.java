@@ -17,7 +17,6 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.widget.TabHost;
-import android.widget.Toast;
 
 /**
  * @author andrew nisbet
@@ -93,13 +92,13 @@ public class WiserPathMobile extends TabActivity
 		// BitmapFactory.decodeFile( "/data/misc/wallpaper/" + bmpName
 		// );
 		// TODO delete this for production version.
-		Toast.makeText( this, "User name and password have been read from preferences:" + "userName=" + userName + " password:" + password,
-			Toast.LENGTH_LONG ).show();
+		// Toast.makeText( this, "User name and password have been read from preferences:" + "userName=" + userName +
+		// " password:" + password,
+		// Toast.LENGTH_LONG ).show();
 		// Now try and make a connection and login.
 		HTTPService httpService = new HTTPService();
 		this.loginCredential = new Credential( userName, password );
 
 		return httpService.login( this.loginCredential );
 	}
-
 }
