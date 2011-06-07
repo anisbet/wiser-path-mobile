@@ -5,25 +5,25 @@
             android:title="Create / Manage Account"
             android:summary="Use this to create an account or change users"
             android:key="login">
+            <!--  These values are also mentioned in Credential.java if you change them here login will not work -->
 			<EditTextPreference
-	            android:name="User Name"
+	            android:name="userName"
 	            android:summary="Enter your Wiser Path user name"
 	            android:defaultValue=""
 	            android:title="User Name"
-	            android:key="userName" />
+	            android:key="USER_NAME" />
 	        <EditTextPreference
-	            android:name="Password"
+	            android:name="password"
 	            android:summary="Enter your Wiser Path password"
 	            android:defaultValue=""
 	            android:title="Password"
-	            android:key="userPassword" />
-			<EditTextPreference
-				android:name="Reenter Password"
+	            android:key="PASSWORD" />
+			<!-- <EditTextPreference
+				android:name="REPASSWORD"
 	            android:summary="Confirm your Wiser Path password"
 	            android:defaultValue=""
-	            android:enabled="false"
 	            android:title="Re-enter Password"
-	            android:key="userPasswordReenter" />
+	            android:key="userPasswordReenter" /> -->
 		</PreferenceScreen>
 	</PreferenceCategory>
 	<PreferenceCategory android:title="Settings">
