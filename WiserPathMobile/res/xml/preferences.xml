@@ -7,36 +7,32 @@
             android:key="login">
             <!--  These values are also mentioned in Credential.java if you change them here login will not work -->
 			<EditTextPreference
-	            android:name="userName"
+	            android:name="UserName"
 	            android:summary="Enter your Wiser Path user name"
 	            android:defaultValue=""
 	            android:title="User Name"
 	            android:key="USER_NAME" />
 	        <EditTextPreference
-	            android:name="password"
+	            android:name="Password"
 	            android:summary="Enter your Wiser Path password"
 	            android:defaultValue=""
 	            android:title="Password"
 	            android:key="PASSWORD" />
-			<!-- <EditTextPreference
-				android:name="REPASSWORD"
-	            android:summary="Confirm your Wiser Path password"
-	            android:defaultValue=""
-	            android:title="Re-enter Password"
-	            android:key="userPasswordReenter" /> -->
 		</PreferenceScreen>
 	</PreferenceCategory>
 	<PreferenceCategory android:title="Settings">
         <CheckBoxPreference
 			android:title="Work online"
+			android:name="Online"
 			android:defaultValue="true"
 			android:summary="Connect with Wiser Path on line when possible?"
-			android:key="online"/>
+			android:key="ONLINE"/>
 		<CheckBoxPreference
 		   android:title="Use Location"
+		   android:name="UseLocation"
 		   android:defaultValue="true"
 		   android:summary="Use your GPS to record information"
-		   android:key="useLocation" />
+		   android:key="USE_LOCATION" />
 	 <!--  <ListPreference
 	        android:title="Units"
 	        android:summary="Select desired recording units"
@@ -44,11 +40,5 @@
 	        android:defaultValue="kms"
 	        android:entries="@array/listArray"
 	        android:entryValues="@array/listValues" /> -->
-    
-    <!--  <RingtonePreference
-            android:name="Ringtone Preference"
-            android:summary="Select a ringtone"
-            android:title="Ringtones"
-            android:key="ringtonePref" /> -->
     </PreferenceCategory>
 </PreferenceScreen>
