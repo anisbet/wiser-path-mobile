@@ -6,7 +6,6 @@ package path.wiser.mobile.ui;
 import path.wiser.mobile.R;
 import path.wiser.mobile.WiserPathMobile;
 import path.wiser.mobile.services.Credential;
-import path.wiser.mobile.util.LoginManager;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,12 +13,6 @@ import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -28,7 +21,10 @@ import android.widget.Toast;
  */
 public class SettingsActivity extends PreferenceActivity
 {
-	private LoginManager	loginManager;
+	private static final String	USE_LOCATION	= "USE_LOCATION";
+	private static final String	WORK_ONLINE		= "WORK_ONLINE";
+	private boolean				useLocation;
+	private boolean				workOnline;
 
 	@Override
 	protected void onCreate( Bundle savedInstanceState )
@@ -37,7 +33,7 @@ public class SettingsActivity extends PreferenceActivity
 		addPreferencesFromResource( R.xml.preferences );
 		// add change listeners to all the preference UI objects to see if they change and update the system
 		// appropriately.
-		EditTextPreference userNamePref = (EditTextPreference) findPreference( Credential.USER_NAME );
+		Preference userNamePref = (Preference) findPreference( Credential.USER_NAME );
 		userNamePref.setOnPreferenceChangeListener( new OnPreferenceChangeListener()
 		{
 
@@ -48,29 +44,33 @@ public class SettingsActivity extends PreferenceActivity
 				SharedPreferences.Editor editor = customSharedPreference.edit();
 				editor.putString( Credential.USER_NAME, prefValue.toString() );
 				editor.commit();
-				Toast.makeText( getBaseContext(), "The preference user name has changed: " + prefValue.toString(), Toast.LENGTH_LONG ).show();
+				Toast.makeText( getBaseContext(), "User name updated", Toast.LENGTH_LONG ).show();
 				return true;
 			}
 		} );
 
+		// add a listener so when the user changes their password it is noted and changed in the preference file.
 		EditTextPreference passwordPref = (EditTextPreference) findPreference( Credential.PASSWORD );
 		passwordPref.setOnPreferenceChangeListener( new OnPreferenceChangeListener()
 		{
 
 			@Override
-			public boolean onPreferenceChange( Preference preference, Object prefValue ) // what is arg1
+			public boolean onPreferenceChange( Preference preference, Object prefValue )
 			{
 				SharedPreferences customSharedPreference = getSharedPreferences( WiserPathMobile.PREFS_FILE_NAME, Activity.MODE_PRIVATE );
 				SharedPreferences.Editor editor = customSharedPreference.edit();
 				editor.putString( Credential.PASSWORD, prefValue.toString() );
 				editor.commit();
-				Toast.makeText( getBaseContext(), "The preference password has changed", Toast.LENGTH_LONG ).show();
+				Toast.makeText( getBaseContext(), "Password updated", Toast.LENGTH_LONG ).show();
 				return true;
 			}
 		} );
 
-		// loginManager = new LoginManager();
-		// System.out.println( loginManager.toString() );
+		// Get the custom preference
+		SharedPreferences mySharedPreferences = getSharedPreferences( WiserPathMobile.PREFS_FILE_NAME, Activity.MODE_PRIVATE );
+		this.useLocation = mySharedPreferences.getBoolean( SettingsActivity.USE_LOCATION, true );
+		this.workOnline = mySharedPreferences.getBoolean( SettingsActivity.WORK_ONLINE, true );
+
 		// Check if user has access to WIFI?
 		// Does user have access through phone?
 		// does user want access via either?
@@ -78,31 +78,23 @@ public class SettingsActivity extends PreferenceActivity
 
 	}
 
-	/**
-	 * This method creates a Toast with the supplied message.
-	 * 
-	 * @param message
-	 */
-	protected void showMessage( String message )
-	{
-		LayoutInflater inflater = getLayoutInflater();
-		View layout = inflater.inflate( R.layout.custom_toast_layout, (ViewGroup) findViewById( R.id.custom_toast_layout_root ) );
-		ImageView image = (ImageView) layout.findViewById( R.id.image );
-		image.setImageResource( R.drawable.icon );
-		TextView text = (TextView) layout.findViewById( R.id.text );
-		text.setText( message );
-
-		Toast toast = new Toast( getApplicationContext() );
-		toast.setGravity( Gravity.CENTER_VERTICAL, 0, 0 );
-		toast.setDuration( Toast.LENGTH_LONG );
-		toast.setView( layout );
-		toast.show();
-
-	}
-
 	@Override
-	protected void onStop()
+	protected void onPause()
 	{
-		super.onStop();
+		super.onPause();
+		commitChanges();
 	}
+
+	private void commitChanges()
+	{
+		SharedPreferences mySharedPreferences = getSharedPreferences( WiserPathMobile.PREFS_FILE_NAME, Activity.MODE_PRIVATE );
+		this.useLocation = mySharedPreferences.getBoolean( SettingsActivity.USE_LOCATION, true );
+		this.workOnline = mySharedPreferences.getBoolean( SettingsActivity.WORK_ONLINE, true );
+		// the user name and password are already done because they have change listeners that will commit any changes.
+		SharedPreferences.Editor editor = mySharedPreferences.edit();
+		editor.putBoolean( SettingsActivity.USE_LOCATION, this.useLocation );
+		editor.putBoolean( SettingsActivity.WORK_ONLINE, this.workOnline );
+		editor.commit();
+	}
+
 }
