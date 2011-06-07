@@ -6,7 +6,6 @@ package path.wiser.mobile.services;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 
 import android.util.Log;
 
@@ -24,14 +23,6 @@ public class HTTPService
 	private final static String	SIGNUP_PATH	= "/user/register";
 
 	/**
-	 * @param loginCredential
-	 */
-	private HTTPService()
-	{
-		/* prevent user from instantiating this class as stand alone object. */
-	}
-
-	/**
 	 * If the person has no credential saved create a new one based on a login
 	 * attempt with the user name and password. Use this for first login or
 	 * renewing credentials.
@@ -40,30 +31,30 @@ public class HTTPService
 	 * @param password
 	 * @return Credential of user
 	 */
-	public final static Credential login( String name, String password )
+	public boolean login( Credential credential )
 	{
-		Credential credential = new Credential();
-		credential.setUserName( name );
-		credential.setPassword( password );
 
 		// build URL to contact
 		try
 		{
 			URL url = getLoginURL();
+			Log.e( "HTTPService: test", "URL: " + url.toString() ); // TODO testing remove for production.
 			Post response = getLoginResponse( url, credential );
 			// check response codes to ensure it worked.
 			credential.setCookie( response.getWiserCookie() );
 		}
 		catch (MalformedURLException e)
 		{
-			Log.w( "HTTPService: error", "unable to log in because URL was malformed." );
+			Log.e( "HTTPService: error", "unable to log in because URL was malformed." );
+			return false;
 		}
 		catch (UnsupportedEncodingException e) // in case the url is unsupported
 												// -- should never happen.
 		{
 			e.printStackTrace();
+			return false;
 		}
-		return credential;
+		return true;
 	}
 
 	/**
@@ -74,9 +65,10 @@ public class HTTPService
 	 * @param credential
 	 * @return
 	 */
-	private static Post getLoginResponse( URL url, Credential credential )
+	private Post getLoginResponse( URL url, Credential credential )
 	{
-		// create the login url.
+		// create the login url. These values can be nothing if the user has no
+		// preferences set.
 		String dataToPost = "name=" + credential.getUserName() + "&pass=" + credential.getPassword() + "&form_id=user_login&op=log+in";
 		Post response = new Post( url );
 		response.post( dataToPost );
@@ -89,10 +81,10 @@ public class HTTPService
 	 * @throws UnsupportedEncodingException
 	 * @throws MalformedURLException
 	 */
-	private static URL getLoginURL() throws MalformedURLException, UnsupportedEncodingException
+	private URL getLoginURL() throws MalformedURLException, UnsupportedEncodingException
 	{
 		String URL = HTTPService.LOGIN_URL + HTTPService.LOGIN_PATH;
-		return new URL( URLEncoder.encode( URL, "UTF-8" ) );
+		return new URL( URL );
 	}
 
 }
