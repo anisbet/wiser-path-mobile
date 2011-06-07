@@ -35,13 +35,15 @@ public class HTTPService
 	{
 
 		// build URL to contact
+		Post response = null;
 		try
 		{
 			URL url = getLoginURL();
-			Log.e( "HTTPService: test", "URL: " + url.toString() ); // TODO testing remove for production.
-			Post response = getLoginResponse( url, credential );
-			// check response codes to ensure it worked.
-			credential.setCookie( response.getWiserCookie() );
+			response = getLoginResponse( url, credential );
+			if (response.getReturnCode() == 301)
+			{
+				credential.setCookie( response.getWiserCookie() );
+			}
 		}
 		catch (MalformedURLException e)
 		{
@@ -54,7 +56,8 @@ public class HTTPService
 			e.printStackTrace();
 			return false;
 		}
-		return true;
+		Log.e( "HTTPService: message", "Satus returned: " + String.valueOf( response.getReturnCode() ) );
+		return response.getReturnCode() == 301; // all went well the page redirected to your account page.
 	}
 
 	/**
