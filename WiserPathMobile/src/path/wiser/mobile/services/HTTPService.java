@@ -12,55 +12,65 @@ import android.util.Log;
 /**
  * This class manages the communication of the andoid device and WiserPath
  * services.
+ * It is meant to be a singleton class. It holds a static instance of itself and
+ * cannot be instantiated externally -- only through successful login. Once the
+ * the user has logged onto the system successfully they can call the static method {@link#getService()} to get an
+ * instance anywhere else in the code.
  * 
  * @author andrewnisbet
  * 
  */
 public class HTTPService
 {
-	private final static String	LOGIN_URL			= "http://wiserpath-dev.bus.ualberta.ca";	// login
-	private final static String	LOGIN_PATH			= "/user/login";
-	private final static String	SIGNUP_PATH			= "/user/register";
+	private final static String	LOGIN_URL		= "http://wiserpath-dev.bus.ualberta.ca";	// login
+	private final static String	LOGIN_PATH		= "/user/login";
+	private final static String	SIGNUP_PATH		= "/user/register";
 
-	private final static int	SUCCESSFUL_REDIRECT	= 302;
+	private final static int	SUCCESS_CODE	= 302;										// if all went well the page
+																							// redirected to your
+																							// account page.
+	private static Credential	credential		= null;
+
+	private static HTTPService	thisService		= null;
+
+	private HTTPService()
+	{
+	}
 
 	/**
-	 * If the person has no credential saved create a new one based on a login
-	 * attempt with the user name and password. Use this for first login or
-	 * renewing credentials.
-	 * 
-	 * @param name
+	 * @param userName
 	 * @param password
-	 * @return Credential of user
+	 * @return An HTTPService object that you can use to send messages to WP with.
 	 */
-	public boolean login( Credential credential )
+	public static HTTPService login( String userName, String password )
 	{
-
+		if (thisService == null)
+		{
+			thisService = new HTTPService();
+		}
 		// build URL to contact
 		Post response = null;
+		HTTPService.credential = new Credential( userName, password );
 		try
 		{
-			URL url = getLoginURL();
-			response = getLoginResponse( url, credential );
-			if (response.getReturnCode() == 301)
+			URL url = HTTPService.getLoginURL();
+			response = HTTPService.getLoginResponse( url );
+			if (response.getReturnCode() == SUCCESS_CODE)
 			{
-				credential.setCookie( response.getWiserCookie() );
+				HTTPService.credential.setCookie( response.getWiserCookie() );
 			}
 		}
 		catch (MalformedURLException e)
 		{
 			Log.e( "HTTPService: error", "unable to log in because URL was malformed." );
-			return false;
 		}
 		catch (UnsupportedEncodingException e) // in case the url is unsupported
 												// -- should never happen.
 		{
 			e.printStackTrace();
-			return false;
 		}
-		// Log.i( "HTTPService: message", "Satus returned: " + String.valueOf( response.getReturnCode() ) );
-		return response.getReturnCode() == SUCCESSFUL_REDIRECT; // if all went well the page redirected to your account
-																// page.
+		Log.i( "HTTPService: message", "Satus returned: " + String.valueOf( response.getReturnCode() ) );
+		return thisService; //
 	}
 
 	/**
@@ -71,7 +81,7 @@ public class HTTPService
 	 * @param credential
 	 * @return
 	 */
-	private Post getLoginResponse( URL url, Credential credential )
+	private static Post getLoginResponse( URL url )
 	{
 		// create the login url. These values can be nothing if the user has no
 		// preferences set.
@@ -87,10 +97,24 @@ public class HTTPService
 	 * @throws UnsupportedEncodingException
 	 * @throws MalformedURLException
 	 */
-	private URL getLoginURL() throws MalformedURLException, UnsupportedEncodingException
+	private static URL getLoginURL() throws MalformedURLException, UnsupportedEncodingException
 	{
 		String URL = HTTPService.LOGIN_URL + HTTPService.LOGIN_PATH;
 		return new URL( URL );
+	}
+
+	public boolean isLoggedIn()
+	{
+		return HTTPService.credential.isMember();
+	}
+
+	/**
+	 * @return Null if the user has not logged in successfully and the
+	 *         HTTPService object if they have.
+	 */
+	public static HTTPService getInstance()
+	{
+		return HTTPService.thisService;
 	}
 
 }
