@@ -18,9 +18,11 @@ import android.util.Log;
  */
 public class HTTPService
 {
-	private final static String	LOGIN_URL	= "http://wiserpath-dev.bus.ualberta.ca";	// login
-	private final static String	LOGIN_PATH	= "/user/login";
-	private final static String	SIGNUP_PATH	= "/user/register";
+	private final static String	LOGIN_URL			= "http://wiserpath-dev.bus.ualberta.ca";	// login
+	private final static String	LOGIN_PATH			= "/user/login";
+	private final static String	SIGNUP_PATH			= "/user/register";
+
+	private final static int	SUCCESSFUL_REDIRECT	= 302;
 
 	/**
 	 * If the person has no credential saved create a new one based on a login
@@ -56,8 +58,9 @@ public class HTTPService
 			e.printStackTrace();
 			return false;
 		}
-		Log.e( "HTTPService: message", "Satus returned: " + String.valueOf( response.getReturnCode() ) );
-		return response.getReturnCode() == 301; // all went well the page redirected to your account page.
+		// Log.i( "HTTPService: message", "Satus returned: " + String.valueOf( response.getReturnCode() ) );
+		return response.getReturnCode() == SUCCESSFUL_REDIRECT; // if all went well the page redirected to your account
+																// page.
 	}
 
 	/**
