@@ -3,7 +3,6 @@
  */
 package path.wiser.mobile.services;
 
-import android.app.Activity;
 
 /**
  * This is the user's name and password plus the business rules for how that is
@@ -13,7 +12,7 @@ import android.app.Activity;
  * @author andrewnisbet
  * 
  */
-public class Credential extends Activity
+public class Credential
 {
 	public static final String	USER_NAME			= "USER_NAME";			// if this change they
 																			// must
