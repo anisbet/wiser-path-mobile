@@ -6,6 +6,7 @@ package path.wiser.mobile.services;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import android.util.Log;
 
@@ -22,18 +23,22 @@ import android.util.Log;
  */
 public class HTTPService
 {
-	private final static String	LOGIN_URL		= "http://wiserpath-dev.bus.ualberta.ca";	// login
-	private final static String	LOGIN_PATH		= "/user/login";
-	private final static String	SIGNUP_PATH		= "/user/register";
+	private final static String	WP_URL					= "http://wiserpath-dev.bus.ualberta.ca";	// login
+	private final static String	LOGIN_PATH				= "/user/login";
+	private final static String	SIGNUP_PATH				= "/user/register";
 
-	private final static int	SUCCESS_CODE	= 302;										// if all went well the page
-																							// redirected to your
-																							// account page.
-	private static Credential	credential		= null;
+	private final static int	SUCCESS_LOGIN_CODE		= 302;										// if all went well
+																									// the
+	private static final int	SUCCESS_REGISTER_CODE	= 302;										// redirected to the
+																									// search window
+	// page
+	// redirected to your
+	// account page.
+	private static Credential	credential				= null;
 
-	private static HTTPService	thisService		= null;
+	private static HTTPService	thisService				= null;
 
-	private HTTPService()
+	private HTTPService() // block users creating this object explicitly
 	{
 	}
 
@@ -44,10 +49,7 @@ public class HTTPService
 	 */
 	public static HTTPService login( String userName, String password )
 	{
-		if (thisService == null)
-		{
-			thisService = new HTTPService();
-		}
+
 		// build URL to contact
 		Post response = null;
 		HTTPService.credential = new Credential( userName, password );
@@ -55,7 +57,7 @@ public class HTTPService
 		{
 			URL url = HTTPService.getLoginURL();
 			response = HTTPService.getLoginResponse( url );
-			if (response.getReturnCode() == SUCCESS_CODE)
+			if (response.getReturnCode() == SUCCESS_LOGIN_CODE)
 			{
 				HTTPService.credential.setCookie( response.getWiserCookie() );
 			}
@@ -70,7 +72,72 @@ public class HTTPService
 			e.printStackTrace();
 		}
 		Log.i( "HTTPService: message", "Satus returned: " + String.valueOf( response.getReturnCode() ) );
-		return thisService; //
+		// if everything succeeded then create the instance of this service and return a reference to the caller.
+		if (thisService == null)
+		{
+			thisService = new HTTPService();
+		}
+		return thisService;
+	}
+
+	/**
+	 * Call this if you have never used WP before and want to get started. The user will not get a HTTPService object to
+	 * perform any actions on WiserPath but they can just login after they get their password from email.
+	 * 
+	 * @param userName must be less than 60 characters (WiserPath form limitation).
+	 * @param email email of the user must be less than 64 characters.
+	 */
+	public static void signUp( String userName, String email )
+	{
+		// build URL to contact
+		Post response = null;
+		try
+		{
+			URL url = HTTPService.getRegisterURL();
+			response = HTTPService.getRegisterResponse( url, userName, email );
+			if (response.getReturnCode() == SUCCESS_REGISTER_CODE)
+			{
+				Log.i( "HTTPService: SUCCESS", "User must get their login password from their email account" );
+			}
+			else
+			{
+				Log.e( "HTTPService: Error", "Service failed to create new account for user with STATUS code: " + response.getReturnCode() );
+			}
+		}
+		catch (MalformedURLException e)
+		{
+			Log.e( "HTTPService: error", "unable to Register because URL was malformed. Has WiserPath moved?" );
+		}
+		catch (UnsupportedEncodingException e) // in case the url is unsupported
+												// -- should never happen.
+		{
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * @param url
+	 * @return status code of the request to join WiserPath.
+	 */
+	private static Post getRegisterResponse( URL url, String name, String email )
+	{
+		String dataToPost = "name=" + URLEncoder.encode( name ) + "&mail=" + URLEncoder.encode( email )
+			+ "&form_id=user_register&op=Create+new+account";
+		Post response = new Post( url );
+		response.post( dataToPost );
+		// read the returning headers and place in a Post.
+		return response;
+	}
+
+	/**
+	 * @return The URL to the WiserPath Registration page.
+	 * @throws MalformedURLException
+	 * @throws UnsupportedEncodingException
+	 */
+	private static URL getRegisterURL() throws MalformedURLException, UnsupportedEncodingException
+	{
+		String URL = HTTPService.WP_URL + HTTPService.SIGNUP_PATH;
+		return new URL( URL );
 	}
 
 	/**
@@ -79,7 +146,7 @@ public class HTTPService
 	 * 
 	 * @param url
 	 * @param credential
-	 * @return
+	 * @return Post object.
 	 */
 	private static Post getLoginResponse( URL url )
 	{
@@ -99,7 +166,7 @@ public class HTTPService
 	 */
 	private static URL getLoginURL() throws MalformedURLException, UnsupportedEncodingException
 	{
-		String URL = HTTPService.LOGIN_URL + HTTPService.LOGIN_PATH;
+		String URL = HTTPService.WP_URL + HTTPService.LOGIN_PATH;
 		return new URL( URL );
 	}
 
