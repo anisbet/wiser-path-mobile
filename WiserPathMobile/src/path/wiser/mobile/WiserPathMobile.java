@@ -25,9 +25,8 @@ import android.widget.TabHost;
 public class WiserPathMobile extends TabActivity
 {
 
-	private static final int	PREFS_TAB		= 4;
-	private static final int	POI_TAB			= 1;
-	private Credential			loginCredential	= null;
+	private static final int	PREFS_TAB	= 4;
+	private static final int	POI_TAB		= 1;
 
 	public void onCreate( Bundle savedInstanceState )
 	{
@@ -96,9 +95,14 @@ public class WiserPathMobile extends TabActivity
 		// " password:" + password,
 		// Toast.LENGTH_LONG ).show();
 		// Now try and make a connection and login.
-		HTTPService httpService = new HTTPService();
-		this.loginCredential = new Credential( userName, password );
-
-		return httpService.login( this.loginCredential );
+		HTTPService httpService = HTTPService.login( userName, password );
+		try
+		{
+			return httpService.isLoggedIn();
+		}
+		catch (NullPointerException e)
+		{
+			return false;
+		}
 	}
 }
