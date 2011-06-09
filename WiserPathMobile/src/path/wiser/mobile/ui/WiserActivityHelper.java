@@ -5,7 +5,11 @@ package path.wiser.mobile.ui;
 
 import path.wiser.mobile.R;
 import android.app.Activity;
+import android.location.Location;
+import android.location.LocationListener;
+import android.os.Bundle;
 import android.text.Editable;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -24,7 +28,7 @@ import android.widget.Toast;
  *         something important. It also allows for LAF for WiserPathActivities.
  * 
  */
-public abstract class WiserActivityHelper extends Activity
+public abstract class WiserActivityHelper extends Activity implements LocationListener
 {
 
 	private String	tag	= "WiserActivityHelper";
@@ -113,6 +117,17 @@ public abstract class WiserActivityHelper extends Activity
 		}
 	}
 
+	/**
+	 * Convience method to show toast and print message to info console.
+	 * 
+	 * @param msg
+	 */
+	protected void print( String msg )
+	{
+		Toast.makeText( getBaseContext(), this.tag + ": " + msg, Toast.LENGTH_LONG ).show();
+		Log.i( this.getClass().toString(), msg );
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -134,6 +149,58 @@ public abstract class WiserActivityHelper extends Activity
 	public String toString()
 	{
 		return tag;
+	}
+
+	// ///////////////// These methods allow WiserActivityHelper to act like an adaptor for a GPS
+	// allowing subclasses to pick which method they want to extend.
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.location.LocationListener#onLocationChanged(android.location.Location)
+	 */
+	@Override
+	public void onLocationChanged( Location location )
+	{
+		// if (location != null)
+		// {
+		// Log.d( "LOCATION CHANGED", location.getLatitude() + "" );
+		// Log.d( "LOCATION CHANGED", location.getLongitude() + "" );
+		// }
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.location.LocationListener#onProviderDisabled(java.lang.String)
+	 */
+	@Override
+	public void onProviderDisabled( String provider )
+	{
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.location.LocationListener#onProviderEnabled(java.lang.String)
+	 */
+	@Override
+	public void onProviderEnabled( String provider )
+	{
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.location.LocationListener#onStatusChanged(java.lang.String, int, android.os.Bundle)
+	 */
+	@Override
+	public void onStatusChanged( String provider, int status, Bundle extras )
+	{
+		// TODO Do we want to add this to the WiserActivityHelper?
+
 	}
 
 }
