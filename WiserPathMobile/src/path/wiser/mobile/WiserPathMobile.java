@@ -24,9 +24,13 @@ import android.widget.TabHost;
  */
 public class WiserPathMobile extends TabActivity
 {
+	public enum Tab
+	{
+		TRACE, POI, WP, INCIDENT, PREFS
+	}
 
-	private static final int	PREFS_TAB	= 4;
-	private static final int	POI_TAB		= 1;
+	private SharedPreferences	sharedPreferences	= null;
+	private static TabHost		tabHost				= null;
 
 	public void onCreate( Bundle savedInstanceState )
 	{
@@ -34,7 +38,8 @@ public class WiserPathMobile extends TabActivity
 		setContentView( R.layout.main );
 
 		Resources res = getResources(); // Resource object to get Drawables
-		TabHost tabHost = getTabHost(); // The activity TabHost
+		// TabHost tabHost = getTabHost(); // The activity TabHost
+		tabHost = getTabHost(); // The activity TabHost
 		TabHost.TabSpec spec; // Reusable TabSpec for each tab
 
 		Intent intent; // Reusable Intent for each tab
@@ -65,14 +70,17 @@ public class WiserPathMobile extends TabActivity
 
 		// Try to login.
 		// Determine which tab should be shown first -- we will also have to account for new users registering.
+		// TODO set tabs
 		if (login() == false)
 		{
-			tabHost.setCurrentTab( WiserPathMobile.PREFS_TAB );
+			// tabHost.setCurrentTab( WiserPathMobile.PREFS_TAB );
+			tabHost.setCurrentTab( Tab.PREFS.ordinal() );
 		}
 		else
 		{
-			tabHost.setCurrentTab( WiserPathMobile.POI_TAB );
+			tabHost.setCurrentTab( Tab.WP.ordinal() );
 		}
+
 	}
 
 	/**
@@ -81,11 +89,11 @@ public class WiserPathMobile extends TabActivity
 	 */
 	private boolean login()
 	{
-		SharedPreferences myPrefs = this.getSharedPreferences( SettingsActivity.PREFS_FILE_NAME, Activity.MODE_PRIVATE );
+		sharedPreferences = this.getSharedPreferences( SettingsActivity.PREFS_FILE_NAME, Activity.MODE_PRIVATE );
 		// the user name will be set to what ever is in the private preference file and if there isn't one
 		// will be set to the default value (found in Credential.java).
-		String userName = myPrefs.getString( Credential.USER_NAME, Credential.DEFAULT_USER_NAME );
-		String password = myPrefs.getString( Credential.PASSWORD, Credential.DEFAULT_PASSWORD );
+		String userName = sharedPreferences.getString( Credential.USER_NAME, Credential.DEFAULT_USER_NAME );
+		String password = sharedPreferences.getString( Credential.PASSWORD, Credential.DEFAULT_PASSWORD );
 
 		// TODO keep this for saving POI::Bitmap bm =
 		// BitmapFactory.decodeFile( "/data/misc/wallpaper/" + bmpName
@@ -105,4 +113,13 @@ public class WiserPathMobile extends TabActivity
 			return false;
 		}
 	}
+
+	/**
+	 * @return the tabHost
+	 */
+	public static final TabHost getTheTabHost()
+	{
+		return WiserPathMobile.tabHost;
+	}
+
 }
