@@ -5,16 +5,20 @@ package path.wiser.mobile.ui;
 
 import path.wiser.mobile.R;
 import path.wiser.mobile.db.Queryable;
+import path.wiser.mobile.geo.GPS;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * This class represents the Point of Interest screen on the Android.
  * 
  * @author anisbet
+ * @param <MainActivity>
  * 
  */
 public class PointOfInterestActivity extends Queryable
@@ -37,6 +41,7 @@ public class PointOfInterestActivity extends Queryable
 		super.onCreate( savedInstanceState );
 		// set content view so you can grab stuff in it.
 		setContentView( R.layout.poi_tab );
+		GPS gps = new GPS( this );
 
 		// add a onClick listener to the text screens so we can remove the
 		// existing text and allow the user to start entering text.
@@ -157,5 +162,23 @@ public class PointOfInterestActivity extends Queryable
 		// TODO store data before we move away from this screen.
 		super.onPause();
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see path.wiser.mobile.ui.WiserActivityHelper#locationHasChanged(android.location.Location)
+	 */
+	@Override
+	public void onLocationChanged( Location location )
+	{
+		Toast.makeText( getBaseContext(), "GPS location: " + location.getLatitude() + " and " + location.getLongitude(), Toast.LENGTH_LONG ).show();
+	}
+
+	// @Override
+	// public void setIsGPSEnabled( boolean isEnabled )
+	// {
+	// // TODO Auto-generated method stub
+	//
+	// }
 
 }
