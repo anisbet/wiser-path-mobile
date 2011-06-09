@@ -4,6 +4,7 @@
 package path.wiser.mobile.ui;
 
 import path.wiser.mobile.R;
+import path.wiser.mobile.WiserPathMobile;
 import path.wiser.mobile.services.Credential;
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -11,7 +12,10 @@ import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
+import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
+import android.view.View;
+import android.widget.TabWidget;
 import android.widget.Toast;
 
 /**
@@ -21,8 +25,8 @@ import android.widget.Toast;
 public class SettingsActivity extends PreferenceActivity
 {
 	public static final String	PREFS_FILE_NAME	= "MyPrefsFile";
-	private static final String	USE_LOCATION	= "USE_LOCATION";
-	private static final String	WORK_ONLINE		= "WORK_ONLINE";
+	public static final String	USE_LOCATION	= "USE_LOCATION";
+	public static final String	WORK_ONLINE		= "WORK_ONLINE";
 	private boolean				useLocation;
 	private boolean				workOnline;
 
@@ -69,6 +73,30 @@ public class SettingsActivity extends PreferenceActivity
 		// Get the custom preference
 		SharedPreferences mySharedPreferences = getSharedPreferences( SettingsActivity.PREFS_FILE_NAME, Activity.MODE_PRIVATE );
 		this.useLocation = mySharedPreferences.getBoolean( SettingsActivity.USE_LOCATION, true );
+		Preference useLocationPreference = (Preference) findPreference( SettingsActivity.USE_LOCATION );
+		useLocationPreference.setOnPreferenceClickListener( new OnPreferenceClickListener()
+		{
+
+			@Override
+			public boolean onPreferenceClick( Preference arg0 )
+			{
+				// get tabHost and disable or enable tabs based on availability of GPS.
+				// if (arg0. == false)
+				{
+					TabWidget tabWidget = WiserPathMobile.getTheTabHost().getTabWidget();
+					View tab = tabWidget.getChildTabViewAt( WiserPathMobile.Tab.POI.ordinal() );
+					tab.setEnabled( false );
+				}
+				// else
+				// {
+				// TabWidget tabWidget = WiserPathMobile.getTheTabHost().getTabWidget();
+				// View tab = tabWidget.getChildTabViewAt( WiserPathMobile.Tab.POI.ordinal() );
+				// tab.setEnabled( true );
+				// }
+				return false;
+			}
+
+		} );
 		this.workOnline = mySharedPreferences.getBoolean( SettingsActivity.WORK_ONLINE, true );
 
 		// Check if user has access to WIFI?
@@ -82,7 +110,13 @@ public class SettingsActivity extends PreferenceActivity
 	protected void onPause()
 	{
 		super.onPause();
+		// setViews();
 		commitChanges();
+	}
+
+	private void setViews()
+	{
+
 	}
 
 	private void commitChanges()
