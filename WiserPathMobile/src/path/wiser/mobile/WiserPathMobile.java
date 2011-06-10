@@ -16,7 +16,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TabHost;
+import android.widget.TabWidget;
 
 /**
  * @author andrew nisbet
@@ -115,11 +117,13 @@ public class WiserPathMobile extends TabActivity
 	}
 
 	/**
-	 * @return the tabHost
+	 * Turns a tab either on or off.
 	 */
-	public static final TabHost getTheTabHost()
+	public static final void enableTab( int tabNumber, boolean onOff )
 	{
-		return WiserPathMobile.tabHost;
+		TabWidget tabWidget = tabHost.getTabWidget();
+		View tab = tabWidget.getChildTabViewAt( tabNumber );
+		tab.setEnabled( onOff );
 	}
 
 }
