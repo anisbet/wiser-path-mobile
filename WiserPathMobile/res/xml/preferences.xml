@@ -2,8 +2,8 @@
 <PreferenceScreen  xmlns:android="http://schemas.android.com/apk/res/android">
 	<PreferenceCategory android:title="Wiser Path Login">
 		<PreferenceScreen
-            android:title="Create / Manage Account"
-            android:summary="Use this to create an account or change users"
+            android:title="Wiser Path Login"
+            android:summary="Login or change users"
             android:key="login">
             <!--  These values are also mentioned in Credential.java if you change them here login will not work -->
 			<EditTextPreference
@@ -20,19 +20,41 @@
 	            android:key="PASSWORD" />
 		</PreferenceScreen>
 	</PreferenceCategory>
+	<!-- registration or add user -->
+	<PreferenceCategory android:title="Register">
+		<PreferenceScreen
+            android:title="Join Wiser Path!"
+            android:summary="Register (always free)"
+            android:key="register">
+            <!--  These values are also mentioned in Credential.java if you change them here login will not work -->
+			<EditTextPreference
+	            android:name="UserName"
+	            android:summary="Enter your Wiser Path user name"
+	            android:defaultValue=""
+	            android:title="User Name"
+	            android:key="REGISTER_USER_NAME" />
+	        <EditTextPreference
+	            android:name="Email"
+	            android:summary="Enter your email address (we don't permit spamming!)"
+	            android:defaultValue=""
+	            android:title="Email Address"
+	            android:key="EMAIL" />
+		</PreferenceScreen>
+	</PreferenceCategory>
 	<PreferenceCategory android:title="Settings">
-        <CheckBoxPreference
+        <!-- <CheckBoxPreference
 			android:title="Work online"
 			android:name="Online"
 			android:defaultValue="true"
 			android:summary="Connect with Wiser Path on line when possible?"
-			android:key="ONLINE"/>
+			android:key="ONLINE"/> -->
 		<CheckBoxPreference
 		   android:title="Use Location"
 		   android:name="UseLocation"
 		   android:defaultValue="true"
 		   android:summary="Use your GPS to record information"
 		   android:key="USE_LOCATION" />
+		   <!-- Do we allow users to select units of measure currently default it metric -->
 	 <!--  <ListPreference
 	        android:title="Units"
 	        android:summary="Select desired recording units"
