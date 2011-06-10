@@ -14,8 +14,6 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
-import android.view.View;
-import android.widget.TabWidget;
 import android.widget.Toast;
 
 /**
@@ -24,11 +22,12 @@ import android.widget.Toast;
  */
 public class SettingsActivity extends PreferenceActivity
 {
-	public static final String	PREFS_FILE_NAME	= "MyPrefsFile";
-	public static final String	USE_LOCATION	= "USE_LOCATION";
-	public static final String	WORK_ONLINE		= "WORK_ONLINE";
-	private boolean				useLocation;
-	private boolean				workOnline;
+	public static final String				PREFS_FILE_NAME		= "MyPrefsFile";
+	public static final String				USE_LOCATION		= "USE_LOCATION";
+	// USER_NAME contained in Credential.
+	public static final String				REGISTER_USER_NAME	= "REGISTER_USER_NAME";
+	public static final String				EMAIL				= "EMAIL";
+	private WiserPreferenceClickListener	useLocation;
 
 	@Override
 	protected void onCreate( Bundle savedInstanceState )
@@ -70,34 +69,11 @@ public class SettingsActivity extends PreferenceActivity
 			}
 		} );
 
-		// Get the custom preference
-		SharedPreferences mySharedPreferences = getSharedPreferences( SettingsActivity.PREFS_FILE_NAME, Activity.MODE_PRIVATE );
-		this.useLocation = mySharedPreferences.getBoolean( SettingsActivity.USE_LOCATION, true );
+		// create a new click listener for the switch. It is used later to save the setting.
+		this.useLocation = new WiserPreferenceClickListener( WiserPathMobile.Tab.POI.ordinal() );
 		Preference useLocationPreference = (Preference) findPreference( SettingsActivity.USE_LOCATION );
-		useLocationPreference.setOnPreferenceClickListener( new OnPreferenceClickListener()
-		{
-
-			@Override
-			public boolean onPreferenceClick( Preference arg0 )
-			{
-				// get tabHost and disable or enable tabs based on availability of GPS.
-				// if (arg0. == false)
-				{
-					TabWidget tabWidget = WiserPathMobile.getTheTabHost().getTabWidget();
-					View tab = tabWidget.getChildTabViewAt( WiserPathMobile.Tab.POI.ordinal() );
-					tab.setEnabled( false );
-				}
-				// else
-				// {
-				// TabWidget tabWidget = WiserPathMobile.getTheTabHost().getTabWidget();
-				// View tab = tabWidget.getChildTabViewAt( WiserPathMobile.Tab.POI.ordinal() );
-				// tab.setEnabled( true );
-				// }
-				return false;
-			}
-
-		} );
-		this.workOnline = mySharedPreferences.getBoolean( SettingsActivity.WORK_ONLINE, true );
+		useLocationPreference.setOnPreferenceClickListener( this.useLocation );
+		this.useLocation.set( useLocationPreference.isEnabled() );
 
 		// Check if user has access to WIFI?
 		// Does user have access through phone?
@@ -110,25 +86,69 @@ public class SettingsActivity extends PreferenceActivity
 	protected void onPause()
 	{
 		super.onPause();
-		// setViews();
 		commitChanges();
-	}
-
-	private void setViews()
-	{
-
 	}
 
 	private void commitChanges()
 	{
 		SharedPreferences mySharedPreferences = getSharedPreferences( SettingsActivity.PREFS_FILE_NAME, Activity.MODE_PRIVATE );
-		this.useLocation = mySharedPreferences.getBoolean( SettingsActivity.USE_LOCATION, true );
-		this.workOnline = mySharedPreferences.getBoolean( SettingsActivity.WORK_ONLINE, true );
 		// the user name and password are already done because they have change listeners that will commit any changes.
 		SharedPreferences.Editor editor = mySharedPreferences.edit();
-		editor.putBoolean( SettingsActivity.USE_LOCATION, this.useLocation );
-		editor.putBoolean( SettingsActivity.WORK_ONLINE, this.workOnline );
+		editor.putBoolean( SettingsActivity.USE_LOCATION, useLocation.getCurrentSetting() );
 		editor.commit();
 	}
 
+	/**
+	 * Registers a click occurred and saves the new value to the preferences.
+	 * 
+	 * @author andrewnisbet
+	 * 
+	 */
+	public class WiserPreferenceClickListener implements OnPreferenceClickListener
+	{
+		private int		modifyTabNumber;
+		private boolean	setting	= true;
+
+		public WiserPreferenceClickListener( int whichTabModified )
+		{
+			this.modifyTabNumber = whichTabModified;
+		}
+
+		public WiserPreferenceClickListener()
+		{
+			this.modifyTabNumber = -1;
+		}
+
+		@Override
+		public boolean onPreferenceClick( Preference preference )
+		{
+			this.setting = !this.setting;
+			if (this.modifyTabNumber >= 0)
+			{
+				// Toast.makeText( getBaseContext(), "The setting is " + setting + "Setting tab..." + modifyTabNumber,
+				// Toast.LENGTH_LONG ).show();
+				WiserPathMobile.enableTab( modifyTabNumber, this.setting );
+			}
+			// write out the new setting back to preferences.
+			// Toast.makeText( getBaseContext(), "Setting changed", Toast.LENGTH_LONG ).show();
+			return true;
+		}
+
+		/**
+		 * @return
+		 */
+		public boolean getCurrentSetting()
+		{
+			return this.setting;
+		}
+
+		/**
+		 * @param true if on and false otherwise.
+		 */
+		public void set( boolean enabled )
+		{
+			this.setting = enabled;
+		}
+
+	}
 }
