@@ -31,6 +31,9 @@ public class HTTPService
 																									// the
 	private static final int	SUCCESS_REGISTER_CODE	= 302;										// redirected to the
 																									// search window
+	private static final int	SERVER_UNREACHABLE		= 400;										// If Wiser Path is
+																									// offline
+
 	// page
 	// redirected to your
 	// account page.
@@ -182,6 +185,26 @@ public class HTTPService
 	public static HTTPService getInstance()
 	{
 		return HTTPService.thisService;
+	}
+
+	/**
+	 * @param userName
+	 * @return true if userName is greater than 0 characters and less than 60 (Drupal requirement).
+	 */
+	public static boolean isValidUserName( String userName )
+	{
+		return userName.length() > 0 && userName.length() <= 60;
+	}
+
+	/**
+	 * @param emailAddress
+	 * @return true if a cursory address is valid and false otherwise.
+	 */
+	public static boolean isValidEmailAddress( String emailAddress )
+	{
+		// do some basic checks -- drupal has a significantly more robust algorithm, and more compute power.
+		// TODO finish me.
+		return emailAddress.contains( "@" );
 	}
 
 }
