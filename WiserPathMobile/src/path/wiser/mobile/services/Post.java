@@ -75,7 +75,7 @@ public class Post
 		catch (IOException e) // can be IOException or EOFException when the stream has finished reading.
 		{
 			// Log.e( "Post:Error", "Could not post because of an IO error." );
-			System.err.println( "Post error: Could not post because of an IO error. Perhaps the URL is incorrect." );
+			System.err.println( "Post error: Could not post because of an IO error. Perhaps the server down or unreachable." );
 			response = 400;
 		}
 		finally
