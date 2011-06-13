@@ -89,8 +89,9 @@ public class HTTPService
 	 * 
 	 * @param userName must be less than 60 characters (WiserPath form limitation).
 	 * @param email email of the user must be less than 64 characters.
+	 * @return TODO
 	 */
-	public static void signUp( String userName, String email )
+	public static boolean signUp( String userName, String email )
 	{
 		// build URL to contact
 		Post response = null;
@@ -101,20 +102,24 @@ public class HTTPService
 			if (response.getReturnCode() == SUCCESS_REGISTER_CODE)
 			{
 				Log.i( "HTTPService: SUCCESS", "User must get their login password from their email account" );
+				return true;
 			}
 			else
 			{
 				Log.e( "HTTPService: Error", "Service failed to create new account for user with STATUS code: " + response.getReturnCode() );
+				return true;
 			}
 		}
 		catch (MalformedURLException e)
 		{
 			Log.e( "HTTPService: error", "unable to Register because URL was malformed. Has WiserPath moved?" );
+			return false;
 		}
 		catch (UnsupportedEncodingException e) // in case the url is unsupported
 												// -- should never happen.
 		{
 			e.printStackTrace();
+			return false;
 		}
 	}
 
