@@ -6,10 +6,10 @@ package path.wiser.mobile.ui;
 import path.wiser.mobile.R;
 import path.wiser.mobile.WiserPathMobile;
 import path.wiser.mobile.services.Credential;
+import path.wiser.mobile.services.HTTPService;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
@@ -37,48 +37,26 @@ public class SettingsActivity extends PreferenceActivity
 		// add change listeners to all the preference UI objects to see if they change and update the system
 		// appropriately.
 		Preference userNamePref = (Preference) findPreference( Credential.USER_NAME );
-		userNamePref.setOnPreferenceChangeListener( new OnPreferenceChangeListener()
-		{
-
-			@Override
-			public boolean onPreferenceChange( Preference preference, Object prefValue ) // what is arg1
-			{
-				SharedPreferences customSharedPreference = getSharedPreferences( SettingsActivity.PREFS_FILE_NAME, Activity.MODE_PRIVATE );
-				SharedPreferences.Editor editor = customSharedPreference.edit();
-				editor.putString( Credential.USER_NAME, prefValue.toString() );
-				editor.commit();
-				Toast.makeText( getBaseContext(), "User name updated", Toast.LENGTH_LONG ).show();
-				return true;
-			}
-		} );
+		WiserLoginChangeListener wlcl = new WiserLoginChangeListener();
+		userNamePref.setOnPreferenceChangeListener( wlcl );
 
 		// add a listener so when the user changes their password it is noted and changed in the preference file.
-		EditTextPreference passwordPref = (EditTextPreference) findPreference( Credential.PASSWORD );
-		passwordPref.setOnPreferenceChangeListener( new OnPreferenceChangeListener()
-		{
+		// the listener remembers user name and password, and will check again if both user name and password have
+		// had a change or have some value.
+		Preference passwordPref = (Preference) findPreference( Credential.PASSWORD );
+		passwordPref.setOnPreferenceChangeListener( wlcl );
 
-			@Override
-			public boolean onPreferenceChange( Preference preference, Object prefValue )
-			{
-				SharedPreferences customSharedPreference = getSharedPreferences( SettingsActivity.PREFS_FILE_NAME, Activity.MODE_PRIVATE );
-				SharedPreferences.Editor editor = customSharedPreference.edit();
-				editor.putString( Credential.PASSWORD, prefValue.toString() );
-				editor.commit();
-				Toast.makeText( getBaseContext(), "Password updated", Toast.LENGTH_LONG ).show();
-				return true;
-			}
-		} );
+		Preference regUserName = (Preference) findPreference( SettingsActivity.REGISTER_USER_NAME );
+		regUserName.setOnPreferenceChangeListener( wlcl );
+
+		Preference regEmail = (Preference) findPreference( SettingsActivity.EMAIL );
+		regEmail.setOnPreferenceChangeListener( wlcl );
 
 		// create a new click listener for the switch. It is used later to save the setting.
 		this.useLocation = new WiserPreferenceClickListener( WiserPathMobile.Tab.POI.ordinal() );
 		Preference useLocationPreference = (Preference) findPreference( SettingsActivity.USE_LOCATION );
 		useLocationPreference.setOnPreferenceClickListener( this.useLocation );
 		this.useLocation.set( useLocationPreference.isEnabled() );
-
-		// Check if user has access to WIFI?
-		// Does user have access through phone?
-		// does user want access via either?
-		// does their user name and password authenticate?
 
 	}
 
@@ -99,7 +77,95 @@ public class SettingsActivity extends PreferenceActivity
 	}
 
 	/**
+	 * Used to listen for login and password changes but also to attempt to re-login if the user changes user name and
+	 * or password.
+	 * 
+	 * @author andrewnisbet
+	 * 
+	 */
+	public class WiserLoginChangeListener implements OnPreferenceChangeListener
+	{
+		private String	name		= null;
+		private String	password	= null;
+
+		@Override
+		public boolean onPreferenceChange( Preference preference, Object prefValue )
+		{
+
+			if (preference.getKey().equals( Credential.USER_NAME ) || preference.getKey().equals( SettingsActivity.REGISTER_USER_NAME ))
+			{
+				name = prefValue.toString();
+			}
+			else
+				if (preference.getKey().equals( Credential.PASSWORD ))
+				{
+					password = prefValue.toString();
+				}
+				else
+					if (preference.getKey().equals( SettingsActivity.EMAIL ))
+					{
+						return register( prefValue.toString() );
+					}
+
+			return loginAgain();
+		}
+
+		/**
+		 * @param email
+		 * @return True if the person could register and false otherwise.
+		 */
+		private boolean register( String email )
+		{
+			if (name != null)
+			{
+				if (HTTPService.signUp( name, email ))
+				{
+					SharedPreferences customSharedPreference = getSharedPreferences( SettingsActivity.PREFS_FILE_NAME, Activity.MODE_PRIVATE );
+					SharedPreferences.Editor editor = customSharedPreference.edit();
+					editor.putString( Credential.USER_NAME, name );
+					editor.commit();
+					Toast.makeText( getBaseContext(), "Welcome to Wiser Path! Check your email for further instructions.", Toast.LENGTH_LONG ).show();
+					return true;
+				}
+			}
+			else
+			{
+				Toast.makeText( getBaseContext(), "Uh-oh, there was a problem registering you. Please visit WiserPath for help.", Toast.LENGTH_LONG )
+					.show();
+			}
+			return false;
+		}
+
+		/**
+		 * @return true if the user could be logged in and false otherwise.
+		 */
+		private boolean loginAgain()
+		{
+			if (name != null && password != null)
+			{
+				HTTPService service = HTTPService.login( name, password );
+				if (service.isLoggedIn() == true) // save these values
+				{
+					SharedPreferences customSharedPreference = getSharedPreferences( SettingsActivity.PREFS_FILE_NAME, Activity.MODE_PRIVATE );
+					SharedPreferences.Editor editor = customSharedPreference.edit();
+					editor.putString( Credential.USER_NAME, name );
+					editor.putString( Credential.PASSWORD, password );
+					editor.commit();
+					Toast.makeText( getBaseContext(), "You are now logged in as " + name, Toast.LENGTH_LONG ).show();
+					return true;
+				}
+				Toast.makeText( getBaseContext(), "Uh-oh, logging in as '" + name + "' failed; are your name and password correct?",
+					Toast.LENGTH_LONG ).show();
+				return false;
+			}
+			return false;
+		}
+
+	}
+
+	/**
 	 * Registers a click occurred and saves the new value to the preferences.
+	 * This class also encapsulates the boolean value as well.
 	 * 
 	 * @author andrewnisbet
 	 * 
