@@ -1,7 +1,6 @@
 package path.wiser.mobile.ui;
 
 import path.wiser.mobile.R;
-import path.wiser.mobile.db.Queryable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,7 +11,7 @@ import android.widget.TextView;
  * @author anisbet
  *         This class represents the trace screen.
  */
-public class TraceActivity extends Queryable
+public class TraceActivity extends Selectable
 {
 	public TraceActivity()
 	{
