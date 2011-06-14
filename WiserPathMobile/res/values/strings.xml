@@ -27,8 +27,12 @@
     <string name="s_use_location_summary">Use your GPS to record information</string>
     
     <!-- Settings messages -->
-    <string name="s_welcome_msg">Welcome to the Wiser Path Community</string>
+    <string name="s_welcome_msg">Welcome to the Wiser Path Community %s!</string>
+    <string name="s_unwelcome_msg">Uh-oh, there was a problem registering you. Please visit WiserPath for help.</string>
     <string name="s_login_success_msg">You are now logged in as %s</string> <!-- This lets you put a value in dynamically. See settings activity -->
     <string name="s_login_fail_msg">Login failed. Are your user name and password correct? Are you registered?</string>
+    <string name="s_invalid_user_name_msg">Sorry name must be between 1 and 60 characters</string>
+    <string name="s_invalid_email_msg">Sorry the email address is invalid</string>
+    
     
 </resources>
