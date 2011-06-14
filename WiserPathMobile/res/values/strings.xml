@@ -1,5 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, TraceActivity!</string>
     <string name="app_name">Wiser Path Mobile</string>
+    
+    <!-- Settings title -->
+    <string name="s_settings_title">Settings</string>
+    <string name="s_login_setting_summary">Login or change users</string>
+    <string name="s_login_setting_title">Login to Wiser Path</string>
+    <string name="s_login_title">Login</string>
+    <string name="s_login_summary">Enter or change your deets</string>
+
+	<!-- User registration settings -->
+	<string name="s_register">Register</string>
+	<string name="s_join_title">Join Wiser Path!</string>
+    <string name="s_join_summary">It&#96;s free!</string>
+    <string name="s_reg_email_title">Email Address</string>
+    <string name="s_reg_email_summary">Enter your email address (we don&#96;t permit spamming!)</string>
+    
+    <!-- Login / register settings -->
+    <string name="s_user_name_title">User name</string>
+    <string name="s_password_title">Password</string>
+    <string name="s_user_name_summary">Enter your Wiser Path user name</string>
+    <string name="s_password_summary">Enter your Wiser Path password</string>
+    
+    <!-- Location setting -->
+    <string name="s_use_location_title">Use Location</string>
+    <string name="s_use_location_summary">Use your GPS to record information</string>
+    
+    <!-- Settings messages -->
+    <string name="s_welcome_msg">Welcome to the Wiser Path Community</string>
+    <string name="s_login_success_msg">You are now logged in as %s</string> <!-- This lets you put a value in dynamically. See settings activity -->
+    <string name="s_login_fail_msg">Login failed. Are your user name and password correct? Are you registered?</string>
+    
 </resources>
