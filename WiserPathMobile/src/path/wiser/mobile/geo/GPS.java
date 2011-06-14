@@ -3,7 +3,6 @@
  */
 package path.wiser.mobile.geo;
 
-import path.wiser.mobile.ui.WiserActivityHelper;
 import android.content.Context;
 import android.location.LocationManager;
 
@@ -17,7 +16,7 @@ public class GPS
 	 * Use this constructor if you want to use the lowest possible granularity of location and time interval
 	 * of updates to location.
 	 */
-	public GPS( WiserActivityHelper activity )
+	public GPS( POI activity )
 	{
 		init( 0L, 0f, activity );
 	}
@@ -28,7 +27,7 @@ public class GPS
 	 * @param minimumTime time in milliseconds
 	 * @param minDistance distance in meters.
 	 */
-	public GPS( long minimumTime, float minDistance, WiserActivityHelper activity )
+	public GPS( long minimumTime, float minDistance, POI activity )
 	{
 		init( minimumTime, minDistance, activity );
 	}
@@ -39,7 +38,7 @@ public class GPS
 	 * @param minTime
 	 * @param minDist
 	 */
-	private void init( long minTime, float minDist, WiserActivityHelper activity )
+	private void init( long minTime, float minDist, POI activity )
 	{
 		LocationManager locationManager = (LocationManager) activity.getSystemService( Context.LOCATION_SERVICE );
 		// TODO test if we got the location Manager if not we need
