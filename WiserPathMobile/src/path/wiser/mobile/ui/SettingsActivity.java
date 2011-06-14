@@ -9,11 +9,13 @@ import path.wiser.mobile.services.Credential;
 import path.wiser.mobile.services.HTTPService;
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
+import android.text.Html;
 import android.widget.Toast;
 
 /**
@@ -46,9 +48,11 @@ public class SettingsActivity extends PreferenceActivity
 		Preference passwordPref = (Preference) findPreference( Credential.PASSWORD );
 		passwordPref.setOnPreferenceChangeListener( wlcl );
 
+		// create a register user name preference object
 		Preference regUserName = (Preference) findPreference( SettingsActivity.REGISTER_USER_NAME );
 		regUserName.setOnPreferenceChangeListener( wlcl );
 
+		// create a register user email object.
 		Preference regEmail = (Preference) findPreference( SettingsActivity.EMAIL );
 		regEmail.setOnPreferenceChangeListener( wlcl );
 
@@ -116,23 +120,39 @@ public class SettingsActivity extends PreferenceActivity
 		 */
 		private boolean register( String email )
 		{
+			Resources res = getResources();
+			String text = "";
+			CharSequence msg = "";
 			if (name != null)
 			{
+				if (HTTPService.isValidUserName( name ) == false)
+				{
+					text = String.format( res.getString( R.string.s_invalid_user_name_msg ) );
+					return false;
+				}
+				if (HTTPService.isValidEmailAddress( email ) == false)
+				{
+					text = String.format( res.getString( R.string.s_invalid_email_msg ) );
+					return false;
+				}
 				if (HTTPService.signUp( name, email ))
 				{
+					// save the settings
 					SharedPreferences customSharedPreference = getSharedPreferences( SettingsActivity.PREFS_FILE_NAME, Activity.MODE_PRIVATE );
 					SharedPreferences.Editor editor = customSharedPreference.edit();
 					editor.putString( Credential.USER_NAME, name );
 					editor.commit();
-					Toast.makeText( getBaseContext(), "Welcome to Wiser Path! Check your email for further instructions.", Toast.LENGTH_LONG ).show();
+					// now give the user some feed back.
+					text = String.format( res.getString( R.string.s_welcome_msg ), this.name );
 					return true;
 				}
 			}
 			else
 			{
-				Toast.makeText( getBaseContext(), "Uh-oh, there was a problem registering you. Please visit WiserPath for help.", Toast.LENGTH_LONG )
-					.show();
+				text = String.format( res.getString( R.string.s_unwelcome_msg ) );
 			}
+			msg = Html.fromHtml( text );
+			Toast.makeText( getBaseContext(), msg, Toast.LENGTH_LONG ).show();
 			return false;
 		}
 
@@ -144,18 +164,25 @@ public class SettingsActivity extends PreferenceActivity
 			if (name != null && password != null)
 			{
 				HTTPService service = HTTPService.login( name, password );
+				Resources res = getResources();
 				if (service.isLoggedIn() == true) // save these values
 				{
+					// save the settings
 					SharedPreferences customSharedPreference = getSharedPreferences( SettingsActivity.PREFS_FILE_NAME, Activity.MODE_PRIVATE );
 					SharedPreferences.Editor editor = customSharedPreference.edit();
 					editor.putString( Credential.USER_NAME, name );
 					editor.putString( Credential.PASSWORD, password );
 					editor.commit();
-					Toast.makeText( getBaseContext(), "You are now logged in as " + name, Toast.LENGTH_LONG ).show();
+					// use localized message string to show success or failure in desired language.
+					// String escapedUsername = TextUtil.htmlEncode( this.name );
+					String text = String.format( res.getString( R.string.s_login_success_msg ), this.name );
+					CharSequence msg = Html.fromHtml( text );
+					Toast.makeText( getBaseContext(), msg, Toast.LENGTH_LONG ).show();
 					return true;
 				}
-				Toast.makeText( getBaseContext(), "Uh-oh, logging in as '" + name + "' failed; are your name and password correct?",
-					Toast.LENGTH_LONG ).show();
+				String text = String.format( res.getString( R.string.s_login_fail_msg ), this.name );
+				CharSequence msg = Html.fromHtml( text );
+				Toast.makeText( getBaseContext(), msg, Toast.LENGTH_LONG ).show();
 				return false;
 			}
 			return false;
@@ -191,12 +218,9 @@ public class SettingsActivity extends PreferenceActivity
 			this.setting = !this.setting;
 			if (this.modifyTabNumber >= 0)
 			{
-				// Toast.makeText( getBaseContext(), "The setting is " + setting + "Setting tab..." + modifyTabNumber,
-				// Toast.LENGTH_LONG ).show();
+				// switch off the tab that uses the GPS
 				WiserPathMobile.enableTab( modifyTabNumber, this.setting );
 			}
-			// write out the new setting back to preferences.
-			// Toast.makeText( getBaseContext(), "Setting changed", Toast.LENGTH_LONG ).show();
 			return true;
 		}
 
