@@ -39,7 +39,7 @@ public class PointOfInterestActivity extends Selectable
 		// set content view so you can grab stuff in it.
 		setContentView( R.layout.poi_tab );
 		// GPS gps = new GPS( this );
-		this.blog = new Blog();
+		// this.blog = new Blog();
 
 		// add a onClick listener to the text screens so we can remove the
 		// existing text and allow the user to start entering text.
