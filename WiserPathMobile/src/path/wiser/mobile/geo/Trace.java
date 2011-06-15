@@ -5,24 +5,28 @@ package path.wiser.mobile.geo;
 
 import java.util.Vector;
 
-import path.wiser.mobile.Units;
 import android.location.Location;
+import android.os.Bundle;
 
 /**
+ * A Trace is a set of Locations that together make a route.
+ * 
  * @author andrewnisbet
  * 
  */
-public class Trace extends POI
+public class Trace extends POI implements ComputableTripMetrics
 {
-	private Vector<Location>	tracePoints		= null;
-	private TraceComputer		traceComputer	= null;
+	private Vector<Location>		tracePoints		= null;
+	private ComputableTripMetrics	traceComputer	= null;
 
-	public Trace()
+	@Override
+	protected void onCreate( Bundle savedInstanceState )
 	{
+		super.onCreate( savedInstanceState );
 		this.tracePoints = new Vector<Location>();
 		this.gps = new GPS( this ); // set up a new GPS. We need to be able to control how often we collect updates to
 									// location.
-		this.traceComputer = new TraceComputer( Units.METRIC, tracePoints ); // TODO get this from settings.
+		this.traceComputer = new TraceComputer( tracePoints ); // TODO get this from settings.
 	}
 
 	/*
@@ -31,16 +35,55 @@ public class Trace extends POI
 	 * @see android.location.LocationListener#onLocationChanged(android.location.Location)
 	 */
 	@Override
-	public void onLocationChanged( Location arg0 )
+	public void onLocationChanged( Location location )
 	{
-		this.tracePoints.add( arg0 );
-		// compute the data for trace screen
-		refreshListenerScreen();
+		// get UTC time and set the locations time
+		location.setTime( System.currentTimeMillis() );
+		// float speed = this.tracePoints.lastElement().
+		// location.setSpeed( speed );
+		this.tracePoints.add( location );
 	}
 
-	public void refreshListenerScreen()
+	@Override
+	public String getSpeed()
 	{
+		return this.traceComputer.getSpeed();
+	}
 
+	@Override
+	public String getDistance()
+	{
+		return this.traceComputer.getDistance();
+	}
+
+	@Override
+	public String getLatitude()
+	{
+		return this.traceComputer.getLatitude();
+	}
+
+	@Override
+	public String getLongtitude()
+	{
+		return this.traceComputer.getLongtitude();
+	}
+
+	@Override
+	public String getEllapseTime()
+	{
+		return this.traceComputer.getEllapseTime();
+	}
+
+	@Override
+	public String getDirection()
+	{
+		return this.traceComputer.getDirection();
+	}
+
+	@Override
+	public String getPace()
+	{
+		return this.traceComputer.getPace();
 	}
 
 }
