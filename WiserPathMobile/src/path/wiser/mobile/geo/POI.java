@@ -3,6 +3,7 @@
  */
 package path.wiser.mobile.geo;
 
+import path.wiser.mobile.Tags;
 import android.app.Activity;
 import android.location.Location;
 import android.location.LocationListener;
@@ -17,9 +18,15 @@ public abstract class POI extends Activity implements LocationListener
 	protected GPS		gps		= null;
 
 	protected String	title	= "";
-	protected String	tags	= "";
+	protected Tags		tags	= null;
 
 	private String		blog	= "";
+
+	@Override
+	protected void onCreate( Bundle savedInstanceState )
+	{
+		super.onCreate( savedInstanceState );
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -84,7 +91,7 @@ public abstract class POI extends Activity implements LocationListener
 	/**
 	 * @return the tags
 	 */
-	public String getTags()
+	public Tags getTags()
 	{
 		return tags;
 	}
@@ -92,7 +99,7 @@ public abstract class POI extends Activity implements LocationListener
 	/**
 	 * @param tags the tags to set
 	 */
-	public void setTags( String tags )
+	public void setTags( Tags tags )
 	{
 		this.tags = tags;
 	}
