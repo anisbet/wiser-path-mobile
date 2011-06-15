@@ -51,7 +51,7 @@ public class WiserPathMobile extends TabActivity
 		// Initialize a TabSpec for each tab and add it to the TabHost
 		spec = tabHost.newTabSpec( "Trace" ).setIndicator( "Trace", res.getDrawable( R.drawable.ic_tab_trace ) ).setContent( intent );
 		tabHost.addTab( spec );
-
+		// TODO internationalize the names of the tabs
 		// Do the same for the other tabs
 		intent = new Intent().setClass( this, PointOfInterestActivity.class );
 		// Initialize a TabSpec for each tab and add it to the TabHost
