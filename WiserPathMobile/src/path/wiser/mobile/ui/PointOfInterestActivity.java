@@ -5,6 +5,7 @@ package path.wiser.mobile.ui;
 
 import path.wiser.mobile.R;
 import path.wiser.mobile.geo.Blog;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -159,6 +160,13 @@ public class PointOfInterestActivity extends Selectable
 	{
 		// TODO store data before we move away from this screen.
 		super.onPause();
+	}
+
+	@Override
+	public void onLocationChanged( Location location )
+	{
+		// TODO Auto-generated method stub
+
 	}
 
 }

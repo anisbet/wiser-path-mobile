@@ -4,16 +4,13 @@
 package path.wiser.mobile.geo;
 
 import path.wiser.mobile.Tags;
-import android.app.Activity;
 import android.location.Location;
-import android.location.LocationListener;
-import android.os.Bundle;
 
 /**
  * @author andrewnisbet
  * 
  */
-public abstract class POI extends Activity implements LocationListener
+public abstract class POI
 {
 	protected GPS		gps		= null;
 
@@ -22,55 +19,7 @@ public abstract class POI extends Activity implements LocationListener
 
 	private String		blog	= "";
 
-	@Override
-	protected void onCreate( Bundle savedInstanceState )
-	{
-		super.onCreate( savedInstanceState );
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see android.location.LocationListener#onLocationChanged(android.location.Location)
-	 */
-	@Override
-	public void onLocationChanged( Location arg0 )
-	{
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see android.location.LocationListener#onProviderDisabled(java.lang.String)
-	 */
-	@Override
-	public void onProviderDisabled( String arg0 )
-	{
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see android.location.LocationListener#onProviderEnabled(java.lang.String)
-	 */
-	@Override
-	public void onProviderEnabled( String arg0 )
-	{
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see android.location.LocationListener#onStatusChanged(java.lang.String, int, android.os.Bundle)
-	 */
-	@Override
-	public void onStatusChanged( String arg0, int arg1, Bundle arg2 )
-	{
-
-	}
+	public abstract void setLocation( Location location );
 
 	/**
 	 * @return the title
