@@ -3,7 +3,7 @@
  */
 package path.wiser.mobile.geo;
 
-import android.os.Bundle;
+import android.location.Location;
 
 /**
  * Blog is like a POI except that it includes an image.
@@ -13,13 +13,17 @@ import android.os.Bundle;
  */
 public class Blog extends POI
 {
+	// a blog has a single location.
+	private Location	location	= null;
+
 	// TODO include image
 
-	@Override
-	protected void onCreate( Bundle savedInstanceState )
+	/**
+	 * @param location the location to set
+	 */
+	public void setLocation( Location location )
 	{
-		super.onCreate( savedInstanceState );
-		this.gps = new GPS( this );
+		this.location = location;
 	}
 
 }

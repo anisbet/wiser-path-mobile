@@ -12,9 +12,7 @@ package path.wiser.mobile;
  */
 public enum ActivityType
 {
-	WALK, RUN, HIKE, // uses altitude
+	WALK, RUN, // HIKE, // uses altitude
 	BIKE,
-	DRIVE,
-	FLY
-	// uses altitude
+	DRIVE
 }

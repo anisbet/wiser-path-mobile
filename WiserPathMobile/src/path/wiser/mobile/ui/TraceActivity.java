@@ -1,6 +1,7 @@
 package path.wiser.mobile.ui;
 
 import path.wiser.mobile.R;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -106,6 +107,13 @@ public class TraceActivity extends Selectable
 
 	@Override
 	protected void next()
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onLocationChanged( Location location )
 	{
 		// TODO Auto-generated method stub
 

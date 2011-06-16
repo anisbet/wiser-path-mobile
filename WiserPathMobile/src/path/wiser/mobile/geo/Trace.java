@@ -6,7 +6,6 @@ package path.wiser.mobile.geo;
 import java.util.Vector;
 
 import android.location.Location;
-import android.os.Bundle;
 
 /**
  * A Trace is a set of Locations that together make a route.
@@ -19,27 +18,28 @@ public class Trace extends POI implements ComputableTripMetrics
 	private Vector<Location>		tracePoints		= null;
 	private ComputableTripMetrics	traceComputer	= null;
 
-	@Override
-	protected void onCreate( Bundle savedInstanceState )
+	public enum TrailNode // used to identify which node you would like.
 	{
-		super.onCreate( savedInstanceState );
+		HEAD, TAIL, PREV_TAIL,
+	}
+
+	public Trace()
+	{
 		this.tracePoints = new Vector<Location>();
-		this.gps = new GPS( this ); // set up a new GPS. We need to be able to control how often we collect updates to
-									// location.
 		this.traceComputer = new TraceComputer( tracePoints ); // TODO get this from settings.
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see android.location.LocationListener#onLocationChanged(android.location.Location)
+	 * @see path.wiser.mobile.geo.POI#setLocation(android.location.Location)
 	 */
 	@Override
-	public void onLocationChanged( Location location )
+	public void setLocation( Location location )
 	{
 		// get UTC time and set the locations time
 		location.setTime( System.currentTimeMillis() );
-		// float speed = this.tracePoints.lastElement().
+		// float speed = computeSpeed();
 		// location.setSpeed( speed );
 		this.tracePoints.add( location );
 	}

@@ -159,15 +159,16 @@ public abstract class WiserActivityHelper extends Activity implements LocationLi
 	 * @see android.location.LocationListener#onLocationChanged(android.location.Location)
 	 */
 	@Override
-	public void onLocationChanged( Location location )
-	{
-		// if (location != null)
-		// {
-		// Log.d( "LOCATION CHANGED", location.getLatitude() + "" );
-		// Log.d( "LOCATION CHANGED", location.getLongitude() + "" );
-		// }
+	public abstract void onLocationChanged( Location location );
 
-	}
+	// {
+	// if (location != null)
+	// {
+	// Log.d( "LOCATION CHANGED", location.getLatitude() + "" );
+	// Log.d( "LOCATION CHANGED", location.getLongitude() + "" );
+	// }
+	//
+	// }
 
 	/*
 	 * (non-Javadoc)

@@ -33,6 +33,11 @@ public class Units
 		activityType = type;
 	}
 
+	public static ActivityType getActivityType()
+	{
+		return activityType;
+	}
+
 	/**
 	 * @return Standard unit of measure for speed based on measurement system.
 	 */
