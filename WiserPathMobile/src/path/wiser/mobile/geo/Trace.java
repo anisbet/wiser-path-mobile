@@ -104,9 +104,9 @@ public class Trace extends POI implements ComputableTripMetrics
 	}
 
 	@Override
-	public void setTags( Tags tags )
+	public void setTags( String tags )
 	{
-		this.tags = tags;
+		this.tags.setTags( tags );
 	}
 
 }

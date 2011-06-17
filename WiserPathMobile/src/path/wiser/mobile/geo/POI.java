@@ -12,12 +12,8 @@ import android.location.Location;
  */
 public abstract class POI
 {
-	protected GPS		gps		= null;
-
-	protected String	title	= "";
-	protected Tags		tags	= null;
-
-	private String		blog	= "";
+	protected String	title		= "";
+	protected String	description	= "";
 
 	public abstract void setLocation( Location location );
 
@@ -40,27 +36,27 @@ public abstract class POI
 	/**
 	 * @return the tags
 	 */
-	public Tags getTags()
-	{
-		return tags;
-	}
+	public abstract Tags getTags();
 
 	/**
 	 * @param tags the tags to set
 	 */
-	public void setTags( Tags tags )
+	public abstract void setTags( String tags );
+
+	/**
+	 * @param blog
+	 */
+	public void setDescription( String blog )
 	{
-		this.tags = tags;
+		this.description = blog;
 	}
 
-	public void setBlog( String blog )
+	/**
+	 * @return The description of the trace or the Blog's content.
+	 */
+	public String getDescription()
 	{
-		this.blog = blog;
-	}
-
-	public String getBlog()
-	{
-		return this.blog;
+		return this.description;
 	}
 
 	/**
