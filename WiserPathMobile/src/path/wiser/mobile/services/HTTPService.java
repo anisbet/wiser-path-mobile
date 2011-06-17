@@ -27,6 +27,7 @@ public class HTTPService
 	private final static String	WP_URL					= "http://wiserpath-dev.bus.ualberta.ca";	// login
 	private final static String	LOGIN_PATH				= "/user/login";
 	private final static String	SIGNUP_PATH				= "/user/register";
+	private static final String	GEOBLOG_PATH			= "/node/add/geoblog";
 
 	private final static int	SUCCESS_LOGIN_CODE		= 302;										// if all went well
 																									// the
@@ -116,12 +117,6 @@ public class HTTPService
 			Log.e( "HTTPService: error", "unable to Register because URL was malformed. Has WiserPath moved?" );
 			return false;
 		}
-		catch (UnsupportedEncodingException e) // in case the url is unsupported
-												// -- should never happen.
-		{
-			e.printStackTrace();
-			return false;
-		}
 	}
 
 	/**
@@ -139,11 +134,68 @@ public class HTTPService
 	}
 
 	/**
+	 * Uploads a Blog object to WiserPath.
+	 * 
+	 * @param blog
+	 * @return true if the blog was uploaded and false otherwise.
+	 */
+	public boolean uploadBlog( Blog blog )
+	{
+		// build URL to contact
+		Post response = null;
+		try
+		{
+			URL url = HTTPService.getGeoBlogURL();
+			response = sendGeoBlogPageRequest( url, credential );
+			if (response.getReturnCode() == SUCCESS_REGISTER_CODE)
+			{
+				Log.i( "HTTPService: SUCCESS", "User must get their login password from their email account" );
+				return true;
+			}
+			else
+			{
+				Log.e( "HTTPService: Error", "Service failed to create new account for user with STATUS code: " + response.getReturnCode() );
+				return true;
+			}
+		}
+		catch (MalformedURLException e)
+		{
+			Log.e( "HTTPService: error", "unable to Register because URL was malformed. Has WiserPath moved?" );
+			return false;
+		}
+	}
+
+	/**
+	 * This method makes a request to the server for a page to fill in a geoblog.
+	 * 
+	 * @param url
+	 * @param credential
+	 * @return Post object of the response from WiserPath
+	 */
+	private Post sendGeoBlogPageRequest( URL url, Credential credential )
+	{
+		String dataToPost = "cookie: " + credential.getLoginCookie().toString() + "; ";
+		Post response = new Post( url );
+		response.post( dataToPost );
+		// read the returning headers and place in a Post.
+		return response;
+	}
+
+	/**
+	 * @return The URL of the GeoBlog on WiserPath.
+	 * @throws MalformedURLException
+	 */
+	private static URL getGeoBlogURL() throws MalformedURLException
+	{
+		String URL = HTTPService.WP_URL + HTTPService.GEOBLOG_PATH;
+		return new URL( URL );
+	}
+
+	/**
 	 * @return The URL to the WiserPath Registration page.
 	 * @throws MalformedURLException
-	 * @throws UnsupportedEncodingException
 	 */
-	private static URL getRegisterURL() throws MalformedURLException, UnsupportedEncodingException
+	private static URL getRegisterURL() throws MalformedURLException
 	{
 		String URL = HTTPService.WP_URL + HTTPService.SIGNUP_PATH;
 		return new URL( URL );
@@ -211,18 +263,6 @@ public class HTTPService
 		// do some basic checks -- drupal has a significantly more robust algorithm, and more compute power.
 		// TODO finish me.
 		return emailAddress.contains( "@" );
-	}
-
-	/**
-	 * Uploads a Blog object to WiserPath.
-	 * 
-	 * @param blog
-	 * @return true if the blog was uploaded and false otherwise.
-	 */
-	public boolean uploadBlog( Blog blog )
-	{
-		// TODO Upload the blog's data to WiserPath
-		return false;
 	}
 
 }
