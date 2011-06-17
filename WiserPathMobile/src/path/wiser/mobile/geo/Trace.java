@@ -5,6 +5,7 @@ package path.wiser.mobile.geo;
 
 import java.util.Vector;
 
+import path.wiser.mobile.Tags;
 import android.location.Location;
 
 /**
@@ -17,6 +18,7 @@ public class Trace extends POI implements ComputableTripMetrics
 {
 	private Vector<Location>		tracePoints		= null;
 	private ComputableTripMetrics	traceComputer	= null;
+	private Tags					tags;
 
 	public enum TrailNode // used to identify which node you would like.
 	{
@@ -27,6 +29,7 @@ public class Trace extends POI implements ComputableTripMetrics
 	{
 		this.tracePoints = new Vector<Location>();
 		this.traceComputer = new TraceComputer( tracePoints ); // TODO get this from settings.
+		this.tags = new Tags();
 	}
 
 	/*
@@ -84,6 +87,26 @@ public class Trace extends POI implements ComputableTripMetrics
 	public String getPace()
 	{
 		return this.traceComputer.getPace();
+	}
+
+	@Override
+	public boolean validate()
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Tags getTags()
+	{
+
+		return this.tags;
+	}
+
+	@Override
+	public void setTags( Tags tags )
+	{
+		this.tags = tags;
 	}
 
 }
