@@ -5,6 +5,7 @@ package path.wiser.mobile.ui;
 
 import path.wiser.mobile.R;
 import android.app.Activity;
+import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
@@ -31,7 +32,12 @@ import android.widget.Toast;
 public abstract class WiserActivityHelper extends Activity implements LocationListener
 {
 
-	private String	tag	= "WiserActivityHelper";
+	private String			tag		= "WiserActivityHelper";
+	// these fields are used for generating internationalized messages.
+	protected Resources		res		= null;
+	protected String		text	= "";						// helper string
+	protected CharSequence	msg		= "";						// message to display depending on the values from
+																// strings.xml
 
 	/**
 	 * Base constructor
@@ -43,12 +49,18 @@ public abstract class WiserActivityHelper extends Activity implements LocationLi
 		this.tag = tag;
 	}
 
+	public void onCreate( Bundle savedInstanceState )
+	{
+		super.onCreate( savedInstanceState );
+		this.res = getResources();
+	}
+
 	/**
 	 * Creates a customized Toast with the wiser logo.
 	 * 
 	 * @param message
 	 */
-	protected void showMessage( String message )
+	protected void showMessage( CharSequence message )
 	{
 		LayoutInflater inflater = getLayoutInflater();
 		View layout = inflater.inflate( R.layout.custom_toast_layout, (ViewGroup) findViewById( R.id.custom_toast_layout_root ) );
@@ -57,7 +69,6 @@ public abstract class WiserActivityHelper extends Activity implements LocationLi
 		image.setImageResource( R.drawable.icon );
 		TextView text = (TextView) layout.findViewById( R.id.text );
 		text.setText( message );
-
 		Toast toast = new Toast( getApplicationContext() );
 		toast.setGravity( Gravity.CENTER_VERTICAL, 0, 0 );
 		toast.setDuration( Toast.LENGTH_LONG );
@@ -131,16 +142,6 @@ public abstract class WiserActivityHelper extends Activity implements LocationLi
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see android.app.Activity#onResume()
-	 */
-	public void onResume()
-	{
-		super.onResume();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see java.lang.Object#toString()
 	 * Convient way to output tag for error and information reporting when
 	 * writing to Losg.
@@ -160,15 +161,6 @@ public abstract class WiserActivityHelper extends Activity implements LocationLi
 	 */
 	@Override
 	public abstract void onLocationChanged( Location location );
-
-	// {
-	// if (location != null)
-	// {
-	// Log.d( "LOCATION CHANGED", location.getLatitude() + "" );
-	// Log.d( "LOCATION CHANGED", location.getLongitude() + "" );
-	// }
-	//
-	// }
 
 	/*
 	 * (non-Javadoc)
