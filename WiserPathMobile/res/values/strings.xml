@@ -26,6 +26,7 @@
     <string name="s_use_location_title">Use Location</string>
     <string name="s_use_location_summary">Use your GPS to record information</string>
     
+    <!-- Messages -->
     <!-- Settings messages -->
     <string name="s_welcome_msg">Welcome to the Wiser Path Community %s!</string>
     <string name="s_unwelcome_msg">Uh-oh, there was a problem registering you. Please visit WiserPath for help.</string>
@@ -34,5 +35,9 @@
     <string name="s_invalid_user_name_msg">Sorry name must be between 1 and 60 characters</string>
     <string name="s_invalid_email_msg">Sorry the email address is invalid</string>
     
-    
+    <!-- PointOfInterestActivity messages -->
+    <string name="poi_blog_post_success_msg">Your Geo-blog was successfully posted.</string>
+    <string name="poi_blog_post_fail_msg">Dang, your blog wasn&#96;t posted, try again later.</string>
+    <string name="poi_blog_post_invalid_msg">Your blog isn&#96;t finished yet</string>
+    <string name="poi_blog_save_success_msg">Saved</string>
 </resources>
