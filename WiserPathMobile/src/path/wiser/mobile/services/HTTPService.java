@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
+import path.wiser.mobile.geo.Blog;
 import android.util.Log;
 
 /**
@@ -210,6 +211,18 @@ public class HTTPService
 		// do some basic checks -- drupal has a significantly more robust algorithm, and more compute power.
 		// TODO finish me.
 		return emailAddress.contains( "@" );
+	}
+
+	/**
+	 * Uploads a Blog object to WiserPath.
+	 * 
+	 * @param blog
+	 * @return true if the blog was uploaded and false otherwise.
+	 */
+	public boolean uploadBlog( Blog blog )
+	{
+		// TODO Upload the blog's data to WiserPath
+		return false;
 	}
 
 }
