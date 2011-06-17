@@ -63,4 +63,12 @@ public abstract class POI
 		return this.blog;
 	}
 
+	/**
+	 * Checks if the object is valid, that is, is all the information
+	 * that WiserPath is expecting filled out in the object.
+	 * 
+	 * @return True if this is a valid object and false otherwise.
+	 */
+	public abstract boolean validate();
+
 }
