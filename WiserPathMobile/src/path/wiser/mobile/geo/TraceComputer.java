@@ -9,7 +9,7 @@ import path.wiser.mobile.Units;
 import android.location.Location;
 
 /**
- * This class does the heavy lifting for computing the following metrics:
+ * This class is a strategy type pattern for Traces and does the heavy lifting for computing the following metrics:
  * <ol>
  * <li>speed
  * <li>distance

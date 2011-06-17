@@ -26,4 +26,12 @@ public class Blog extends POI
 		this.location = location;
 	}
 
+	/**
+	 * @return True if the blog has a stored location and false otherwise.
+	 */
+	public boolean needsLocation()
+	{
+		return this.location == null;
+	}
+
 }

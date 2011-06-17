@@ -3,8 +3,12 @@
  */
 package path.wiser.mobile.ui;
 
+import java.util.Vector;
+
 import path.wiser.mobile.R;
 import path.wiser.mobile.geo.Blog;
+import path.wiser.mobile.geo.GPS;
+import path.wiser.mobile.services.HTTPService;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.Menu;
@@ -21,7 +25,9 @@ import android.widget.TextView;
  */
 public class PointOfInterestActivity extends Selectable
 {
-	protected Blog	blog	= null;
+	protected Blog			blog	= null;
+	protected Vector<Blog>	blogs	= null;
+	protected GPS			gps		= null;
 
 	public PointOfInterestActivity()
 	{
@@ -40,6 +46,7 @@ public class PointOfInterestActivity extends Selectable
 		// set content view so you can grab stuff in it.
 		setContentView( R.layout.poi_tab );
 		// GPS gps = new GPS( this );
+		this.blogs = new Vector<Blog>();
 		// this.blog = new Blog();
 
 		// add a onClick listener to the text screens so we can remove the
@@ -116,7 +123,8 @@ public class PointOfInterestActivity extends Selectable
 	protected void delete()
 	{
 		// TODO Auto-generated method stub
-
+		// this.blogs.removeElement( blog );
+		// this.blog = new Blog();
 	}
 
 	@Override
@@ -129,30 +137,24 @@ public class PointOfInterestActivity extends Selectable
 	@Override
 	protected void previous()
 	{
-		// this.db.deleteAll();
-		// this.db.insert( "Zainia", "", null, "" );
-		// this.db.insert( "Andrew", "", null, "" );
-		//
-		// List<String> names = this.db.selectAll();
-		// TextView textView = (TextView) findViewById( R.id.Poi_Title );
-		// if (names.size() > 0)
-		// {
-		// textView.setText( names.get( 0 ) + ", " + names.get( 1 ) );
-		// }
+		// TODO goto previous blog.
 	}
 
 	@Override
 	protected void save()
 	{
-		// TODO Auto-generated method stub
-
+		// TODO Serialize the entire vector to disk.
 	}
 
 	@Override
 	protected void upload()
 	{
 		// TODO Auto-generated method stub
-
+		HTTPService service = HTTPService.getInstance();
+		if (service.uploadBlog( this.blog ))
+		{
+			;
+		}
 	}
 
 	@Override
@@ -165,8 +167,12 @@ public class PointOfInterestActivity extends Selectable
 	@Override
 	public void onLocationChanged( Location location )
 	{
-		// TODO Auto-generated method stub
-
+		// TODO if a location has already been stored stop the GPS
+		// we do this so the location doesn't keep updating after you leave the POI.
+		if (this.blog.needsLocation())
+		{
+			this.blog.setLocation( location );
+			// this.gps = null;
+		}
 	}
-
 }
