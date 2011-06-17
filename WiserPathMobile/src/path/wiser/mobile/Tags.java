@@ -25,16 +25,23 @@ public class Tags
 		tags.add( tag );
 	}
 
+	public Tags()
+	{
+		init();
+	}
+
 	/**
 	 * @param tag
+	 * @return TODO
 	 */
-	public void addTag( String tag )
+	public boolean addTag( String tag )
 	{
 		if (tags.contains( tag )) // don't add tags if they already exist.
 		{
-			return;
+			return false;
 		}
 		tags.add( tag );
+		return true;
 	}
 
 	/**
@@ -65,7 +72,7 @@ public class Tags
 	}
 
 	/**
-	 * This method is typically called from the {@link PointOfInterestMVC#change()} method.
+	 * This method is typically called from the {@link BlogMVC#change()} method.
 	 * It parses the text it finds there and populates the tag object.
 	 * 
 	 * @param textViewTags
