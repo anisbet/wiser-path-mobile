@@ -3,157 +3,136 @@
  */
 package path.wiser.mobile.ui;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
-import path.wiser.mobile.R;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.PixelFormat;
-import android.hardware.Camera;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.Window;
-import android.view.WindowManager;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.provider.MediaStore.Images.Media;
+import android.widget.Toast;
 
-// Note to programmer: you need only pass a new version of this object to the setOnClickListener()
-// method of a button you wish to use to activate the camera.
-/**
- * This class will take care of taking photos from the androids camera
- * and storing the picture in an appropriate place.
- * 
- * @author anisbet
- * 
- */
-public class CameraActivity extends Activity implements OnClickListener, SurfaceHolder.Callback
+public class CameraActivity extends Activity
 {
 
-	public static final int		FOTO_MODE		= 0;
-	private static final String	TAG				= "CameraTest";
-	private Camera				mCamera			= null;
-	private boolean				mPreviewRunning	= false;
-	private Context				mContext		= this;
+	protected boolean				taken		= true;
+	protected File					sdImageMainDirectory;
 
-	public void onCreate( Bundle icicle )
+	protected static final String	PHOTO_TAKEN	= "photo_taken";
+
+	@Override
+	public void onCreate( Bundle savedInstanceState )
 	{
-		super.onCreate( icicle );
 
-		Log.e( TAG, "onCreate" );
+		try
+		{
 
-		Bundle extras = getIntent().getExtras();
+			super.onCreate( savedInstanceState );
+			File root = new File( Environment.getExternalStorageDirectory() + File.separator + "myDir" + File.separator );
+			root.mkdirs();
+			sdImageMainDirectory = new File( root, "myPicName" );
 
-		getWindow().setFormat( PixelFormat.TRANSLUCENT );
-		requestWindowFeature( Window.FEATURE_NO_TITLE );
-		getWindow().setFlags( WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN );
-		setContentView( R.layout.camera_surface );
-		mSurfaceView = (SurfaceView) findViewById( R.id.surface_camera );
-		mSurfaceView.setOnClickListener( this );
-		mSurfaceHolder = mSurfaceView.getHolder();
-		mSurfaceHolder.addCallback( this );
-		mSurfaceHolder.setType( SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS );
+			startCameraActivity();
+
+		}
+		catch (Exception e)
+		{
+			finish();
+			Toast.makeText( this, "Error occured. Please try again later.", Toast.LENGTH_SHORT ).show();
+		}
+
+	}
+
+	/**
+	 * 
+	 */
+	protected void startCameraActivity()
+	{
+
+		Uri outputFileUri = Uri.fromFile( sdImageMainDirectory );
+
+		Intent intent = new Intent( "android.media.action.IMAGE_CAPTURE" );
+		intent.putExtra( MediaStore.EXTRA_OUTPUT, outputFileUri );
+
+		startActivityForResult( intent, 0 );
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onActivityResult(int, int, android.content.Intent)
+	 */
+	@Override
+	protected void onActivityResult( int requestCode, int resultCode, Intent data )
+	{
+		switch (resultCode)
+		{
+		case 0:
+			finish();
+			break;
+
+		case -1:
+
+			try
+			{
+				StoreImage( this, Uri.parse( data.toURI() ), sdImageMainDirectory );
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+
+			finish();
+			// startActivity( new Intent( CameraActivity.this, Home.class ) );
+
+		}
+
 	}
 
 	@Override
 	protected void onRestoreInstanceState( Bundle savedInstanceState )
 	{
-		super.onRestoreInstanceState( savedInstanceState );
+		if (savedInstanceState.getBoolean( CameraActivity.PHOTO_TAKEN ))
+		{
+			taken = true;
+		}
 	}
 
-	Camera.PictureCallback	mPictureCallback	= new Camera.PictureCallback()
-												{
-													public void onPictureTaken( byte[] imageData, Camera c )
-													{
-
-														if (imageData != null)
-														{
-
-															Intent mIntent = new Intent();
-
-															// FileUtilities
-															// .StoreByteImage(
-															// mContext,
-															// imageData,
-															// 50,
-															// "ImageName" );
-
-															mCamera.startPreview();
-
-															setResult( FOTO_MODE, mIntent );
-															finish();
-
-														}
-													}
-												};
-
-	protected void onResume()
-	{
-		Log.e( TAG, "onResume" );
-		super.onResume();
-	}
-
+	@Override
 	protected void onSaveInstanceState( Bundle outState )
 	{
-		super.onSaveInstanceState( outState );
+		outState.putBoolean( CameraActivity.PHOTO_TAKEN, taken );
 	}
 
-	protected void onStop()
+	public static void StoreImage( Context mContext, Uri imageLoc, File imageDir )
 	{
-		Log.e( TAG, "onStop" );
-		super.onStop();
-	}
-
-	public void surfaceCreated( SurfaceHolder holder )
-	{
-		Log.e( TAG, "surfaceCreated" );
-		mCamera = Camera.open();
-
-	}
-
-	public void surfaceChanged( SurfaceHolder holder, int format, int w, int h )
-	{
-		Log.e( TAG, "surfaceChanged" );
-
-		// XXX stopPreview() will crash if preview is not running
-		if (mPreviewRunning)
-		{
-			mCamera.stopPreview();
-		}
-
-		Camera.Parameters p = mCamera.getParameters();
-		p.setPreviewSize( w, h );
-		mCamera.setParameters( p );
+		Bitmap bm = null;
 		try
 		{
-			mCamera.setPreviewDisplay( holder );
+			bm = Media.getBitmap( mContext.getContentResolver(), imageLoc );
+			FileOutputStream out = new FileOutputStream( imageDir );
+			bm.compress( Bitmap.CompressFormat.JPEG, 100, out );
+			bm.recycle();
+		}
+		catch (FileNotFoundException e)
+		{
+			e.printStackTrace();
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		mCamera.startPreview();
-		mPreviewRunning = true;
-	}
-
-	public void surfaceDestroyed( SurfaceHolder holder )
-	{
-		Log.e( TAG, "surfaceDestroyed" );
-		mCamera.stopPreview();
-		mPreviewRunning = false;
-		mCamera.release();
-	}
-
-	private SurfaceView		mSurfaceView;
-	private SurfaceHolder	mSurfaceHolder;
-
-	public void onClick( View arg0 )
-	{
-
-		mCamera.takePicture( null, mPictureCallback, mPictureCallback );
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 
 	}
 
