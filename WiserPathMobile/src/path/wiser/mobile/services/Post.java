@@ -118,7 +118,7 @@ public class Post
 			}
 			else
 			{
-				// System.out.println( name + "=" + value );
+				System.out.println( name + "=" + value );
 				if (name.equalsIgnoreCase( "Set-Cookie" ))
 				{
 					wiserCookie = new WiserCookie( value );
