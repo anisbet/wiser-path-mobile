@@ -13,7 +13,8 @@ import java.util.Vector;
  */
 public class Tags
 {
-	private Vector<String>	tags	= null;
+	private Vector<String>		tags		= null;
+	public final static String	DELIMITER	= ", ";
 
 	/**
 	 * @param tag
@@ -63,6 +64,21 @@ public class Tags
 		return retTags;
 	}
 
+	/**
+	 * This method is typically called from the {@link PointOfInterestMVC#change()} method.
+	 * It parses the text it finds there and populates the tag object.
+	 * 
+	 * @param textViewTags
+	 */
+	public void setTags( String textViewTags )
+	{
+		String[] myTags = textViewTags.split( DELIMITER );
+		for (String tag : myTags)
+		{
+			this.addTag( tag );
+		}
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -74,7 +90,7 @@ public class Tags
 		StringBuffer out = new StringBuffer();
 		for (String tag : tags)
 		{
-			out.append( tag + ", " );
+			out.append( tag + DELIMITER );
 		}
 		return out.toString();
 	}
