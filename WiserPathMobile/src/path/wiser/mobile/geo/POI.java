@@ -3,7 +3,7 @@
  */
 package path.wiser.mobile.geo;
 
-import path.wiser.mobile.Tags;
+import path.wiser.mobile.util.Tags;
 import android.location.Location;
 
 /**
