@@ -1,8 +1,9 @@
 /**
  * 
  */
-package path.wiser.mobile.ui;
+package path.wiser.mobile.util;
 
+import path.wiser.mobile.ui.WiserActivityHelper;
 import android.database.Cursor;
 
 /**

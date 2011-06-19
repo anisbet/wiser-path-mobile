@@ -1,6 +1,7 @@
 package path.wiser.mobile.ui;
 
 import path.wiser.mobile.R;
+import path.wiser.mobile.util.Selectable;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.Menu;

@@ -1,4 +1,4 @@
-package path.wiser.mobile;
+package path.wiser.mobile.util;
 
 public interface ModelViewController
 {

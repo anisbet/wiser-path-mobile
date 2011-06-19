@@ -1,9 +1,10 @@
 /**
  * 
  */
-package path.wiser.mobile;
+package path.wiser.mobile.util;
 
 import java.util.Vector;
+
 
 /**
  * This class is the listing of user defined tags.

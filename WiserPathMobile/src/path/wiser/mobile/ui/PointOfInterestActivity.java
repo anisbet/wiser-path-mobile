@@ -5,11 +5,12 @@ package path.wiser.mobile.ui;
 
 import java.util.Vector;
 
-import path.wiser.mobile.BlogMVC;
 import path.wiser.mobile.R;
 import path.wiser.mobile.geo.Blog;
 import path.wiser.mobile.geo.GPS;
 import path.wiser.mobile.services.HTTPService;
+import path.wiser.mobile.util.BlogMVC;
+import path.wiser.mobile.util.Selectable;
 import android.location.Location;
 import android.os.Bundle;
 import android.text.Html;

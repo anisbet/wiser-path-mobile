@@ -5,7 +5,7 @@ package path.wiser.mobile.geo;
 
 import java.util.Vector;
 
-import path.wiser.mobile.Tags;
+import path.wiser.mobile.util.Tags;
 import android.location.Location;
 
 /**
