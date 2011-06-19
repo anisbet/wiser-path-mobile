@@ -3,7 +3,7 @@
 
 A blog can be uploaded to WiserPath. It will be done through the URL:
 {{{
-http://wiserpath-dev2.bus.ualberta.ca/node/add/usercomment?location=POINT(-12661564.422592%207074094.0927518)
+http://wiserpath-dev.bus.ualberta.ca/node/add/geoblog?location=POINT(-12661564.422592%207074094.0927518)
 }}}
 where POINT is the coordinate of the device that is in Edmonton.
 
