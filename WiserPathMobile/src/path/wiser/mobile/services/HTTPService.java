@@ -6,7 +6,6 @@ package path.wiser.mobile.services;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 
 import path.wiser.mobile.geo.Blog;
 import android.util.Log;
@@ -24,17 +23,35 @@ import android.util.Log;
  */
 public class HTTPService
 {
-	private final static String	WP_URL					= "http://wiserpath-dev.bus.ualberta.ca";	// login
+	private final static String	WP_URL					= "http://wiserpath-dev.bus.ualberta.ca";			// login
 	private final static String	LOGIN_PATH				= "/user/login";
 	private final static String	SIGNUP_PATH				= "/user/register";
 	private static final String	GEOBLOG_PATH			= "/node/add/geoblog";
 
-	private final static int	SUCCESS_LOGIN_CODE		= 302;										// if all went well
-																									// the
-	private static final int	SUCCESS_REGISTER_CODE	= 302;										// redirected to the
-																									// search window
-	private static final int	SERVER_UNREACHABLE		= 400;										// If Wiser Path is
-																									// offline
+	private final static int	SUCCESS_LOGIN_CODE		= 302;												// if
+																											// all
+																											// went
+																											// well
+																											// the
+	private static final int	SUCCESS_REGISTER_CODE	= 302;												// redirected
+																											// to
+																											// the
+																											// search
+																											// window
+	private static final int	SERVER_UNREACHABLE		= 400;												// If
+																											// Wiser
+																											// Path
+																											// is
+																											// offline
+	// used for logging in.
+	private static final String	LOGIN_PASSWORD_PARAM	= "&pass=";
+	private static final String	LOGIN_EXTRA_PARAMS		= "&form_id=user_login&op=log+in";
+	private static final String	LOGIN_NAME_PARAM		= "name=";
+
+	// used for creating an account
+	private static final String	CREATE_NAME_PARAM		= "name=";
+	private static final String	CREATE_EMAIL_PARAM		= "&mail=";
+	private static final String	CREATE_EXTRA_PARAM		= "&form_id=user_register&op=Create+new+account";
 
 	// page
 	// redirected to your
@@ -55,28 +72,30 @@ public class HTTPService
 	public static HTTPService login( String userName, String password )
 	{
 
-		// build URL to contact
-		Post response = null;
+		WiserPathConnection connection = new WiserPathConnection();
 		HTTPService.credential = new Credential( userName, password );
+		String content = LOGIN_NAME_PARAM + credential.getUserName() + LOGIN_PASSWORD_PARAM + credential.getPassword() + LOGIN_EXTRA_PARAMS;
 		try
 		{
 			URL url = HTTPService.getLoginURL();
-			response = HTTPService.getLoginResponse( url );
-			if (response.getReturnCode() == SUCCESS_LOGIN_CODE)
+
+			connection.POST( url, content );
+			if (connection.getReturnCode() == SUCCESS_LOGIN_CODE)
 			{
-				HTTPService.credential.setCookie( response.getWiserCookie() );
+				credential.setCookie( connection.getTransactionCookie() );
 			}
 		}
 		catch (MalformedURLException e)
 		{
-			Log.e( "HTTPService: error", "unable to log in because URL was malformed." );
+			Log.e( "HTTPService", "unable to log in because URL was malformed." );
 		}
 		catch (UnsupportedEncodingException e) // in case the url is unsupported
 												// -- should never happen.
 		{
 			e.printStackTrace();
 		}
-		Log.i( "HTTPService: message", "Satus returned: " + String.valueOf( response.getReturnCode() ) );
+		Log.i( "HTTPService", "Satus returned: " + connection.getReturnCode() );
+
 		// if everything succeeded then create the instance of this service and return a reference to the caller.
 		if (thisService == null)
 		{
@@ -95,42 +114,24 @@ public class HTTPService
 	 */
 	public static boolean signUp( String userName, String email )
 	{
-		// build URL to contact
-		Post response = null;
+
 		try
 		{
 			URL url = HTTPService.getRegisterURL();
-			response = HTTPService.getRegisterResponse( url, userName, email );
-			if (response.getReturnCode() == SUCCESS_REGISTER_CODE)
+			WiserPathConnection connection = new WiserPathConnection();
+			String content = CREATE_NAME_PARAM + credential.getUserName() + CREATE_EMAIL_PARAM + credential.getPassword() + CREATE_EXTRA_PARAM;
+			connection.POST( url, content );
+			if (connection.getReturnCode() == SUCCESS_REGISTER_CODE)
 			{
-				Log.i( "HTTPService: SUCCESS", "User must get their login password from their email account" );
-				return true;
-			}
-			else
-			{
-				Log.e( "HTTPService: Error", "Service failed to create new account for user with STATUS code: " + response.getReturnCode() );
-				return true;
+				Log.i( "HTTPService", "register request returned status: " + connection.getReturnCode() );
 			}
 		}
 		catch (MalformedURLException e)
 		{
-			Log.e( "HTTPService: error", "unable to Register because URL was malformed. Has WiserPath moved?" );
+			Log.e( "HTTPService: error", "unable to Register because URL was malformed. Contact WiserPath Admin." );
 			return false;
 		}
-	}
-
-	/**
-	 * @param url
-	 * @return status code of the request to join WiserPath.
-	 */
-	private static Post getRegisterResponse( URL url, String name, String email )
-	{
-		String dataToPost = "name=" + URLEncoder.encode( name ) + "&mail=" + URLEncoder.encode( email )
-			+ "&form_id=user_register&op=Create+new+account";
-		Post response = new Post( url );
-		response.post( dataToPost );
-		// read the returning headers and place in a Post.
-		return response;
+		return true;
 	}
 
 	/**
@@ -141,44 +142,19 @@ public class HTTPService
 	 */
 	public boolean uploadBlog( Blog blog )
 	{
-		// build URL to contact
-		Post response = null;
+
 		try
 		{
 			URL url = HTTPService.getGeoBlogURL();
-			response = sendGeoBlogPageRequest( url, credential );
-			if (response.getReturnCode() == SUCCESS_REGISTER_CODE)
-			{
-				Log.i( "HTTPService: SUCCESS", "User must get their login password from their email account" );
-				return true;
-			}
-			else
-			{
-				Log.e( "HTTPService: Error", "Service failed to create new account for user with STATUS code: " + response.getReturnCode() );
-				return true;
-			}
+			WiserPathConnection connection = new WiserPathConnection();
+			// TODO add the put the content in a post.
 		}
 		catch (MalformedURLException e)
 		{
-			Log.e( "HTTPService: error", "unable to Register because URL was malformed. Has WiserPath moved?" );
+			Log.e( "HTTPService", "unable to Register because URL was malformed. Has WiserPath moved?" );
 			return false;
 		}
-	}
-
-	/**
-	 * This method makes a request to the server for a page to fill in a geoblog.
-	 * 
-	 * @param url
-	 * @param credential
-	 * @return Post object of the response from WiserPath
-	 */
-	private Post sendGeoBlogPageRequest( URL url, Credential credential )
-	{
-		String dataToPost = "cookie: " + credential.getLoginCookie().toString() + "; ";
-		Post response = new Post( url );
-		response.post( dataToPost );
-		// read the returning headers and place in a Post.
-		return response;
+		return true;
 	}
 
 	/**
@@ -197,27 +173,8 @@ public class HTTPService
 	 */
 	private static URL getRegisterURL() throws MalformedURLException
 	{
-		String URL = HTTPService.WP_URL + HTTPService.SIGNUP_PATH;
+		String URL = WP_URL + SIGNUP_PATH;
 		return new URL( URL );
-	}
-
-	/**
-	 * Opens a connection and submits the users credentials and reads the
-	 * response from the server and reports it.
-	 * 
-	 * @param url
-	 * @param credential
-	 * @return Post object.
-	 */
-	private static Post getLoginResponse( URL url )
-	{
-		// create the login url. These values can be nothing if the user has no
-		// preferences set.
-		String dataToPost = "name=" + credential.getUserName() + "&pass=" + credential.getPassword() + "&form_id=user_login&op=log+in";
-		Post response = new Post( url );
-		response.post( dataToPost );
-		// read the returning headers and place in a Post.
-		return response;
 	}
 
 	/**
@@ -227,10 +184,13 @@ public class HTTPService
 	 */
 	private static URL getLoginURL() throws MalformedURLException, UnsupportedEncodingException
 	{
-		String URL = HTTPService.WP_URL + HTTPService.LOGIN_PATH;
+		String URL = WP_URL + LOGIN_PATH;
 		return new URL( URL );
 	}
 
+	/**
+	 * @return True if they are a member and false otherwise
+	 */
 	public boolean isLoggedIn()
 	{
 		return HTTPService.credential.isMember();

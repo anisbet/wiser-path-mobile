@@ -1,10 +1,11 @@
 package path.wiser.mobile.services;
 
-public class WiserCookie 
+public class WiserCookie
 {
-	private String cookie;
+	private String	cookie;
+	private String	node;
 
-	public WiserCookie( String cookie ) 
+	public WiserCookie( String cookie )
 	{
 		this.cookie = cookie;
 	}
@@ -13,6 +14,17 @@ public class WiserCookie
 	public String toString()
 	{
 		return cookie;
+	}
+
+	public void setLocation( String value )
+	{
+		String[] pathParts = value.split( "/" );
+		this.node = pathParts[pathParts.length - 1];
+	}
+
+	public String getUserNodeNumber()
+	{
+		return node;
 	}
 
 }
