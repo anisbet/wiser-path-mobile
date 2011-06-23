@@ -11,7 +11,9 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.HttpURLConnection;
+import java.net.ProtocolException;
 import java.net.URL;
+import java.io.DataOutputStream;
 
 /**
  * Takes a connection and reports results of the post
@@ -21,7 +23,8 @@ import java.net.URL;
  */
 public class WiserPathConnection
 {
-	private int					response	= -1;																		// set
+	private static WiserPathConnection wpc;
+	private static int			response	= -1;																		// set
 																														// an
 																														// unusual
 																														// and
@@ -30,66 +33,81 @@ public class WiserPathConnection
 																														// for
 																														// reality
 																														// check.
-	private WiserCookie			wiserCookie;
-	private String				receiveContent;
+	private static WiserCookie	wiserCookie;
+	private static String		receiveContent;
 	private StringBuffer		sendContent;
-	private String				contentType;
 
-	public final static String	BOUNDARY	= "-------WPMFormBoundary" + String.valueOf( System.currentTimeMillis() );
-	private String				boundary	= "\r\n" + BOUNDARY + "\r\n";
-	private OutputStream		contentStream;
-
-	public enum ContentType
-	{
-		X_WWW_FORM_URLENCODED, MULTIPART_FORM_DATA, IMAGE_JPEG, FORM_DATA
-	}
-
-	/**
-	 * @param contentType of the overall post.
-	 */
-	public WiserPathConnection( ContentType contentType )
-	{
-		receiveContent = new String();
-		this.contentType = setContentType( contentType );
-	}
+	public final static String	BOUNDARY	= "----WPMFormBoundary" + String.valueOf( System.currentTimeMillis() );
+	private DataOutputStream contentStream;
+	
+	private HttpURLConnection connection; // used for multipart posts.
+	
+	
 
 	/**
 	 * Sets the content type to application/x-www-form-urlencoded.
 	 */
-	public WiserPathConnection()
+	private WiserPathConnection( URL url )
 	{
 		receiveContent = new String();
-		contentType = setContentType( ContentType.X_WWW_FORM_URLENCODED );
+		sendContent = new StringBuffer();
+		try {
+			this.connection = (HttpURLConnection) url.openConnection();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			this.connection.setRequestMethod( "POST" );
+		} catch (ProtocolException e) {
+			e.printStackTrace();
+		}
+		this.connection.setDoOutput( true ); // sets to POST
+		this.connection.setDoInput(true);
+//		this.connection.setChunkedStreamingMode( 0 ); // so we don't exhaust the buffer and overly delay transmission.
+		this.connection.setInstanceFollowRedirects( false );
+		this.connection.setUseCaches(false);
+		this.connection.setRequestProperty("Connection", "Keep-Alive");
+		this.connection.setRequestProperty("Charset", "UTF-8");
+		this.connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + BOUNDARY);
+//		this.connection.setRequestProperty("Transfer-Encoding", "chunked");
+		try {
+			connection.connect();
+			contentStream = new DataOutputStream( connection.getOutputStream() );
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 	/**
-	 * Sets the transaction cookie.
+	 * Sets the transaction cookie. Do this immediately after creating a multipart post.
 	 * 
 	 * @param cookie
 	 */
 	public void setCookie( WiserCookie cookie )
 	{
-		this.wiserCookie = cookie;
-	}
-
-	/**
-	 * @param contentType for post data.
-	 */
-	private String setContentType( ContentType contentType )
-	{
-		switch (contentType)
+		wiserCookie = cookie;
+		// if this is an instance of a multipartPost you can now set the cookie
+		// if the connection has been created. Do this before sending data.
+		if ( this.connection != null )
 		{
-		case MULTIPART_FORM_DATA:
-			return "multipart/form-data; boundary=" + BOUNDARY;
-			// this.contentType = "multipart/form-data";
-		case IMAGE_JPEG:
-			return "image/jpeg";
-		case FORM_DATA:
-			return "Content-Disposition: form-data; ";
-			// this.contentType = "multipart/form-data";
-		default:
-			return "application/x-www-form-urlencoded";
+			this.connection.setRequestProperty( "Cookie: ", wiserCookie.toString() );
 		}
+	}
+	
+	/**
+	 * Use this constructor for a multipart post.
+	 * @param url
+	 * @param contentType
+	 */
+	public static WiserPathConnection getInstance( URL url )
+	{
+		if ( wpc == null )
+		{
+			wpc = new WiserPathConnection( url );
+		}
+
+		return wpc;
 	}
 
 	/**
@@ -97,73 +115,59 @@ public class WiserPathConnection
 	 * 
 	 * Use this method to sent your content type for string data like 'name="Andrew"' with a content
 	 * type of FORM_DATA within a MULTIPART_FORM_DATA content type of the post over all.
-	 * 
-	 * @param type
-	 * @param content
+	 * @param formAttrib TODO
+	 * @param value
 	 */
-	public void setMultiPartContent( ContentType type, String content )
+	public void addFormData( String formAttrib, String value )
 	{
-		// don't do anything if the user specified any other content type -- they may be confused about types.
-		switch (type)
+		if ( this.contentStream != null )
 		{
-		case FORM_DATA:
-			this.sendContent.append( type );
-			this.sendContent.append( content );
-			this.sendContent.append( this.boundary );
-			break;
-		default:
-			break;
+			try {
+				this.contentStream.writeBytes("--" +  BOUNDARY + "\r\n");
+				this.contentStream.writeBytes("Content-Disposition: form-data; name=\"" + formAttrib + "\"\r\n");
+				this.contentStream.writeBytes("\r\n" + value + "\r\n");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
-
 	}
-
+	
 	/**
-	 * Allows the user to append multipart data to be sent by POST.
-	 * 
-	 * Use this method to sent your content type for string data like 'name="files[field_photo_0]";
-	 * filename="spitz.jpg"' with a content
-	 * type of FORM_DATA within a MULTIPART_FORM_DATA content type of the post over all.
-	 * 
-	 * @param type
-	 * @param content
+	 * @return the HTTP status code of the response from the server.
 	 */
-	public void setMultiPartContent( ContentType type, String content, OutputStream contentStream )
+	public int POST()
 	{
-		// don't do anything if the user specified any other content type -- they may be confused about types.
-		switch (type)
-		{
-		case IMAGE_JPEG:
-			this.sendContent.append( setContentType( ContentType.FORM_DATA ) );
-			this.sendContent.append( content + "\r\n" );
-			this.sendContent.append( setContentType( ContentType.IMAGE_JPEG ) + "\r\n" );
-			this.sendContent.append( this.boundary );
-			this.contentStream = contentStream;
-			break;
-		default:
-			break;
+		//TODO finish me. I flush and read response and close connection.
+		try {
+			////// For Bleep bleep sake don't forget the dashes at the end MUST have 2!!
+			this.contentStream.writeBytes("--" + BOUNDARY + "--");
+			this.contentStream.flush();
+			this.contentStream.close();
+			// now read the results.
+			InputStream in;
+			in = new BufferedInputStream( connection.getInputStream() );
+			receiveContent = readStream( in );
+			readHTTPHeader( connection, wiserCookie );
+			response = connection.getResponseCode();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-
+		
+		return response;
 	}
 
-	/**
-	 * Use this method if you have set multi-part data in with the {@link#setContent()} method.
-	 * 
-	 * @param url to post the data to.
-	 * @return HTTP status
-	 */
-	public int POST( URL url )
-	{
-		return POST( url, this.sendContent.toString() );
-	}
 
 	/**
 	 * POSTs a String to a URL. This call does not support redirection.
 	 * 
 	 * @param url
+	 * @param wiserCookie if you have one send null if not.
 	 * @param receiveContent
 	 * @return The HTTP status code of the transaction.
 	 */
-	public int POST( URL url, String content )
+	public static int POST( URL url, String content, WiserCookie wiserCookie )
 	{
 
 		HttpURLConnection connection = null;
@@ -175,10 +179,10 @@ public class WiserPathConnection
 
 			connection.setChunkedStreamingMode( 0 ); // so we don't exhaust the buffer and overly delay transmission.
 			connection.setInstanceFollowRedirects( false );
-			connection.setRequestProperty( "Content-Type", contentType );
-			if (this.wiserCookie != null)
+			connection.setRequestProperty( "Content-Type", "application/x-www-form-urlencoded" );
+			if (wiserCookie != null)
 			{
-				connection.setRequestProperty( "Cookie: ", this.wiserCookie.toString() ); // TODO if this fails try
+				connection.setRequestProperty( "Cookie: ", wiserCookie.toString() ); // TODO if this fails try
 																							// removing the space
 			}
 			connection.connect();
@@ -189,7 +193,7 @@ public class WiserPathConnection
 			// now read the results.
 			InputStream in = new BufferedInputStream( connection.getInputStream() );
 			content = readStream( in );
-			readHTTPHeader( connection );
+			readHTTPHeader( connection, wiserCookie );
 			response = connection.getResponseCode();
 		}
 		catch (IOException e)
@@ -208,9 +212,14 @@ public class WiserPathConnection
 	 * Reads the header of a connection then can be queried for values.
 	 * 
 	 * @param connection
+	 * @param wiserCookie if null one will be made for you.
 	 */
-	private void readHTTPHeader( HttpURLConnection connection )
+	private static void readHTTPHeader( HttpURLConnection connection, WiserCookie cookie )
 	{
+		if ( cookie == null )
+		{
+			wiserCookie = new WiserCookie();
+		}
 		for (int i = 0;; i++)
 		{
 			String name = connection.getHeaderFieldKey( i );
@@ -224,51 +233,51 @@ public class WiserPathConnection
 				System.out.println( name + "=" + value );
 				if (name.equalsIgnoreCase( "Set-Cookie" ))
 				{
-					this.wiserCookie = new WiserCookie( value );
+					wiserCookie = new WiserCookie( value );
 				}
 				else
 					// if this runs it is because a Location value has been set in the http header.
 					if (name.equalsIgnoreCase( "Location" ))
 					{
-						this.wiserCookie.setLocation( value );
+						wiserCookie.setLocation( value );
 					}
 			}
 		}
 	}
 
-	/**
-	 * GET sends data via the URL command line.
-	 * 
-	 * @param connection
-	 */
-	public int get( URL url )
-	{
-		HttpURLConnection connection = null;
-		try
-		{
-			connection = (HttpURLConnection) url.openConnection();
-			connection.setInstanceFollowRedirects( false );
-			InputStream in = connection.getInputStream();
-			this.receiveContent = readStream( in );
-			in.close();
-			this.response = connection.getResponseCode();
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-		finally
-		{
-			connection.disconnect();
-		}
-		return this.response;
-	}
+//	/**
+//	 * GET sends data via the URL command line.
+//	 * 
+//	 * @param URL 
+//	 */
+//	public int GET( URL url )
+//	{
+//		HttpURLConnection connection = null;
+//		try
+//		{
+//			connection = (HttpURLConnection) url.openConnection();
+//			connection.setInstanceFollowRedirects( false );
+//			InputStream in = connection.getInputStream();
+//			receiveContent = readStream( in );
+//			in.close();
+//			response = connection.getResponseCode();
+//		}
+//		catch (IOException e)
+//		{
+//			e.printStackTrace();
+//		}
+//		finally
+//		{
+//			connection.disconnect();
+//		}
+//		return response;
+//	}
 
 	/**
 	 * @param in The stream to read from.
 	 * @return String of the receiveContent read from the URL.
 	 */
-	private String readStream( InputStream in )
+	private static String readStream( InputStream in )
 	{
 		if (in == null)
 		{
@@ -303,33 +312,33 @@ public class WiserPathConnection
 	/**
 	 * @return The HTTP status code from the HTTP header from the return transaction.
 	 */
-	public int getReturnCode()
+	public static int getReturnCode()
 	{
-		return this.response;
+		return response;
 	}
 
 	/**
 	 * @return The wiser path transaction cookie from this transaction.
 	 */
-	public WiserCookie getTransactionCookie()
+	public static WiserCookie getTransactionCookie()
 	{
-		return this.wiserCookie;
+		return wiserCookie;
 	}
 
 	/**
 	 * @return the receiveContent may be empty if there was none.
 	 */
-	public String getContent()
+	public static String getContent()
 	{
 		return receiveContent;
 	}
-
-	/**
-	 * @param receiveContent the receiveContent to set
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
 	 */
-	public void setContent( String content )
+	public String toString()
 	{
-		this.receiveContent = content;
+		return this.sendContent.toString();
 	}
 
 }

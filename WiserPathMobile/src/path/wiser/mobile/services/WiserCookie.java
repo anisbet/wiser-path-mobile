@@ -5,6 +5,12 @@ public class WiserCookie
 	private String	cookie;
 	private String	node;
 
+	public WiserCookie( )
+	{
+		this.cookie = new String();
+		this.node = "-1";
+	}
+	
 	public WiserCookie( String cookie )
 	{
 		this.cookie = cookie;
