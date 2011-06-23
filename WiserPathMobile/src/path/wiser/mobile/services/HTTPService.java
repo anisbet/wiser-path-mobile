@@ -23,35 +23,33 @@ import android.util.Log;
  */
 public class HTTPService
 {
-	private final static String	WP_URL					= "http://wiserpath-dev.bus.ualberta.ca";			// login
+	private final static String	WP_URL					= "http://wiserpath-dev.bus.ualberta.ca";	// login
 	private final static String	LOGIN_PATH				= "/user/login";
 	private final static String	SIGNUP_PATH				= "/user/register";
 	private static final String	GEOBLOG_PATH			= "/node/add/geoblog";
 
-	private final static int	SUCCESS_LOGIN_CODE		= 302;												// if
-																											// all
-																											// went
-																											// well
-																											// the
-	private static final int	SUCCESS_REGISTER_CODE	= 302;												// redirected
-																											// to
-																											// the
-																											// search
-																											// window
-	private static final int	SERVER_UNREACHABLE		= 400;												// If
-																											// Wiser
-																											// Path
-																											// is
-																											// offline
+	private final static int	SUCCESS_LOGIN_CODE		= 302;										// if
+																									// all
+																									// went
+																									// well
+																									// the
+	private static final int	SUCCESS_REGISTER_CODE	= 302;										// redirected
+																									// to
+																									// the
+																									// search
+																									// window
+	private static final int	SERVER_UNREACHABLE		= 400;										// If
+																									// Wiser
+																									// Path
+																									// is
+																									// offline
 	// used for logging in.
 	private static final String	LOGIN_PASSWORD_PARAM	= "&pass=";
-	private static final String	LOGIN_EXTRA_PARAMS		= "&form_id=user_login&op=log+in";
 	private static final String	LOGIN_NAME_PARAM		= "name=";
 
 	// used for creating an account
 	private static final String	CREATE_NAME_PARAM		= "name=";
 	private static final String	CREATE_EMAIL_PARAM		= "&mail=";
-	private static final String	CREATE_EXTRA_PARAM		= "&form_id=user_register&op=Create+new+account";
 
 	// page
 	// redirected to your
@@ -72,17 +70,19 @@ public class HTTPService
 	public static HTTPService login( String userName, String password )
 	{
 
-		WiserPathConnection connection = new WiserPathConnection();
+		WiserPathConnection connection = null;
 		HTTPService.credential = new Credential( userName, password );
-		String content = LOGIN_NAME_PARAM + credential.getUserName() + LOGIN_PASSWORD_PARAM + credential.getPassword() + LOGIN_EXTRA_PARAMS;
 		try
 		{
 			URL url = HTTPService.getLoginURL();
-
-			connection.POST( url, content );
-			if (connection.getReturnCode() == SUCCESS_LOGIN_CODE)
+			connection = WiserPathConnection.getInstance( url );
+			connection.addFormData( LOGIN_NAME_PARAM, credential.getUserName() ); // TODO you might have to URLEncode
+			connection.addFormData( LOGIN_PASSWORD_PARAM, credential.getPassword() );
+			connection.addFormData( "form_id", "user_login" );
+			connection.addFormData( "op", "log+in" );
+			if (WiserPathConnection.getReturnCode() == SUCCESS_LOGIN_CODE)
 			{
-				credential.setCookie( connection.getTransactionCookie() );
+				credential.setCookie( WiserPathConnection.getTransactionCookie() );
 			}
 		}
 		catch (MalformedURLException e)
@@ -118,12 +118,14 @@ public class HTTPService
 		try
 		{
 			URL url = HTTPService.getRegisterURL();
-			WiserPathConnection connection = new WiserPathConnection();
-			String content = CREATE_NAME_PARAM + credential.getUserName() + CREATE_EMAIL_PARAM + credential.getPassword() + CREATE_EXTRA_PARAM;
-			connection.POST( url, content );
-			if (connection.getReturnCode() == SUCCESS_REGISTER_CODE)
+			WiserPathConnection connection = WiserPathConnection.getInstance( url );
+			connection.addFormData( CREATE_NAME_PARAM, credential.getUserName() ); // TODO you might have to URLEncode
+			connection.addFormData( CREATE_EMAIL_PARAM, credential.getPassword() );
+			connection.addFormData( "form_id", "user_register" );
+			connection.addFormData( "op", "Create+new+account" );
+			if (WiserPathConnection.getReturnCode() == SUCCESS_REGISTER_CODE)
 			{
-				Log.i( "HTTPService", "register request returned status: " + connection.getReturnCode() );
+				Log.i( "HTTPService", "register request returned status: " + WiserPathConnection.getReturnCode() );
 			}
 		}
 		catch (MalformedURLException e)
@@ -143,17 +145,6 @@ public class HTTPService
 	public boolean uploadBlog( Blog blog )
 	{
 
-		try
-		{
-			URL url = HTTPService.getGeoBlogURL();
-			WiserPathConnection connection = new WiserPathConnection();
-			// TODO add the put the content in a post.
-		}
-		catch (MalformedURLException e)
-		{
-			Log.e( "HTTPService", "unable to Register because URL was malformed. Has WiserPath moved?" );
-			return false;
-		}
 		return true;
 	}
 
