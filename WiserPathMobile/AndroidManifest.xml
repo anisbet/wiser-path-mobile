@@ -11,8 +11,9 @@
    	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
    	
    	<!-- GPS requirements -->
-   	<uses-feature android:name="android.hardware.location"></uses-feature>
+   	<uses-feature android:name="android.hardware.location" android:required="true"></uses-feature>
    	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+   	<!-- TODO We could also use coarser grained locations like cell towers and wifi location... -->
    	<!--  For testing only! -->
    	<uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"/>
    	<!--  For testing only! -->
