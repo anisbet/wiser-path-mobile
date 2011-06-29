@@ -44,12 +44,12 @@ public class HTTPService
 																									// is
 																									// offline
 	// used for logging in.
-	private static final String	LOGIN_PASSWORD_PARAM	= "&pass=";
-	private static final String	LOGIN_NAME_PARAM		= "name=";
+	private static final String	LOGIN_PASSWORD_PARAM	= "pass";
+	private static final String	LOGIN_NAME_PARAM		= "name";
 
 	// used for creating an account
-	private static final String	CREATE_NAME_PARAM		= "name=";
-	private static final String	CREATE_EMAIL_PARAM		= "&mail=";
+	private static final String	CREATE_NAME_PARAM		= "name";
+	private static final String	CREATE_EMAIL_PARAM		= "mail";
 
 	// page
 	// redirected to your
