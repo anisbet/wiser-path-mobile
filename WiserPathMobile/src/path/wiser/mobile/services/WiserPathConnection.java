@@ -3,6 +3,9 @@ package path.wiser.mobile.services;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -13,7 +16,7 @@ import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.io.DataOutputStream;
+import java.util.HashMap;
 
 /**
  * Takes a connection and reports results of the post
@@ -23,26 +26,39 @@ import java.io.DataOutputStream;
  */
 public class WiserPathConnection
 {
-	private static WiserPathConnection wpc;
-	private static int			response	= -1;																		// set
-																														// an
-																														// unusual
-																														// and
-																														// conspicuous
-																														// number
-																														// for
-																														// reality
-																														// check.
-	private static WiserCookie	wiserCookie;
-	private static String		receiveContent;
-	private StringBuffer		sendContent;
+	// private static WiserPathConnection wpc;
+	private static int						response					= -1;																	// set
+																																				// an
+																																				// unusual
+																																				// and
+																																				// conspicuous
+																																				// number
+																																				// for
+																																				// reality
+																																				// check.
+	private static WiserCookie				wiserCookie;
+	private static String					receiveContent;
+	private static HashMap<String, String>	header;
+	private static boolean					redirect					= false;																// permits
+																																				// or
+																																				// denies
+																																				// redirects.
 
-	public final static String	BOUNDARY	= "----WPMFormBoundary" + String.valueOf( System.currentTimeMillis() );
-	private DataOutputStream contentStream;
-	
-	private HttpURLConnection connection; // used for multipart posts.
-	
-	
+	private StringBuffer					sendContent;
+
+	public final static String				BOUNDARY					= "----WPMFormBoundary" + String.valueOf( System.currentTimeMillis() );
+	private static final int				WISERPATH_IMAGE_MAX_SIZE	= 2000000;																// TODO
+																																				// move
+																																				// this
+																																				// to
+																																				// HTTPService
+	private DataOutputStream				contentStream;
+
+	private HttpURLConnection				connection;																						// used
+																																				// for
+																																				// multipart
+																																				// posts.
+	private static HashMap<String, String>	specialHeaderRequests;
 
 	/**
 	 * Sets the content type to application/x-www-form-urlencoded.
@@ -51,32 +67,77 @@ public class WiserPathConnection
 	{
 		receiveContent = new String();
 		sendContent = new StringBuffer();
-		try {
+		response = -1;
+		try
+		{
 			this.connection = (HttpURLConnection) url.openConnection();
-		} catch (IOException e) {
+		}
+		catch (IOException e)
+		{
 			e.printStackTrace();
 		}
-		try {
+		try
+		{
 			this.connection.setRequestMethod( "POST" );
-		} catch (ProtocolException e) {
+		}
+		catch (ProtocolException e)
+		{
 			e.printStackTrace();
 		}
 		this.connection.setDoOutput( true ); // sets to POST
-		this.connection.setDoInput(true);
-//		this.connection.setChunkedStreamingMode( 0 ); // so we don't exhaust the buffer and overly delay transmission.
-		this.connection.setInstanceFollowRedirects( false );
-		this.connection.setUseCaches(false);
-		this.connection.setRequestProperty("Connection", "Keep-Alive");
-		this.connection.setRequestProperty("Charset", "UTF-8");
-		this.connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + BOUNDARY);
-//		this.connection.setRequestProperty("Transfer-Encoding", "chunked");
-		try {
-			connection.connect();
-			contentStream = new DataOutputStream( connection.getOutputStream() );
-		} catch (IOException e) {
+		this.connection.setDoInput( true );
+		// this.connection.setChunkedStreamingMode( 0 ); // so we don't exhaust the buffer and overly delay
+		// transmission.
+		this.connection.setInstanceFollowRedirects( redirect );
+		this.connection.setUseCaches( false );
+		this.connection.setRequestProperty( "Connection", "Keep-Alive" );
+		this.connection.setRequestProperty( "Charset", "UTF-8" );
+		if (specialHeaderRequests != null)
+		{
+			System.out.println( "==============================\n adding special property requests.\n=================================" );
+			setAdditionalRequestProperties( this.connection ); // sets and then clears this instances connection
+																// property requests.
+		}
+		if (wiserCookie != null)
+		{
+			System.out.println( "==============================\n POST adding cookie.\n=================================" );
+			this.connection.setRequestProperty( "Cookie", wiserCookie.toString() );
+		}
+		this.connection.setRequestProperty( "Content-Type", "multipart/form-data; boundary=" + BOUNDARY );
+		// this.connection.setRequestProperty("Transfer-Encoding", "chunked");
+		try
+		{
+			this.connection.connect();
+			this.contentStream = new DataOutputStream( connection.getOutputStream() );
+		}
+		catch (IOException e)
+		{
 			e.printStackTrace();
 		}
-		
+
+	}
+
+	/**
+	 * Pre: the specialHeaderRequests hashmap must not be null. Connection must not be null.
+	 */
+	private static void setAdditionalRequestProperties( HttpURLConnection myConnection )
+	{
+		java.util.Iterator<String> iterator = specialHeaderRequests.keySet().iterator();
+
+		while (iterator.hasNext())
+		{
+			String request = iterator.next();
+			String property = specialHeaderRequests.get( request );
+			if (property != null)
+			{
+				myConnection.setRequestProperty( request, property );
+			}
+		}
+		// once set we remove all the extra properties because the hashmap is a static instance and we don't necessarily
+		// want
+		// this properties for all posts or gets.
+		specialHeaderRequests.clear();
+
 	}
 
 	/**
@@ -89,25 +150,58 @@ public class WiserPathConnection
 		wiserCookie = cookie;
 		// if this is an instance of a multipartPost you can now set the cookie
 		// if the connection has been created. Do this before sending data.
-		if ( this.connection != null )
+		if (this.connection != null)
 		{
 			this.connection.setRequestProperty( "Cookie: ", wiserCookie.toString() );
 		}
 	}
-	
+
 	/**
 	 * Use this constructor for a multipart post.
+	 * 
 	 * @param url
 	 * @param contentType
 	 */
 	public static WiserPathConnection getInstance( URL url )
 	{
-		if ( wpc == null )
+		return new WiserPathConnection( url );
+	}
+
+	/**
+	 * @param attribName
+	 * @param fileName
+	 * @param path
+	 */
+	public void addImageData( String attribName, String fileName, String path )
+	{
+		if (this.contentStream == null)
 		{
-			wpc = new WiserPathConnection( url );
+			return;
+		}
+		File f = new File( path );
+		int len = (int) f.length();
+		if (len > WISERPATH_IMAGE_MAX_SIZE)
+		{
+			System.out.println( "The image you want to upload is too big. " );
+			return;
 		}
 
-		return wpc;
+		try
+		{
+			this.contentStream.writeBytes( "--" + BOUNDARY + "\r\n" );
+			this.contentStream.writeBytes( "Content-Disposition: form-data; name=\"" + attribName + "\"; filename=\"" + fileName + "\"" + "\r\n" );
+			this.contentStream.writeBytes( "Content-Type: image/jpeg\r\n\r\n" );
+			FileInputStream fStream = new FileInputStream( path );
+			byte[] data = new byte[len];
+			fStream.read( data );
+			this.contentStream.write( data );
+			this.contentStream.writeBytes( "\r\n" );
+			fStream.close();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -115,49 +209,61 @@ public class WiserPathConnection
 	 * 
 	 * Use this method to sent your content type for string data like 'name="Andrew"' with a content
 	 * type of FORM_DATA within a MULTIPART_FORM_DATA content type of the post over all.
+	 * 
 	 * @param formAttrib TODO
 	 * @param value
 	 */
 	public void addFormData( String formAttrib, String value )
 	{
-		if ( this.contentStream != null )
+		if (this.contentStream != null)
 		{
-			try {
-				this.contentStream.writeBytes("--" +  BOUNDARY + "\r\n");
-				this.contentStream.writeBytes("Content-Disposition: form-data; name=\"" + formAttrib + "\"\r\n");
-				this.contentStream.writeBytes("\r\n" + value + "\r\n");
-			} catch (UnsupportedEncodingException e) {
+			try
+			{
+				this.contentStream.writeBytes( "--" + BOUNDARY + "\r\n" );
+				this.contentStream.writeBytes( "Content-Disposition: form-data; name=\"" + formAttrib + "\"\r\n" );
+				this.contentStream.writeBytes( "\r\n" + value + "\r\n" );
+			}
+			catch (UnsupportedEncodingException e)
+			{
 				e.printStackTrace();
-			} catch (IOException e) {
+			}
+			catch (IOException e)
+			{
 				e.printStackTrace();
 			}
 		}
 	}
-	
+
 	/**
 	 * @return the HTTP status code of the response from the server.
 	 */
 	public int POST()
 	{
-		//TODO finish me. I flush and read response and close connection.
-		try {
-			////// For Bleep bleep sake don't forget the dashes at the end MUST have 2!!
-			this.contentStream.writeBytes("--" + BOUNDARY + "--");
+		// TODO finish me. I flush and read response and close connection.
+		try
+		{
+			// //// For Bleep bleep sake don't forget the dashes at the end MUST have 2!!
+			this.contentStream.writeBytes( "--" + BOUNDARY + "--" );
 			this.contentStream.flush();
 			this.contentStream.close();
 			// now read the results.
-			InputStream in;
-			in = new BufferedInputStream( connection.getInputStream() );
+			InputStream in = new BufferedInputStream( this.connection.getInputStream() );
 			receiveContent = readStream( in );
-			readHTTPHeader( connection, wiserCookie );
-			response = connection.getResponseCode();
-		} catch (IOException e) {
+			readHTTPHeader( this.connection, wiserCookie );
+			response = this.connection.getResponseCode();
+			in.close();
+		}
+		catch (IOException e)
+		{
 			e.printStackTrace();
 		}
-		
+		finally
+		{
+			this.connection.disconnect();
+		}
+
 		return response;
 	}
-
 
 	/**
 	 * POSTs a String to a URL. This call does not support redirection.
@@ -178,12 +284,19 @@ public class WiserPathConnection
 			connection.setDoOutput( true ); // sets to POST
 
 			connection.setChunkedStreamingMode( 0 ); // so we don't exhaust the buffer and overly delay transmission.
-			connection.setInstanceFollowRedirects( false );
+			connection.setInstanceFollowRedirects( redirect );
 			connection.setRequestProperty( "Content-Type", "application/x-www-form-urlencoded" );
+			if (specialHeaderRequests != null)
+			{
+				System.out.println( "==============================\n adding special property requests.\n=================================" );
+				setAdditionalRequestProperties( connection ); // sets and then clears this instances connection property
+																// requests.
+			}
 			if (wiserCookie != null)
 			{
+				System.out.println( "==============================\n POST adding cookie.\n=================================" );
 				connection.setRequestProperty( "Cookie: ", wiserCookie.toString() ); // TODO if this fails try
-																							// removing the space
+																						// removing the space
 			}
 			connection.connect();
 			OutputStream out = new BufferedOutputStream( connection.getOutputStream() );
@@ -216,10 +329,11 @@ public class WiserPathConnection
 	 */
 	private static void readHTTPHeader( HttpURLConnection connection, WiserCookie cookie )
 	{
-		if ( cookie == null )
+		if (cookie == null)
 		{
 			wiserCookie = new WiserCookie();
 		}
+		header = new HashMap<String, String>();
 		for (int i = 0;; i++)
 		{
 			String name = connection.getHeaderFieldKey( i );
@@ -231,6 +345,7 @@ public class WiserPathConnection
 			if (name != null)
 			{
 				System.out.println( name + "=" + value );
+				header.put( name, value );
 				if (name.equalsIgnoreCase( "Set-Cookie" ))
 				{
 					wiserCookie = new WiserCookie( value );
@@ -245,33 +360,63 @@ public class WiserPathConnection
 		}
 	}
 
-//	/**
-//	 * GET sends data via the URL command line.
-//	 * 
-//	 * @param URL 
-//	 */
-//	public int GET( URL url )
-//	{
-//		HttpURLConnection connection = null;
-//		try
-//		{
-//			connection = (HttpURLConnection) url.openConnection();
-//			connection.setInstanceFollowRedirects( false );
-//			InputStream in = connection.getInputStream();
-//			receiveContent = readStream( in );
-//			in.close();
-//			response = connection.getResponseCode();
-//		}
-//		catch (IOException e)
-//		{
-//			e.printStackTrace();
-//		}
-//		finally
-//		{
-//			connection.disconnect();
-//		}
-//		return response;
-//	}
+	/**
+	 * This method returns the header value stored by reference to the supplied key.
+	 * 
+	 * @param whichHeader
+	 * @return The value stored in the header by the key (case sensitive) or null if it could not be found.
+	 */
+	public static String getHeaderValue( String whichHeader )
+	{
+		return header.get( whichHeader );
+	}
+
+	/**
+	 * GET sends data via the URL command line.
+	 * 
+	 * @param URL
+	 */
+	public static int GET( URL url )
+	{
+		HttpURLConnection connection = null;
+		receiveContent = new String();
+		try
+		{
+			connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestMethod( "GET" );
+			connection.setDoOutput( true );
+			connection.setDoInput( true );
+			connection.setInstanceFollowRedirects( redirect );
+			connection.setUseCaches( false );
+			connection.setRequestProperty( "Charset", "UTF-8" );
+			if (specialHeaderRequests != null)
+			{
+				System.out.println( "==============================\n adding special property requests.\n=================================" );
+				setAdditionalRequestProperties( connection ); // sets and then clears this instances connection property
+																// requests.
+			}
+			if (wiserCookie != null)
+			{
+				System.out.println( "==============================\n GET adding cookie.\n=================================" );
+				connection.setRequestProperty( "Cookie", wiserCookie.toString() );
+			}
+			connection.connect();
+			InputStream in = connection.getInputStream();
+			receiveContent = readStream( in );
+			in.close();
+			response = connection.getResponseCode();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			// close the connection, set all objects to null
+			connection.disconnect();
+		}
+		return response;
+	}
 
 	/**
 	 * @param in The stream to read from.
@@ -332,13 +477,59 @@ public class WiserPathConnection
 	{
 		return receiveContent;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString()
 	{
 		return this.sendContent.toString();
+	}
+
+	/**
+	 * @param b true if you allow redirects and false otherwise
+	 */
+	public static void setAllowRedirects( boolean b )
+	{
+		redirect = b;
+	}
+
+	/**
+	 * @param htmlPage
+	 * @return The id of the form if there is one and an empty string otherwise.
+	 */
+	public static String getFormToken( String htmlPage )
+	{
+
+		String searchString = "name=\"form_token\"";
+		int start = htmlPage.indexOf( searchString );
+		if (start > 0)
+		{
+			String value = "value=\"";
+			start = htmlPage.indexOf( value, start ) + value.length();
+			int end = htmlPage.indexOf( "\"", start );
+			return htmlPage.substring( start, end );
+		}
+		return "";
+
+	}
+
+	/**
+	 * Currently this only effects multipart posts.
+	 * Equiv to calling HttpURLConnection.setRequestProperty()
+	 * 
+	 * @param string
+	 * @param referString
+	 */
+	public static void setRequestProperty( String string, String referString )
+	{
+		if (specialHeaderRequests == null)
+		{
+			specialHeaderRequests = new HashMap<String, String>();
+		}
+		specialHeaderRequests.put( string, referString );
 	}
 
 }
