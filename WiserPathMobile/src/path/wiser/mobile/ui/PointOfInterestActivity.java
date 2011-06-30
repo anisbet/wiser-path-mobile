@@ -9,7 +9,6 @@ import path.wiser.mobile.R;
 import path.wiser.mobile.geo.Blog;
 import path.wiser.mobile.geo.GPS;
 import path.wiser.mobile.services.HTTPService;
-import path.wiser.mobile.util.BlogMVC;
 import path.wiser.mobile.util.Selectable;
 import android.location.Location;
 import android.os.Bundle;
@@ -178,10 +177,12 @@ public class PointOfInterestActivity extends Selectable
 		{
 			// get the HTTPService for posting data.
 			HTTPService service = HTTPService.getInstance();
+			service.uploadBlog( this.blog );
 			// upload the blog.
-			if (service.uploadBlog( this.blog ))
+			if (this.blog.isUploaded())
 			{
 				text = String.format( res.getString( R.string.poi_blog_post_success_msg ) );
+				// TODO delete blog.
 			}
 			else
 			{

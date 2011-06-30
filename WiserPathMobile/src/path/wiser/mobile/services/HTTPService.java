@@ -43,6 +43,7 @@ public class HTTPService
 																									// Path
 																									// is
 																									// offline
+	public final static int		SUCCESS_BLOG_UPLOAD		= 200;
 	// used for logging in.
 	private static final String	LOGIN_PASSWORD_PARAM	= "pass";
 	private static final String	LOGIN_NAME_PARAM		= "name";
@@ -94,7 +95,7 @@ public class HTTPService
 		{
 			e.printStackTrace();
 		}
-		Log.i( "HTTPService", "Satus returned: " + connection.getReturnCode() );
+		Log.i( "HTTPService", "Satus returned: " + WiserPathConnection.getReturnCode() );
 
 		// if everything succeeded then create the instance of this service and return a reference to the caller.
 		if (thisService == null)
@@ -140,22 +141,12 @@ public class HTTPService
 	 * Uploads a Blog object to WiserPath.
 	 * 
 	 * @param blog
-	 * @return true if the blog was uploaded and false otherwise.
 	 */
-	public boolean uploadBlog( Blog blog )
+	public void uploadBlog( Blog blog )
 	{
-
-		return true;
-	}
-
-	/**
-	 * @return The URL of the GeoBlog on WiserPath.
-	 * @throws MalformedURLException
-	 */
-	private static URL getGeoBlogURL() throws MalformedURLException
-	{
-		String URL = HTTPService.WP_URL + HTTPService.GEOBLOG_PATH;
-		return new URL( URL );
+		HTTPBlogMVC blogOnlineMVC = new HTTPBlogMVC( this, blog );
+		blogOnlineMVC.update(); // upload the blog using content dependent criteria.
+		blogOnlineMVC.change(); // set the isUploaded Flag.
 	}
 
 	/**
@@ -214,6 +205,42 @@ public class HTTPService
 		// do some basic checks -- drupal has a significantly more robust algorithm, and more compute power.
 		// TODO finish me.
 		return emailAddress.contains( "@" );
+	}
+
+	/**
+	 * @param blog used to get the point information.
+	 * @return The URL for posting a blog with the point of the blog appended as a query string.
+	 */
+	public URL getGeoblogURL( Blog blog )
+	{
+		try
+		{
+			// looks like:
+			// "http://wiserpath-dev.bus.ualberta.ca/node/add/geoblog?location=POINT(-12661258.674479%207092974.0387356)"
+			return new URL( "http://wiserpath-dev.bus.ualberta.ca/node/add/geoblog?location=" + blog.getLocation() );
+		}
+		catch (MalformedURLException e)
+		{
+			Log.e( "HTTPService", "The URL for posting images is malformed. Please contact administrator." );
+		}
+		return null; // Could this also send the user to the HELP url?
+	}
+
+	/**
+	 * @param blog
+	 * @return the string version of the URL
+	 */
+	public URL getPostImageURL( Blog blog )
+	{
+		try
+		{
+			return new URL( "http://wiserpath-dev.bus.ualberta.ca/node/add/geophoto?location=" + blog.getLocation() );
+		}
+		catch (MalformedURLException e)
+		{
+			Log.e( "HTTPService", "The URL for posting images is malformed. Please contact administrator." );
+		}
+		return null; // Could this also send the user to the HELP url?
 	}
 
 }

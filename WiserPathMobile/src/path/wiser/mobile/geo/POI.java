@@ -14,6 +14,23 @@ public abstract class POI
 {
 	protected String	title		= "";
 	protected String	description	= "";
+	protected boolean	isUploaded	= false;
+
+	/**
+	 * @return the isUploaded
+	 */
+	public boolean isUploaded()
+	{
+		return isUploaded;
+	}
+
+	/**
+	 * @param isUploaded the isUploaded to set
+	 */
+	public void setUploaded( boolean isUploaded )
+	{
+		this.isUploaded = isUploaded;
+	}
 
 	public abstract void setLocation( Location location );
 
