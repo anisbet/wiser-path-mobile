@@ -3,6 +3,9 @@
  */
 package path.wiser.mobile.geo;
 
+import java.io.File;
+
+import path.wiser.mobile.util.ImageType;
 import path.wiser.mobile.util.Tags;
 import android.location.Location;
 
@@ -17,6 +20,8 @@ public class Blog extends POI
 	// a blog has a single location.
 	private Location	location	= null;
 	private Tags		tags		= null;
+	private String		imagePath	= null;
+	private ImageType	extension;
 
 	// TODO include image
 	public Blog()
@@ -59,5 +64,84 @@ public class Blog extends POI
 	public void setTags( String tags )
 	{
 		this.tags.setTags( tags );
+	}
+
+	/**
+	 * @return True if there is an image associated with this blog and false otherwise.
+	 */
+	public boolean hasImage()
+	{
+		return this.imagePath != null && this.imagePath.length() > 0;
+	}
+
+	/**
+	 * @param imagePath the imagePath to set
+	 */
+	public void setImagePath( String imagePath )
+	{
+		this.imagePath = imagePath;
+	}
+
+	/**
+	 * @return the imagePath
+	 */
+	public String getImagePath()
+	{
+		return imagePath;
+	}
+
+	/**
+	 * @return The location as a string like POINT(-12661258.674479%207092974.0387356)
+	 *         but may be altered in the future to be lat long
+	 */
+	public String getLocation()
+	{
+		// return "POINT(" + String.valueOf( this.location.getLatitude() ) + "%20" + String.valueOf(
+		// this.location.getLongitude() ) + ")";
+		// TODO Get info from Ranek about how to handle this.
+		return "POINT(-12661258.674479%207092974.0387356)";
+	}
+
+	/**
+	 * @return name of the image.
+	 */
+	public String getImageName()
+	{
+		String[] pathParts = this.imagePath.split( File.pathSeparator );
+		if (pathParts.length > 0)
+		{
+			// TODO test this.
+			String[] fileParts = pathParts[pathParts.length - 1].split( "." );
+			if (fileParts.length > 0)
+			{
+				this.setExtension( fileParts[fileParts.length - 1].toLowerCase() );
+			}
+			return pathParts[pathParts.length - 1];
+		}
+
+		return "";
+	}
+
+	/**
+	 * @param extension the extension to set
+	 */
+	public void setExtension( String extension )
+	{
+		if (extension.equalsIgnoreCase( "jpg" ) || extension.equalsIgnoreCase( "jpeg" ))
+		{
+			this.extension = ImageType.JPG;
+		}
+		else
+		{
+			this.extension = ImageType.UNSUPPORTED;
+		}
+	}
+
+	/**
+	 * @return the extension
+	 */
+	public ImageType getExtension()
+	{
+		return extension;
 	}
 }

@@ -1,11 +1,12 @@
 /**
  * 
  */
-package path.wiser.mobile.util;
+package path.wiser.mobile.ui;
 
 import path.wiser.mobile.R;
 import path.wiser.mobile.geo.Blog;
-import path.wiser.mobile.ui.PointOfInterestActivity;
+import path.wiser.mobile.util.ModelViewController;
+import path.wiser.mobile.util.Tags;
 import android.util.Log;
 import android.widget.TextView;
 

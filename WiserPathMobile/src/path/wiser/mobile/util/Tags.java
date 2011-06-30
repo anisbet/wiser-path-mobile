@@ -5,6 +5,8 @@ package path.wiser.mobile.util;
 
 import java.util.Vector;
 
+import path.wiser.mobile.ui.BlogMVC;
+
 
 /**
  * This class is the listing of user defined tags.
