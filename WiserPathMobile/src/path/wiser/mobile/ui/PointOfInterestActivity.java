@@ -3,12 +3,11 @@
  */
 package path.wiser.mobile.ui;
 
-import java.util.Vector;
-
 import path.wiser.mobile.R;
 import path.wiser.mobile.geo.Blog;
 import path.wiser.mobile.geo.GPS;
 import path.wiser.mobile.services.HTTPService;
+import path.wiser.mobile.util.POIList;
 import path.wiser.mobile.util.Selectable;
 import android.location.Location;
 import android.os.Bundle;
@@ -28,7 +27,7 @@ import android.widget.TextView;
 public class PointOfInterestActivity extends Selectable
 {
 	protected Blog			blog	= null;
-	protected Vector<Blog>	blogs	= null;
+	protected POIList<Blog>	blogs	= null;
 	protected GPS			gps		= null;
 
 	public PointOfInterestActivity()
@@ -48,7 +47,7 @@ public class PointOfInterestActivity extends Selectable
 		// set content view so you can grab stuff in it.
 		setContentView( R.layout.poi_tab );
 		gps = new GPS( this );
-		this.blogs = new Vector<Blog>();
+		this.blogs = new POIList<Blog>();
 		this.blog = new Blog();
 
 		this.blog.setPoiTitle( "Andrew's test blog" );

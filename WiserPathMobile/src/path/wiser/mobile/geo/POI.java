@@ -10,7 +10,7 @@ import android.location.Location;
  * @author andrewnisbet
  * 
  */
-public abstract class POI
+public abstract class POI implements Comparable<POI>
 {
 	protected String	title		= "";
 	protected String	description	= "";
@@ -83,5 +83,16 @@ public abstract class POI
 	 * @return True if this is a valid object and false otherwise.
 	 */
 	public abstract boolean validate();
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	@Override
+	public int compareTo( POI poi )
+	{
+		return this.title.compareTo( poi.title );
+	}
 
 }
