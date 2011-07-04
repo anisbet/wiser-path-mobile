@@ -27,6 +27,7 @@ public class HTTPService
 	private final static String	LOGIN_PATH				= "/user/login";
 	private final static String	SIGNUP_PATH				= "/user/register";
 	private static final String	GEOBLOG_PATH			= "/node/add/geoblog";
+	private static final String	GEOPHOTO_PATH			= "/node/add/geophoto";
 
 	private final static int	SUCCESS_LOGIN_CODE		= 302;										// if
 																									// all
@@ -81,6 +82,7 @@ public class HTTPService
 			connection.addFormData( LOGIN_PASSWORD_PARAM, credential.getPassword() );
 			connection.addFormData( "form_id", "user_login" );
 			connection.addFormData( "op", "log+in" );
+			connection.POST();
 			if (WiserPathConnection.getReturnCode() == SUCCESS_LOGIN_CODE)
 			{
 				credential.setCookie( WiserPathConnection.getTransactionCookie() );
@@ -124,6 +126,7 @@ public class HTTPService
 			connection.addFormData( CREATE_EMAIL_PARAM, credential.getPassword() );
 			connection.addFormData( "form_id", "user_register" );
 			connection.addFormData( "op", "Create+new+account" );
+			connection.POST();
 			if (WiserPathConnection.getReturnCode() == SUCCESS_REGISTER_CODE)
 			{
 				Log.i( "HTTPService", "register request returned status: " + WiserPathConnection.getReturnCode() );
@@ -217,7 +220,8 @@ public class HTTPService
 		{
 			// looks like:
 			// "http://wiserpath-dev.bus.ualberta.ca/node/add/geoblog?location=POINT(-12661258.674479%207092974.0387356)"
-			return new URL( "http://wiserpath-dev.bus.ualberta.ca/node/add/geoblog?location=" + blog.getLocation() );
+			// return new URL( "http://wiserpath-dev.bus.ualberta.ca/node/add/geoblog?location=" + blog.getLocation() );
+			return new URL( WP_URL + GEOBLOG_PATH + "?location=" + blog.getLocation() );
 		}
 		catch (MalformedURLException e)
 		{
@@ -234,7 +238,9 @@ public class HTTPService
 	{
 		try
 		{
-			return new URL( "http://wiserpath-dev.bus.ualberta.ca/node/add/geophoto?location=" + blog.getLocation() );
+			// return new URL( "http://wiserpath-dev.bus.ualberta.ca/node/add/geophoto?location=" + blog.getLocation()
+			// );
+			return new URL( WP_URL + GEOPHOTO_PATH + "?location=" + blog.getLocation() );
 		}
 		catch (MalformedURLException e)
 		{
