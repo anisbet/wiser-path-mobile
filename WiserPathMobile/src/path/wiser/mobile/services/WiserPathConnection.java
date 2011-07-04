@@ -26,38 +26,34 @@ import java.util.HashMap;
  */
 public class WiserPathConnection
 {
-	// private static WiserPathConnection wpc;
-	private static int						response					= -1;																	// set
-																																				// an
-																																				// unusual
-																																				// and
-																																				// conspicuous
-																																				// number
-																																				// for
-																																				// reality
-																																				// check.
+	private static int						response	= -1;																	// set
+																																// an
+																																// unusual
+																																// and
+																																// conspicuous
+																																// number
+																																// for
+																																// reality
+																																// check.
 	private static WiserCookie				wiserCookie;
 	private static String					receiveContent;
 	private static HashMap<String, String>	header;
-	private static boolean					redirect					= false;																// permits
-																																				// or
-																																				// denies
-																																				// redirects.
+	private static boolean					redirect	= false;																// permits
+																																// or
+																																// denies
+																																// redirects.
 
 	private StringBuffer					sendContent;
 
-	public final static String				BOUNDARY					= "----WPMFormBoundary" + String.valueOf( System.currentTimeMillis() );
-	private static final int				WISERPATH_IMAGE_MAX_SIZE	= 2000000;																// TODO
-																																				// move
-																																				// this
-																																				// to
-																																				// HTTPService
+	public final static String				BOUNDARY	= "----WPMFormBoundary" + String.valueOf( System.currentTimeMillis() );
+	// private static final int WISERPATH_MAX_IMAGE_SIZE = 2000000; // TODO
+	private static final boolean			DEBUG		= false;
 	private DataOutputStream				contentStream;
 
-	private HttpURLConnection				connection;																						// used
-																																				// for
-																																				// multipart
-																																				// posts.
+	private HttpURLConnection				connection;																		// used
+																																// for
+																																// multipart
+																																// posts.
 	private static HashMap<String, String>	specialHeaderRequests;
 
 	/**
@@ -94,13 +90,16 @@ public class WiserPathConnection
 		this.connection.setRequestProperty( "Charset", "UTF-8" );
 		if (specialHeaderRequests != null)
 		{
-			System.out.println( "==============================\n adding special property requests.\n=================================" );
+			// System.out.println(
+			// "==============================\n adding special property requests.\n================================="
+			// );
 			setAdditionalRequestProperties( this.connection ); // sets and then clears this instances connection
 																// property requests.
 		}
 		if (wiserCookie != null)
 		{
-			System.out.println( "==============================\n POST adding cookie.\n=================================" );
+			// System.out.println(
+			// "==============================\n POST adding cookie.\n=================================" );
 			this.connection.setRequestProperty( "Cookie", wiserCookie.toString() );
 		}
 		this.connection.setRequestProperty( "Content-Type", "multipart/form-data; boundary=" + BOUNDARY );
@@ -168,7 +167,7 @@ public class WiserPathConnection
 	}
 
 	/**
-	 * @param attribName
+	 * @param attribName -- the name of the field from the form.
 	 * @param fileName
 	 * @param path
 	 */
@@ -179,17 +178,13 @@ public class WiserPathConnection
 			return;
 		}
 		File f = new File( path );
-		int len = (int) f.length();
-		if (len > WISERPATH_IMAGE_MAX_SIZE)
-		{
-			System.out.println( "The image you want to upload is too big. " );
-			return;
-		}
+		int len = (int) f.length(); // create a buffer big enough for the image.
 
 		try
 		{
 			this.contentStream.writeBytes( "--" + BOUNDARY + "\r\n" );
 			this.contentStream.writeBytes( "Content-Disposition: form-data; name=\"" + attribName + "\"; filename=\"" + fileName + "\"" + "\r\n" );
+			// TODO add more image types if necessary
 			this.contentStream.writeBytes( "Content-Type: image/jpeg\r\n\r\n" );
 			FileInputStream fStream = new FileInputStream( path );
 			byte[] data = new byte[len];
@@ -239,7 +234,7 @@ public class WiserPathConnection
 	 */
 	public int POST()
 	{
-		// TODO finish me. I flush and read response and close connection.
+		// TODO fix so that subsequent attempts to use this return an input stream.
 		try
 		{
 			// //// For Bleep bleep sake don't forget the dashes at the end MUST have 2!!
@@ -260,6 +255,7 @@ public class WiserPathConnection
 		finally
 		{
 			this.connection.disconnect();
+			this.connection = null;
 		}
 
 		return response;
@@ -288,15 +284,16 @@ public class WiserPathConnection
 			connection.setRequestProperty( "Content-Type", "application/x-www-form-urlencoded" );
 			if (specialHeaderRequests != null)
 			{
-				System.out.println( "==============================\n adding special property requests.\n=================================" );
-				setAdditionalRequestProperties( connection ); // sets and then clears this instances connection property
-																// requests.
+				// System.out.println(
+				// "==============================\n adding special property requests.\n================================="
+				// );
+				setAdditionalRequestProperties( connection ); // set additional properties for this POST.
 			}
 			if (wiserCookie != null)
 			{
-				System.out.println( "==============================\n POST adding cookie.\n=================================" );
-				connection.setRequestProperty( "Cookie: ", wiserCookie.toString() ); // TODO if this fails try
-																						// removing the space
+				// System.out.println(
+				// "==============================\n POST adding cookie.\n=================================" );
+				connection.setRequestProperty( "Cookie", wiserCookie.toString() );
 			}
 			connection.connect();
 			OutputStream out = new BufferedOutputStream( connection.getOutputStream() );
@@ -344,7 +341,7 @@ public class WiserPathConnection
 			}
 			if (name != null)
 			{
-				System.out.println( name + "=" + value );
+				if (DEBUG) System.out.println( name + "=" + value );
 				header.put( name, value );
 				if (name.equalsIgnoreCase( "Set-Cookie" ))
 				{
