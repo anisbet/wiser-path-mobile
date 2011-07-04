@@ -141,14 +141,23 @@ public class PointOfInterestActivity extends Selectable
 	@Override
 	protected void next()
 	{
-		// TODO Auto-generated method stub
-
+		// if the blog is not null push it on the tail and get the head.
+		if (this.blog != null)
+		{
+			this.blogs.pushTail( this.blog );
+			this.blog = this.blogs.popHead();
+		}
 	}
 
 	@Override
 	protected void previous()
 	{
-		// TODO goto previous blog.
+		// if the blog is not null push it on the tail and get the head.
+		if (this.blog != null)
+		{
+			this.blogs.pushHead( this.blog );
+			this.blog = this.blogs.popTail();
+		}
 	}
 
 	@Override
