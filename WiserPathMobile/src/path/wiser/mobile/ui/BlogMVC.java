@@ -64,11 +64,11 @@ public class BlogMVC implements ModelViewController
 		if (this.blog != null)
 		{
 			TextView textView = (TextView) poi.findViewById( R.id.Poi_Title );
-			blog.setPoiTitle( (String) textView.getText() );
+			blog.setPoiTitle( textView.getText().toString() );
 			textView = (TextView) poi.findViewById( R.id.Poi_Blog );
-			blog.setDescription( (String) textView.getText() );
+			blog.setDescription( textView.getText().toString() );
 			textView = (TextView) poi.findViewById( R.id.Poi_Tag );
-			blog.setTags( (String) textView.getText() );
+			blog.setTags( textView.getText().toString() );
 			// TODO also include images.
 		}
 		else

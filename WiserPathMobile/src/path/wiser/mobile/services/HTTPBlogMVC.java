@@ -3,10 +3,12 @@
  */
 package path.wiser.mobile.services;
 
+import java.io.File;
 import java.net.URL;
 
 import path.wiser.mobile.geo.Blog;
 import path.wiser.mobile.util.ModelViewController;
+import android.util.Log;
 
 /**
  * @author anisbet
@@ -87,6 +89,14 @@ public class HTTPBlogMVC implements ModelViewController
 	 */
 	private boolean postImage()
 	{
+		// compute file size so we know if WiserPath will even permit the image upload.
+		File f = new File( this.blog.getImagePath() );
+		int len = (int) f.length(); // create a buffer big enough for the image.
+		if (len > HTTPService.WISERPATH_MAX_IMAGE_SIZE)
+		{
+			Log.e( "HTTPBlogMVC:", "The image you want to upload is too big." );
+			return false;
+		}
 		// The goal of this test is to post an geotagged image.
 		WiserPathConnection.setAllowRedirects( true );
 		URL url = this.service.getPostImageURL( this.blog ); // passes blog to get it's location which becomes part of
@@ -104,7 +114,7 @@ public class HTTPBlogMVC implements ModelViewController
 		connection.addImageData( "files[field_photo_0]", this.blog.getImageName(), this.blog.getImagePath() );
 		connection.addFormData( "teaser_include", "1" );
 		connection.addFormData( "body", this.blog.getDescription() );
-		connection.addFormData( "format", "5" ); // TODO Image types.
+		connection.addFormData( "format", "5" ); // TODO determine and add additional Image types.
 		connection.addFormData( "changed", "" );
 		// form build id.
 		connection.addFormData( "form_token", formToken );
@@ -112,7 +122,7 @@ public class HTTPBlogMVC implements ModelViewController
 		connection.addFormData( "op", "Save" );
 
 		connection.POST();
-		// for testing results:
+		// TODO remove for production, for testing results:
 		System.out.println( "Connection results: \nreturn code:" + WiserPathConnection.getReturnCode() + "\n" + WiserPathConnection.getContent()
 			+ "\n\nThe form token is: " + formToken );
 		if (WiserPathConnection.getReturnCode() == HTTPService.SUCCESS_BLOG_UPLOAD)

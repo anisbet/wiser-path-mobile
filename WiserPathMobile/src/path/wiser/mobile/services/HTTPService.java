@@ -6,6 +6,7 @@ package path.wiser.mobile.services;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import path.wiser.mobile.geo.Blog;
 import android.util.Log;
@@ -23,42 +24,43 @@ import android.util.Log;
  */
 public class HTTPService
 {
-	private final static String	WP_URL					= "http://wiserpath-dev.bus.ualberta.ca";	// login
-	private final static String	LOGIN_PATH				= "/user/login";
-	private final static String	SIGNUP_PATH				= "/user/register";
-	private static final String	GEOBLOG_PATH			= "/node/add/geoblog";
-	private static final String	GEOPHOTO_PATH			= "/node/add/geophoto";
+	private final static String	WP_URL						= "http://wiserpath-dev.bus.ualberta.ca";	// login
+	private final static String	LOGIN_PATH					= "/user/login";
+	private final static String	SIGNUP_PATH					= "/user/register";
+	private static final String	GEOBLOG_PATH				= "/node/add/geoblog";
+	private static final String	GEOPHOTO_PATH				= "/node/add/geophoto";
 
-	private final static int	SUCCESS_LOGIN_CODE		= 302;										// if
-																									// all
-																									// went
-																									// well
-																									// the
-	private static final int	SUCCESS_REGISTER_CODE	= 302;										// redirected
-																									// to
-																									// the
-																									// search
-																									// window
-	private static final int	SERVER_UNREACHABLE		= 400;										// If
-																									// Wiser
-																									// Path
-																									// is
-																									// offline
-	public final static int		SUCCESS_BLOG_UPLOAD		= 200;
+	private final static int	SUCCESS_LOGIN_CODE			= 302;										// if
+																										// all
+																										// went
+																										// well
+																										// the
+	private static final int	SUCCESS_REGISTER_CODE		= 302;										// redirected
+																										// to
+																										// the
+																										// search
+																										// window
+	private static final int	SERVER_UNREACHABLE			= 400;										// If
+																										// Wiser
+																										// Path
+																										// is
+																										// offline
+	public final static int		SUCCESS_BLOG_UPLOAD			= 200;
 	// used for logging in.
-	private static final String	LOGIN_PASSWORD_PARAM	= "pass";
-	private static final String	LOGIN_NAME_PARAM		= "name";
+	private static final String	LOGIN_PASSWORD_PARAM		= "pass";
+	private static final String	LOGIN_NAME_PARAM			= "name";
 
 	// used for creating an account
-	private static final String	CREATE_NAME_PARAM		= "name";
-	private static final String	CREATE_EMAIL_PARAM		= "mail";
+	private static final String	CREATE_NAME_PARAM			= "name";
+	private static final String	CREATE_EMAIL_PARAM			= "mail";
 
 	// page
 	// redirected to your
 	// account page.
-	private static Credential	credential				= null;
+	private static Credential	credential					= null;
 
-	private static HTTPService	thisService				= null;
+	private static HTTPService	thisService					= null;
+	public static final int		WISERPATH_MAX_IMAGE_SIZE	= 2000000;
 
 	private HTTPService() // block users creating this object explicitly
 	{
@@ -78,8 +80,8 @@ public class HTTPService
 		{
 			URL url = HTTPService.getLoginURL();
 			connection = WiserPathConnection.getInstance( url );
-			connection.addFormData( LOGIN_NAME_PARAM, credential.getUserName() ); // TODO you might have to URLEncode
-			connection.addFormData( LOGIN_PASSWORD_PARAM, credential.getPassword() );
+			connection.addFormData( LOGIN_NAME_PARAM, URLEncoder.encode( credential.getUserName(), "UTF-8" ) );
+			connection.addFormData( LOGIN_PASSWORD_PARAM, URLEncoder.encode( credential.getPassword(), "UTF-8" ) );
 			connection.addFormData( "form_id", "user_login" );
 			connection.addFormData( "op", "log+in" );
 			connection.POST();
@@ -122,8 +124,8 @@ public class HTTPService
 		{
 			URL url = HTTPService.getRegisterURL();
 			WiserPathConnection connection = WiserPathConnection.getInstance( url );
-			connection.addFormData( CREATE_NAME_PARAM, credential.getUserName() ); // TODO you might have to URLEncode
-			connection.addFormData( CREATE_EMAIL_PARAM, credential.getPassword() );
+			connection.addFormData( CREATE_NAME_PARAM, URLEncoder.encode( credential.getUserName(), "UTF-8" ) );
+			connection.addFormData( CREATE_EMAIL_PARAM, URLEncoder.encode( credential.getPassword(), "UTF-8" ) );
 			connection.addFormData( "form_id", "user_register" );
 			connection.addFormData( "op", "Create+new+account" );
 			connection.POST();
@@ -135,6 +137,11 @@ public class HTTPService
 		catch (MalformedURLException e)
 		{
 			Log.e( "HTTPService: error", "unable to Register because URL was malformed. Contact WiserPath Admin." );
+			return false;
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			Log.e( "HTTPService: error", "The URL encoded user name is invalid." );
 			return false;
 		}
 		return true;
