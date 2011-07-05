@@ -48,7 +48,7 @@ public class WiserPathConnection
 	public final static String				BOUNDARY	= "----WPMFormBoundary" + String.valueOf( System.currentTimeMillis() );
 	// private static final int WISERPATH_MAX_IMAGE_SIZE = 2000000; // TODO
 	private static final boolean			DEBUG		= false;
-	private DataOutputStream				contentStream;
+	// private DataOutputStream contentStream;
 
 	private HttpURLConnection				connection;																		// used
 																																// for
@@ -107,7 +107,7 @@ public class WiserPathConnection
 		try
 		{
 			this.connection.connect();
-			this.contentStream = new DataOutputStream( connection.getOutputStream() );
+			// this.contentStream = new DataOutputStream( connection.getOutputStream() );
 		}
 		catch (IOException e)
 		{
@@ -173,24 +173,34 @@ public class WiserPathConnection
 	 */
 	public void addImageData( String attribName, String fileName, String path )
 	{
-		if (this.contentStream == null)
+		// if (this.contentStream == null)
+		// {
+		// return;
+		// }
+		DataOutputStream contentStream = null;
+		try
 		{
-			return;
+			contentStream = new DataOutputStream( connection.getOutputStream() );
+		}
+		catch (IOException e1)
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 		File f = new File( path );
 		int len = (int) f.length(); // create a buffer big enough for the image.
 
 		try
 		{
-			this.contentStream.writeBytes( "--" + BOUNDARY + "\r\n" );
-			this.contentStream.writeBytes( "Content-Disposition: form-data; name=\"" + attribName + "\"; filename=\"" + fileName + "\"" + "\r\n" );
+			contentStream.writeBytes( "--" + BOUNDARY + "\r\n" );
+			contentStream.writeBytes( "Content-Disposition: form-data; name=\"" + attribName + "\"; filename=\"" + fileName + "\"" + "\r\n" );
 			// TODO add more image types if necessary
-			this.contentStream.writeBytes( "Content-Type: image/jpeg\r\n\r\n" );
+			contentStream.writeBytes( "Content-Type: image/jpeg\r\n\r\n" );
 			FileInputStream fStream = new FileInputStream( path );
 			byte[] data = new byte[len];
 			fStream.read( data );
-			this.contentStream.write( data );
-			this.contentStream.writeBytes( "\r\n" );
+			contentStream.write( data );
+			contentStream.writeBytes( "\r\n" );
 			fStream.close();
 		}
 		catch (IOException e)
@@ -210,22 +220,20 @@ public class WiserPathConnection
 	 */
 	public void addFormData( String formAttrib, String value )
 	{
-		if (this.contentStream != null)
+		try
 		{
-			try
-			{
-				this.contentStream.writeBytes( "--" + BOUNDARY + "\r\n" );
-				this.contentStream.writeBytes( "Content-Disposition: form-data; name=\"" + formAttrib + "\"\r\n" );
-				this.contentStream.writeBytes( "\r\n" + value + "\r\n" );
-			}
-			catch (UnsupportedEncodingException e)
-			{
-				e.printStackTrace();
-			}
-			catch (IOException e)
-			{
-				e.printStackTrace();
-			}
+			DataOutputStream contentStream = new DataOutputStream( connection.getOutputStream() );
+			contentStream.writeBytes( "--" + BOUNDARY + "\r\n" );
+			contentStream.writeBytes( "Content-Disposition: form-data; name=\"" + formAttrib + "\"\r\n" );
+			contentStream.writeBytes( "\r\n" + value + "\r\n" );
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
 		}
 	}
 
@@ -238,9 +246,10 @@ public class WiserPathConnection
 		try
 		{
 			// //// For Bleep bleep sake don't forget the dashes at the end MUST have 2!!
-			this.contentStream.writeBytes( "--" + BOUNDARY + "--" );
-			this.contentStream.flush();
-			this.contentStream.close();
+			DataOutputStream contentStream = new DataOutputStream( connection.getOutputStream() );
+			contentStream.writeBytes( "--" + BOUNDARY + "--" );
+			contentStream.flush();
+			contentStream.close();
 			// now read the results.
 			InputStream in = new BufferedInputStream( this.connection.getInputStream() );
 			receiveContent = readStream( in );
