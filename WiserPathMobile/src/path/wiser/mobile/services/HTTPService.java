@@ -73,7 +73,20 @@ public class HTTPService
 	 */
 	public static HTTPService login( String userName, String password )
 	{
-
+		// if the user has already logged in successfully and closes the app, when she opens
+		// it again WiserPathMobile will try and re login and get a 403 error because the
+		// POST command in WiserPathConnection automatically includes a cookie if it has one.
+		if (credential != null)
+		{
+			if (credential.isMember() == true && thisService != null)
+			{
+				return thisService;
+			}
+			else
+			{
+				credential.setCookie( null );
+			}
+		}
 		WiserPathConnection connection = null;
 		HTTPService.credential = new Credential( userName, password );
 		try
@@ -185,6 +198,10 @@ public class HTTPService
 	 */
 	public boolean isLoggedIn()
 	{
+		if (HTTPService.credential == null)
+		{
+			return false;
+		}
 		return HTTPService.credential.isMember();
 	}
 

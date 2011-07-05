@@ -3,7 +3,6 @@
  */
 package path.wiser.mobile.services;
 
-
 /**
  * This is the user's name and password plus the business rules for how that is
  * stored retrieved
@@ -119,6 +118,10 @@ public class Credential
 		{
 			this.userStatus = Status.MEMBER;
 		}
+		else
+		{
+			this.userStatus = Status.NON_MEMBER;
+		}
 	}
 
 	/**
@@ -128,4 +131,5 @@ public class Credential
 	{
 		return loginCookie;
 	}
+
 }

@@ -44,11 +44,8 @@ public class WiserPathConnection
 																																// redirects.
 
 	private StringBuffer					sendContent;
-
 	public final static String				BOUNDARY	= "----WPMFormBoundary" + String.valueOf( System.currentTimeMillis() );
-	// private static final int WISERPATH_MAX_IMAGE_SIZE = 2000000; // TODO
 	private static final boolean			DEBUG		= false;
-	// private DataOutputStream contentStream;
 
 	private HttpURLConnection				connection;																		// used
 																																// for
@@ -90,16 +87,10 @@ public class WiserPathConnection
 		this.connection.setRequestProperty( "Charset", "UTF-8" );
 		if (specialHeaderRequests != null)
 		{
-			// System.out.println(
-			// "==============================\n adding special property requests.\n================================="
-			// );
-			setAdditionalRequestProperties( this.connection ); // sets and then clears this instances connection
-																// property requests.
+			setAdditionalRequestProperties( this.connection ); // sets and properties for this request
 		}
 		if (wiserCookie != null)
 		{
-			// System.out.println(
-			// "==============================\n POST adding cookie.\n=================================" );
 			this.connection.setRequestProperty( "Cookie", wiserCookie.toString() );
 		}
 		this.connection.setRequestProperty( "Content-Type", "multipart/form-data; boundary=" + BOUNDARY );
@@ -107,7 +98,6 @@ public class WiserPathConnection
 		try
 		{
 			this.connection.connect();
-			// this.contentStream = new DataOutputStream( connection.getOutputStream() );
 		}
 		catch (IOException e)
 		{
@@ -173,25 +163,12 @@ public class WiserPathConnection
 	 */
 	public void addImageData( String attribName, String fileName, String path )
 	{
-		// if (this.contentStream == null)
-		// {
-		// return;
-		// }
-		DataOutputStream contentStream = null;
-		try
-		{
-			contentStream = new DataOutputStream( connection.getOutputStream() );
-		}
-		catch (IOException e1)
-		{
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 		File f = new File( path );
 		int len = (int) f.length(); // create a buffer big enough for the image.
 
 		try
 		{
+			DataOutputStream contentStream = new DataOutputStream( connection.getOutputStream() );
 			contentStream.writeBytes( "--" + BOUNDARY + "\r\n" );
 			contentStream.writeBytes( "Content-Disposition: form-data; name=\"" + attribName + "\"; filename=\"" + fileName + "\"" + "\r\n" );
 			// TODO add more image types if necessary
@@ -242,7 +219,6 @@ public class WiserPathConnection
 	 */
 	public int POST()
 	{
-		// TODO fix so that subsequent attempts to use this return an input stream.
 		try
 		{
 			// //// For Bleep bleep sake don't forget the dashes at the end MUST have 2!!
