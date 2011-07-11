@@ -43,7 +43,7 @@ public class HTTPBlogMVC implements ModelViewController
 		// Write blog to web site
 		if (this.blog.hasImage())
 		{
-			isUploaded = postImage();
+			isUploaded = postImage(); // posting images allows titles bodies and tags.
 		}
 		else
 		// no image? Its a point of interest and needs to use a different interface.

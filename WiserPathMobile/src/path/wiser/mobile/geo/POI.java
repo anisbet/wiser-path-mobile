@@ -7,6 +7,9 @@ import path.wiser.mobile.util.Tags;
 import android.location.Location;
 
 /**
+ * Note on Serialization:
+ * POI objects use KML to serialize their data to file.
+ * 
  * @author andrewnisbet
  * 
  */
@@ -83,6 +86,40 @@ public abstract class POI implements Comparable<POI>
 	 * @return True if this is a valid object and false otherwise.
 	 */
 	public abstract boolean validate();
+
+	// Example of a serialized POI
+	// <?xml version="1.0" encoding="UTF-8"?>
+	// <kml xmlns="http://www.opengis.net/kml/2.2">
+	// <Document>
+	// <Placemark>
+	// <name>Entity references example</name>
+	// <description>
+	// &lt;h1&gt;Entity references are hard to type!&lt;/h1&gt;
+	// &lt;p&gt;&lt;font color="green"&gt;Text is
+	// &lt;i&gt;more readable&lt;/i&gt;
+	// and &lt;b&gt;easier to write&lt;/b&gt;
+	// when you can avoid using entity references.&lt;/font&gt;&lt;/p&gt;
+	// </description>
+	// <Point>
+	// <coordinates>102.594411,14.998518</coordinates>
+	// </Point>
+	// </Placemark>
+	// </Document>
+	// </kml>
+
+	/**
+	 * Write blog to media.
+	 * 
+	 * @return true if the serialization was successful and false otherwise.
+	 */
+	public abstract boolean serialize();
+
+	/**
+	 * Retrieve blog from file.
+	 * 
+	 * @return true if the POI was retrieved from media and false otherwise.
+	 */
+	public abstract boolean deserialize();
 
 	/*
 	 * (non-Javadoc)
