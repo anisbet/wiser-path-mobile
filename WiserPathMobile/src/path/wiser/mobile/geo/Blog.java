@@ -144,4 +144,18 @@ public class Blog extends POI
 	{
 		return extension;
 	}
+
+	@Override
+	public boolean serialize()
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean deserialize()
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

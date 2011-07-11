@@ -26,9 +26,9 @@ import android.widget.TextView;
  */
 public class PointOfInterestActivity extends Selectable
 {
-	protected Blog			blog	= null;
-	protected POIList<Blog>	blogs	= null;
-	protected GPS			gps		= null;
+	protected Blog			currentBlog	= null;
+	protected POIList<Blog>	blogs		= null;
+	protected GPS			gps			= null;
 
 	public PointOfInterestActivity()
 	{
@@ -46,16 +46,16 @@ public class PointOfInterestActivity extends Selectable
 		super.onCreate( savedInstanceState );
 		// set content view so you can grab stuff in it.
 		setContentView( R.layout.poi_tab );
-		gps = new GPS( this );
+		this.gps = new GPS( this );
 		this.blogs = new POIList<Blog>();
-		this.blog = new Blog();
+		this.currentBlog = new Blog();
 
-		this.blog.setPoiTitle( "Andrew's test blog" );
+		this.currentBlog.setPoiTitle( "Andrew's test currentBlog" );
 
 		// test code
-		BlogMVC mvc = new BlogMVC( this, this.blog );
+		BlogMVC mvc = new BlogMVC( this, this.currentBlog );
 		mvc.update();
-		this.blog.setDescription( "Oh, how nice, a new blog!" );
+		this.currentBlog.setDescription( "Oh, how nice, a new currentBlog!" );
 		mvc.update();
 
 		// test code
@@ -66,7 +66,7 @@ public class PointOfInterestActivity extends Selectable
 		ClearTextView titleClearTextView = new ClearTextView();
 		textView.setOnTouchListener( titleClearTextView );
 		textView.setOnFocusChangeListener( titleClearTextView );
-		// clear the blog text aswell.
+		// clear the currentBlog text aswell.
 		textView = (TextView) findViewById( R.id.Poi_Blog );
 		textView.setOnTouchListener( new ClearTextView() );
 		textView = (TextView) findViewById( R.id.Poi_Tag );
@@ -134,29 +134,29 @@ public class PointOfInterestActivity extends Selectable
 	protected void delete()
 	{
 		// TODO Auto-generated method stub
-		// this.blogs.removeElement( blog );
+		// this.blogs.removeElement( currentBlog );
 		// this.blog = new Blog();
 	}
 
 	@Override
 	protected void next()
 	{
-		// if the blog is not null push it on the tail and get the head.
-		if (this.blog != null)
+		// if the currentBlog is not null push it on the tail and get the head.
+		if (this.currentBlog != null)
 		{
-			this.blogs.pushTail( this.blog );
-			this.blog = this.blogs.popHead();
+			this.blogs.pushTail( this.currentBlog );
+			this.currentBlog = this.blogs.popHead();
 		}
 	}
 
 	@Override
 	protected void previous()
 	{
-		// if the blog is not null push it on the tail and get the head.
-		if (this.blog != null)
+		// if the currentBlog is not null push it on the tail and get the head.
+		if (this.currentBlog != null)
 		{
-			this.blogs.pushHead( this.blog );
-			this.blog = this.blogs.popTail();
+			this.blogs.pushHead( this.currentBlog );
+			this.currentBlog = this.blogs.popTail();
 		}
 	}
 
@@ -164,8 +164,8 @@ public class PointOfInterestActivity extends Selectable
 	protected void save()
 	{
 		// TODO Serialize the entire vector to disk.
-		BlogMVC mvc = new BlogMVC( this, this.blog );
-		mvc.change();
+		BlogMVC mvc = new BlogMVC( this, this.currentBlog );
+		mvc.change(); // sync the data from the UI to the blog
 		if (isSerialized())
 		{
 			text = String.format( res.getString( R.string.poi_blog_save_success_msg ) );
@@ -180,17 +180,17 @@ public class PointOfInterestActivity extends Selectable
 	@Override
 	protected void upload()
 	{
-		// Make sure the blog is ready to go.
-		if (this.blog != null && this.blog.validate())
+		// Make sure the currentBlog is ready to go.
+		if (this.currentBlog != null && this.currentBlog.validate())
 		{
 			// get the HTTPService for posting data.
 			HTTPService service = HTTPService.getInstance();
-			service.uploadBlog( this.blog );
-			// upload the blog.
-			if (this.blog.isUploaded())
+			service.uploadBlog( this.currentBlog );
+			// upload the currentBlog.
+			if (this.currentBlog.isUploaded())
 			{
 				text = String.format( res.getString( R.string.poi_blog_post_success_msg ) );
-				// TODO delete blog.
+				// TODO delete currentBlog.
 			}
 			else
 			{
@@ -233,9 +233,9 @@ public class PointOfInterestActivity extends Selectable
 	{
 		// TODO if a location has already been stored stop the GPS
 		// we do this so the location doesn't keep updating after you leave the POI.
-		if (this.blog != null && this.blog.needsLocation())
+		if (this.currentBlog != null && this.currentBlog.needsLocation())
 		{
-			this.blog.setLocation( location );
+			this.currentBlog.setLocation( location );
 			if (location != null)
 			{
 				this.print( "LOCATION CHANGED " + location.getLongitude() + " long " + location.getLatitude() + " lat." );
