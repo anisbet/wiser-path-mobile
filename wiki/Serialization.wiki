@@ -85,3 +85,8 @@ This is how Traces are stored:
   </Document>
 </kml>
 }}}
+
+The following are the list of classes effected by Serialization: 
+  * POI.java
+  * Trace.java
+  * Blog.java
