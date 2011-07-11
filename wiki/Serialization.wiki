@@ -12,7 +12,7 @@ Blogs and Incidents will be using the following format:
 <kml xmlns="http://www.opengis.net/kml/2.2">
   <Document>
     <Placemark>
-      <name>CDATA example</name>
+      <name>Nice Location for a new LRT</name>
       <description>
         <![CDATA[
           <h1>CDATA Tags are useful!</h1>
@@ -21,12 +21,21 @@ Blogs and Incidents will be using the following format:
           references.</font></p>
         ]]>
       </description>
-      <!-- Optional image -->
+      <!-- Optional image and tags we don't store extension we can figure it out; or is uploaded because if the blog is written to file it hasn't been uploaded. -->
       <ExtendedData>
         <Data name="imagePath">
           <value>/path/to/image.jpg</value>
         </Data>
-        
+        <Data name="tag">
+          <value>LRT,LRT south,LRT downtown,#LRT Edmonton</value>
+        </Data>
+		<Data name="imagePath">
+          <value>/path/to/image.jpg</value>
+        </Data>
+        <!-- incidents use this flag -->
+        <Data name="isIncident">
+          <value>true</value>
+        </Data>
       </ExtendedData>
       <Point>
         <coordinates>102.595626,14.996729</coordinates>
