@@ -30,11 +30,11 @@ Blogs and Incidents will be using the following format:
         <Data name="tag">
           <value>LRT,LRT south,LRT downtown,#LRT Edmonton</value>
         </Data>
-		<Data name="imagePath">
+        <Data name="imagePath">
           <value>/path/to/image.jpg</value>
         </Data>
-		<!-- incidents use this flag -->
-		<Data name="isIncident">
+        <!-- incidents use this flag -->
+        <Data name="isIncident">
           <value>true</value>
         </Data>
       </ExtendedData>
@@ -67,7 +67,7 @@ This is how Traces are stored:
       <styleUrl>#userLineType</styleUrl>
       <LineString>
         <altitudeMode>relativeToGround</altitudeMode>
-		<!-- tack on ',<altitude>' for traces with altitude -->
+        <!-- tack on ',<altitude>' for traces with altitude -->
         <coordinates> -112.2550785337791,36.07954952145647
           -112.2549277039738,36.08117083492122
           -112.2552505069063,36.08260761307279
