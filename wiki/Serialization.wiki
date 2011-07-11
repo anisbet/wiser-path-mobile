@@ -90,3 +90,4 @@ The following are the list of classes effected by Serialization:
   * POI.java
   * Trace.java
   * Blog.java
+  * Tags.java
