@@ -1,0 +1,37 @@
+#labels Featured
+= Serialization of Blogs, Traces and Incidents in WiserPathMobile =
+
+The objects listed in the title are the current objects that Wiser Path Mobile handles. There are serialized and deserialized to media on the device in the event that the user does not wish to upload her data, or Wiser Path Mobile is stopped before the user has a chance to upload data.
+
+The standard for saving the data is KML 2.2 using standard tags for obvious data types as much as possible and special data types for things like image names. A good tutorial can be found 
+[http://code.google.com/apis/kml/documentation/kml_tut.html here].
+
+Blogs and Incidents will be using the following format:
+{{{
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <Placemark>
+      <name>CDATA example</name>
+      <description>
+        <![CDATA[
+          <h1>CDATA Tags are useful!</h1>
+          <p><font color="red">Text is <i>more readable</i> and 
+          <b>easier to write</b> when you can avoid using entity 
+          references.</font></p>
+        ]]>
+      </description>
+      <!-- Optional image -->
+      <ExtendedData>
+        <Data name="imagePath">
+          <value>/path/to/image.jpg</value>
+        </Data>
+        
+      </ExtendedData>
+      <Point>
+        <coordinates>102.595626,14.996729</coordinates>
+      </Point>
+    </Placemark>
+  </Document>
+</kml>
+}}}
