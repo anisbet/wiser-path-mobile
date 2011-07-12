@@ -11,7 +11,7 @@ import path.wiser.mobile.geo.Trace;
  * @author andrewnisbet
  * 
  */
-public class POIList
+public class PoiList
 {
 	public enum Type
 	{
@@ -25,7 +25,7 @@ public class POIList
 	/**
 	 * @param type the type of list to create.
 	 */
-	public POIList( Type type )
+	public PoiList( Type type )
 	{
 		this.myType = type;
 		switch (type)
