@@ -7,6 +7,7 @@ import path.wiser.mobile.R;
 import path.wiser.mobile.geo.Blog;
 import path.wiser.mobile.geo.GPS;
 import path.wiser.mobile.services.HTTPService;
+import path.wiser.mobile.util.PoiList;
 import path.wiser.mobile.util.Selectable;
 import android.location.Location;
 import android.os.Bundle;
@@ -25,9 +26,10 @@ import android.widget.TextView;
  */
 public class PointOfInterestActivity extends Selectable
 {
-	protected Blog	currentBlog	= null;
+	// protected Blog currentBlog = null;
 	// protected CircularList<Blog> blogs = null;
-	protected GPS	gps			= null;
+	protected PoiList	blogs	= null;
+	protected GPS		gps		= null;
 
 	public PointOfInterestActivity()
 	{
@@ -46,15 +48,15 @@ public class PointOfInterestActivity extends Selectable
 		// set content view so you can grab stuff in it.
 		setContentView( R.layout.poi_tab );
 		this.gps = new GPS( this );
-		// this.blogs = new CircularList<Blog>();
-		this.currentBlog = new Blog();
-
-		this.currentBlog.setPoiTitle( "Andrew's test currentBlog" );
+		// create the container for many blogs
+		this.blogs = new PoiList( PoiList.Type.BLOG );
+		Blog currentBlog = (Blog) blogs.getCurrent();
+		currentBlog.setPoiTitle( "Andrew's test currentBlog" );
 
 		// test code
-		BlogMVC mvc = new BlogMVC( this, this.currentBlog );
+		BlogMVC mvc = new BlogMVC( this, currentBlog );
 		mvc.update();
-		this.currentBlog.setDescription( "Oh, how nice, a new currentBlog!" );
+		currentBlog.setDescription( "Oh, how nice, a new currentBlog!" );
 		mvc.update();
 
 		// test code
@@ -133,60 +135,81 @@ public class PointOfInterestActivity extends Selectable
 	protected void delete()
 	{
 		// TODO Auto-generated method stub
-		// this.blogs.removeElement( currentBlog );
-		// this.blog = new Blog();
+		Blog currentBlog = (Blog) this.blogs.deleteCurrent();
+		BlogMVC mvc = new BlogMVC( this, currentBlog );
+		mvc = new BlogMVC( this, currentBlog );
+		mvc.update();
 	}
 
 	@Override
 	protected void next()
 	{
-		// if the currentBlog is not null push it on the tail and get the head.
-		if (this.currentBlog != null)
+		Blog currentBlog = (Blog) this.blogs.getCurrent();
+		BlogMVC mvc = new BlogMVC( this, currentBlog );
+		// write data from UI to blog
+		mvc.change();
+		currentBlog = (Blog) this.blogs.next();
+		mvc = new BlogMVC( this, currentBlog );
+		// update the ui to the new blog
+		mvc.update();
+		// if this is a new blog you may need to add a location so check for GPS and if none start it.
+		if (currentBlog.needsLocation())
 		{
-			// this.blogs.pushTail( this.currentBlog );
-			// this.currentBlog = this.blogs.popHead();
+			this.gps = new GPS( this ); // this will run until a location is stored when locationChange fires.
 		}
 	}
 
 	@Override
 	protected void previous()
 	{
-		// if the currentBlog is not null push it on the tail and get the head.
-		if (this.currentBlog != null)
+		Blog currentBlog = (Blog) this.blogs.getCurrent();
+		BlogMVC mvc = new BlogMVC( this, currentBlog );
+		// write data from UI to blog
+		mvc.change();
+		currentBlog = (Blog) this.blogs.previous();
+		mvc = new BlogMVC( this, currentBlog );
+		// update the ui to the new blog
+		mvc.update();
+		// if this is a new blog you may need to add a location so check for GPS and if none start it.
+		if (currentBlog.needsLocation())
 		{
-			// this.blogs.pushHead( this.currentBlog );
-			// this.currentBlog = this.blogs.popTail();
+			this.gps = new GPS( this ); // this will run until a location is stored when locationChange fires.
 		}
 	}
 
 	@Override
 	protected void save()
 	{
-		// TODO Serialize the entire vector to disk.
-		BlogMVC mvc = new BlogMVC( this, this.currentBlog );
-		mvc.change(); // sync the data from the UI to the blog
-		if (isSerialized())
+		Blog currentBlog = (Blog) this.blogs.getCurrent();
+		BlogMVC mvc = new BlogMVC( this, currentBlog );
+		// sync the data from the UI to the blog
+		mvc.change();
+
+		if (this.blogs.serialize())
 		{
 			text = String.format( res.getString( R.string.poi_blog_save_success_msg ) );
 		}
-	}
-
-	private boolean isSerialized()
-	{
-		return true;
+		else
+		{
+			// text = String.format( res.getString( R.string.poi_blog_save_success_msg ) );
+		}
 	}
 
 	@Override
 	protected void upload()
 	{
+		Blog currentBlog = (Blog) this.blogs.getCurrent();
+		BlogMVC mvc = new BlogMVC( this, currentBlog );
+		// sync the data from the UI to the blog
+		mvc.change();
 		// Make sure the currentBlog is ready to go.
-		if (this.currentBlog != null && this.currentBlog.validate())
+		if (currentBlog.validate())
 		{
 			// get the HTTPService for posting data.
 			HTTPService service = HTTPService.getInstance();
-			service.uploadBlog( this.currentBlog );
+			service.uploadBlog( currentBlog );
 			// upload the currentBlog.
-			if (this.currentBlog.isUploaded())
+			if (currentBlog.isUploaded())
 			{
 				text = String.format( res.getString( R.string.poi_blog_post_success_msg ) );
 				// TODO delete currentBlog.
@@ -202,6 +225,10 @@ public class PointOfInterestActivity extends Selectable
 		}
 		msg = Html.fromHtml( text );
 		showMessage( msg );
+		// get the next Blog after deletion.
+		currentBlog = (Blog) this.blogs.deleteCurrent();
+		mvc = new BlogMVC( this, currentBlog );
+		mvc.update();
 	}
 
 	// Occurs when ever you move away from the screen. All objects that were created for
@@ -212,6 +239,17 @@ public class PointOfInterestActivity extends Selectable
 		// TODO store data before we move away from this screen.
 		super.onPause();
 		this.print( "onPause() called!" );
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onStop()
+	 */
+	public void onStop()
+	{
+		super.onStop();
+		this.blogs.serialize();
 	}
 
 	/*
@@ -230,15 +268,17 @@ public class PointOfInterestActivity extends Selectable
 	@Override
 	public void onLocationChanged( Location location )
 	{
-		// TODO if a location has already been stored stop the GPS
+		Blog currentBlog = (Blog) this.blogs.getCurrent();
+
 		// we do this so the location doesn't keep updating after you leave the POI.
-		if (this.currentBlog != null && this.currentBlog.needsLocation())
+		if (currentBlog.needsLocation())
 		{
-			this.currentBlog.setLocation( location );
+			currentBlog.setLocation( location );
 			if (location != null)
 			{
 				this.print( "LOCATION CHANGED " + location.getLongitude() + " long " + location.getLatitude() + " lat." );
 			}
+			// if a location has already been stored stop the GPS
 			// turn off the gps.
 			this.gps = null;
 		}
