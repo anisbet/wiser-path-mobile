@@ -62,6 +62,7 @@ public class PoiList
 		else
 		{
 			// add a new node
+			// you can keep adding incomplete nodes but you cannot upload them.
 			this.head = add();
 		}
 		return this.head;
@@ -92,7 +93,6 @@ public class PoiList
 				// this is the head of the list
 				this.head = this.head.getNext();
 				this.head.setPrevious( null );
-
 			}
 			else
 				if (this.head.getNext() == null)
@@ -149,6 +149,29 @@ public class PoiList
 	 */
 	public boolean serialize()
 	{
+		// go to the head of the list but use a local head so we don't lose our place
+		POI myHead = this.head;
+		while (myHead.getPrevious() != null)
+		{
+			myHead = myHead.getPrevious();
+		}
+		// now at the head proceed through the list
+		KMLDocument doc = new KMLDocument();
+		doc.output( myHead );
+		while (myHead.getNext() != null)
+		{
+			myHead = myHead.getNext();
+			doc.output( myHead );
+		}
+		doc.write(/* some file stream or what have you */);
 		return false;
+	}
+
+	/**
+	 * @return The current head position
+	 */
+	public POI getCurrent()
+	{
+		return this.head;
 	}
 }
