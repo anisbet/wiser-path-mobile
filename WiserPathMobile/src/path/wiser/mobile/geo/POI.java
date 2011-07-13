@@ -18,6 +18,8 @@ public abstract class POI implements Comparable<POI>
 	protected String	title		= "";
 	protected String	description	= "";
 	protected boolean	isUploaded	= false;
+	private POI			previous	= null;
+	private POI			next		= null;
 
 	/**
 	 * @return the isUploaded
@@ -130,6 +132,38 @@ public abstract class POI implements Comparable<POI>
 	public int compareTo( POI poi )
 	{
 		return this.title.compareTo( poi.title );
+	}
+
+	/**
+	 * @return the previous
+	 */
+	public POI getPrevious()
+	{
+		return previous;
+	}
+
+	/**
+	 * @return the next
+	 */
+	public POI getNext()
+	{
+		return next;
+	}
+
+	/**
+	 * @param previous the previous to set
+	 */
+	public void setPrevious( POI previous )
+	{
+		this.previous = previous;
+	}
+
+	/**
+	 * @param next the next to set
+	 */
+	public void setNext( POI next )
+	{
+		this.next = next;
 	}
 
 }
