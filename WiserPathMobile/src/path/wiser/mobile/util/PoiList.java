@@ -18,9 +18,8 @@ public class PoiList
 		BLOG, TRACE
 	}
 
-	private CircularList<POI>	list		= null;
-	private POI					currentPoi	= null;
-	private Type				myType;
+	private POI		head	= null;
+	private Type	myType;
 
 	/**
 	 * @param type the type of list to create.
@@ -31,13 +30,11 @@ public class PoiList
 		switch (type)
 		{
 		case TRACE:
-			this.currentPoi = new Trace();
+			this.head = new Trace();
 			break;
 		default:
-			this.currentPoi = new Blog();
+			this.head = new Blog();
 		}
-		this.list = new CircularList<POI>();
-		this.list.pushTail( this.currentPoi );
 	}
 
 	/**
@@ -45,38 +42,11 @@ public class PoiList
 	 */
 	public POI previous()
 	{
-		// if the currentBlog is not null push it on the tail and get the head.
-		// if the poi is not valid but user requests previous create new object store it and fetch previous.
-		if (this.currentPoi.validate() == false)
+		if (this.head.getPrevious() != null)
 		{
-			switch (this.myType)
-			{
-			case TRACE:
-				this.currentPoi = new Trace();
-				this.list.pushTail( this.currentPoi );
-				this.currentPoi = (Trace) this.list.popHead();
-				break;
-			default:
-				this.currentPoi = new Blog();
-				this.list.pushTail( this.currentPoi );
-				this.currentPoi = (Blog) this.list.popHead();
-			}
+			this.head = this.head.getPrevious();
 		}
-		else
-		{
-			switch (this.myType)
-			{
-			case TRACE:
-				this.list.pushTail( this.currentPoi );
-				this.currentPoi = (Trace) this.list.popHead();
-				break;
-			default:
-				this.list.pushTail( this.currentPoi );
-				this.currentPoi = (Blog) this.list.popHead();
-			}
-		}
-
-		return this.currentPoi;
+		return this.head;
 	}
 
 	/**
@@ -84,37 +54,101 @@ public class PoiList
 	 */
 	public POI next()
 	{
-		// if the currentBlog is not null push it on the tail and get the head.
-		// if the poi is not valid but user requests previous create new object store it and fetch previous.
-		if (this.currentPoi.validate() == false)
+		// if there are items on the list and we are in the middle get the next.
+		if (this.head.getNext() != null)
 		{
-			switch (this.myType)
-			{
-			case TRACE:
-				this.currentPoi = new Trace();
-				this.list.pushHead( this.currentPoi );
-				this.currentPoi = (Trace) this.list.popTail();
-				break;
-			default:
-				this.currentPoi = new Blog();
-				this.list.pushHead( this.currentPoi );
-				this.currentPoi = (Blog) this.list.popTail();
-			}
+			this.head = this.head.getNext();
 		}
 		else
 		{
-			switch (this.myType)
+			// add a new node
+			this.head = add();
+		}
+		return this.head;
+	}
+
+	/**
+	 * @return The next POI that comes after one being deleted, or the previous if there are no more, and
+	 *         in the case where this is only one POI, clear the data in the POI
+	 */
+	public POI deleteCurrent()
+	{
+		// if we are the last on the list back up and delete the last.
+		if (this.head.getNext() == null && this.head.getPrevious() == null)
+		{
+			// There is only a head so clear me.
+			switch (myType)
 			{
 			case TRACE:
-				this.list.pushHead( this.currentPoi );
-				this.currentPoi = (Trace) this.list.popTail();
+				this.head = new Trace();
 				break;
 			default:
-				this.list.pushHead( this.currentPoi );
-				this.currentPoi = (Blog) this.list.popTail();
+				this.head = new Blog();
 			}
 		}
+		else
+			if (this.head.getPrevious() == null)
+			{
+				// this is the head of the list
+				this.head = this.head.getNext();
+				this.head.setPrevious( null );
 
-		return this.currentPoi;
+			}
+			else
+				if (this.head.getNext() == null)
+				{
+					// I am the end of the list
+					this.head = this.head.getPrevious();
+					this.head.setNext( null );
+
+				}
+				else
+				{
+					// I am in the middle of the list
+					this.head.getPrevious().setNext( this.head.getNext() );
+					this.head.getNext().setPrevious( this.head.getPrevious() );
+					this.head = this.head.getNext();
+				}
+		return this.head;
+	}
+
+	/**
+	 * Adds a new POI node and returns a reference to it. This method is implied
+	 * if you {@link#next()} past the end of the list.
+	 * 
+	 * @return a new POI.
+	 */
+	public POI add()
+	{
+		// go to the end of the list.
+		while (this.head.getNext() != null)
+		{
+			this.head = this.head.getNext();
+		}
+		// now create a new item
+		POI p = null;
+		switch (myType)
+		{
+		case TRACE:
+			p = new Trace();
+			break;
+		default:
+			p = new Blog();
+		}
+		p.setPrevious( this.head );
+		this.head.setNext( p );
+		this.head = this.head.getNext();
+
+		return this.head;
+	}
+
+	/**
+	 * Serialize the list of items to media. This object acts as a document container for the KML file.
+	 * 
+	 * @return true if the items were serialized to media and false otherwise.
+	 */
+	public boolean serialize()
+	{
+		return false;
 	}
 }
