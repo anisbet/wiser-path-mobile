@@ -7,7 +7,6 @@ import path.wiser.mobile.R;
 import path.wiser.mobile.geo.Blog;
 import path.wiser.mobile.geo.GPS;
 import path.wiser.mobile.services.HTTPService;
-import path.wiser.mobile.util.CircularList;
 import path.wiser.mobile.util.Selectable;
 import android.location.Location;
 import android.os.Bundle;
@@ -26,9 +25,9 @@ import android.widget.TextView;
  */
 public class PointOfInterestActivity extends Selectable
 {
-	protected Blog			currentBlog	= null;
-	protected CircularList<Blog>	blogs		= null;
-	protected GPS			gps			= null;
+	protected Blog	currentBlog	= null;
+	// protected CircularList<Blog> blogs = null;
+	protected GPS	gps			= null;
 
 	public PointOfInterestActivity()
 	{
@@ -47,7 +46,7 @@ public class PointOfInterestActivity extends Selectable
 		// set content view so you can grab stuff in it.
 		setContentView( R.layout.poi_tab );
 		this.gps = new GPS( this );
-		this.blogs = new CircularList<Blog>();
+		// this.blogs = new CircularList<Blog>();
 		this.currentBlog = new Blog();
 
 		this.currentBlog.setPoiTitle( "Andrew's test currentBlog" );
@@ -144,8 +143,8 @@ public class PointOfInterestActivity extends Selectable
 		// if the currentBlog is not null push it on the tail and get the head.
 		if (this.currentBlog != null)
 		{
-			this.blogs.pushTail( this.currentBlog );
-			this.currentBlog = this.blogs.popHead();
+			// this.blogs.pushTail( this.currentBlog );
+			// this.currentBlog = this.blogs.popHead();
 		}
 	}
 
@@ -155,8 +154,8 @@ public class PointOfInterestActivity extends Selectable
 		// if the currentBlog is not null push it on the tail and get the head.
 		if (this.currentBlog != null)
 		{
-			this.blogs.pushHead( this.currentBlog );
-			this.currentBlog = this.blogs.popTail();
+			// this.blogs.pushHead( this.currentBlog );
+			// this.currentBlog = this.blogs.popTail();
 		}
 	}
 
