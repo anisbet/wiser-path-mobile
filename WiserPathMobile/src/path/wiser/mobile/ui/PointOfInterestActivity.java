@@ -27,8 +27,6 @@ import android.widget.TextView;
  */
 public class PointOfInterestActivity extends Selectable
 {
-	// protected Blog currentBlog = null;
-	// protected CircularList<Blog> blogs = null;
 	protected PoiList	blogs	= null;
 	protected GPS		gps		= null;
 
