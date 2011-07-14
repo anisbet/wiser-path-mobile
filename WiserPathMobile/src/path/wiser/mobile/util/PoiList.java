@@ -8,6 +8,10 @@ import path.wiser.mobile.geo.POI;
 import path.wiser.mobile.geo.Trace;
 
 /**
+ * PoiList is a linked list build with a difference. For one manages the creation and deletion of POI objects.
+ * This abstracts that process away from the caller class that has many more things to do than worry about
+ * how to create push pop destroy and link to the next poi.
+ * 
  * @author andrewnisbet
  * 
  */
