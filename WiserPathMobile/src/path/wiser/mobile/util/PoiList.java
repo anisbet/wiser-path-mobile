@@ -146,6 +146,18 @@ public class PoiList
 	}
 
 	/**
+	 * Serialize the list of items to media. This object acts as a document container for the KML file.
+	 * 
+	 * @return true if the items were serialized to media and false otherwise.
+	 */
+	public boolean deserialize()
+	{
+		// go to the head of the list but use a local head so we don't lose our place
+		KMLDocument doc = new KMLDocument();
+		return doc.deserialize( this );
+	}
+
+	/**
 	 * @return The current head position
 	 */
 	public POI getCurrent()
@@ -163,5 +175,10 @@ public class PoiList
 		default:
 			return new Blog();
 		}
+	}
+
+	public POI.Type getType()
+	{
+		return this.myType;
 	}
 }
