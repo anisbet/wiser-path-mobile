@@ -6,6 +6,7 @@ package path.wiser.mobile.ui;
 import path.wiser.mobile.R;
 import path.wiser.mobile.geo.Blog;
 import path.wiser.mobile.geo.GPS;
+import path.wiser.mobile.geo.POI;
 import path.wiser.mobile.services.HTTPService;
 import path.wiser.mobile.util.PoiList;
 import path.wiser.mobile.util.Selectable;
@@ -49,7 +50,7 @@ public class PointOfInterestActivity extends Selectable
 		setContentView( R.layout.poi_tab );
 		this.gps = new GPS( this );
 		// create the container for many blogs
-		this.blogs = new PoiList( PoiList.Type.BLOG );
+		this.blogs = new PoiList( POI.Type.BLOG );
 		Blog currentBlog = (Blog) blogs.getCurrent();
 		currentBlog.setPoiTitle( "Andrew's test currentBlog" );
 
@@ -231,16 +232,6 @@ public class PointOfInterestActivity extends Selectable
 		mvc.update();
 	}
 
-	// Occurs when ever you move away from the screen. All objects that were created for
-	// this activity have persistence but are suspended.
-	@Override
-	public void onPause()
-	{
-		// TODO store data before we move away from this screen.
-		super.onPause();
-		this.print( "onPause() called!" );
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -250,19 +241,6 @@ public class PointOfInterestActivity extends Selectable
 	{
 		super.onStop();
 		this.blogs.serialize();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see android.app.Activity#onResume()
-	 */
-	@Override
-	public void onResume()
-	{
-		//
-		super.onResume();
-		this.print( "onResume() called!" );
 	}
 
 	@Override
