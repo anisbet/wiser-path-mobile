@@ -13,28 +13,17 @@ import path.wiser.mobile.geo.Trace;
  */
 public class PoiList
 {
-	public enum Type
-	{
-		BLOG, TRACE
-	}
 
-	private POI		head	= null;
-	private Type	myType;
+	private POI			head	= null;
+	private POI.Type	myType;
 
 	/**
 	 * @param type the type of list to create.
 	 */
-	public PoiList( Type type )
+	public PoiList( POI.Type type )
 	{
 		this.myType = type;
-		switch (type)
-		{
-		case TRACE:
-			this.head = new Trace();
-			break;
-		default:
-			this.head = new Blog();
-		}
+		this.head = createNewEntry();
 	}
 
 	/**
@@ -78,14 +67,7 @@ public class PoiList
 		if (this.head.getNext() == null && this.head.getPrevious() == null)
 		{
 			// There is only a head so clear me.
-			switch (myType)
-			{
-			case TRACE:
-				this.head = new Trace();
-				break;
-			default:
-				this.head = new Blog();
-			}
+			this.head = createNewEntry();
 		}
 		else
 			if (this.head.getPrevious() == null)
@@ -126,15 +108,7 @@ public class PoiList
 			this.head = this.head.getNext();
 		}
 		// now create a new item
-		POI p = null;
-		switch (myType)
-		{
-		case TRACE:
-			p = new Trace();
-			break;
-		default:
-			p = new Blog();
-		}
+		POI p = createNewEntry();
 		p.setPrevious( this.head );
 		this.head.setNext( p );
 		this.head = this.head.getNext();
@@ -173,5 +147,17 @@ public class PoiList
 	public POI getCurrent()
 	{
 		return this.head;
+	}
+
+	private POI createNewEntry()
+	{
+		switch (myType)
+		{
+		case TRACE:
+			return new Trace();
+
+		default:
+			return new Blog();
+		}
 	}
 }
