@@ -15,11 +15,17 @@ import android.location.Location;
  */
 public abstract class POI implements Comparable<POI>
 {
+	public enum Type
+	{
+		BLOG, TRACE, INCIDENT
+	}
+
 	protected String	title		= "";
 	protected String	description	= "";
 	protected boolean	isUploaded	= false;
 	private POI			previous	= null;
 	private POI			next		= null;
+	private Type		type;
 
 	/**
 	 * @return the isUploaded
@@ -164,6 +170,22 @@ public abstract class POI implements Comparable<POI>
 	public void setNext( POI next )
 	{
 		this.next = next;
+	}
+
+	/**
+	 * @return the type
+	 */
+	public Type getType()
+	{
+		return type;
+	}
+
+	/**
+	 * @param type the type to set
+	 */
+	protected void setType( Type type )
+	{
+		this.type = type;
 	}
 
 }

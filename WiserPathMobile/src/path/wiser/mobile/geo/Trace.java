@@ -27,6 +27,7 @@ public class Trace extends POI implements ComputableTripMetrics
 
 	public Trace()
 	{
+		this.setType( POI.Type.TRACE );
 		this.tracePoints = new Vector<Location>();
 		this.traceComputer = new TraceComputer( tracePoints );
 		this.tags = new Tags();
