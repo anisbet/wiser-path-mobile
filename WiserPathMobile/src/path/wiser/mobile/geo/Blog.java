@@ -104,6 +104,16 @@ public class Blog extends POI
 	}
 
 	/**
+	 * Used to return just the lat and long as a comma separated pair.
+	 * 
+	 * @return lat long pair separated by a comma.
+	 */
+	public String getCoordinates()
+	{
+		return String.valueOf( location.getLatitude() ) + "," + String.valueOf( location.getLongitude() );
+	}
+
+	/**
 	 * @return name of the image.
 	 */
 	public String getImageName()
@@ -146,17 +156,4 @@ public class Blog extends POI
 		return extension;
 	}
 
-	@Override
-	public boolean serialize()
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean deserialize()
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
 }
