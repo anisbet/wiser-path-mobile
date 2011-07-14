@@ -110,4 +110,20 @@ public class Trace extends POI implements ComputableTripMetrics
 		this.tags.setTags( tags );
 	}
 
+	/**
+	 * @return all the coordinates as a list of lat long in a big string.
+	 */
+	public String getCoordinates()
+	{
+		StringBuffer buffer = new StringBuffer();
+		for (Location location : this.tracePoints)
+		{
+			buffer.append( String.valueOf( location.getLatitude() ) );
+			buffer.append( "," );
+			buffer.append( String.valueOf( location.getLongitude() ) );
+			buffer.append( "\n" );
+		}
+		return buffer.toString();
+	}
+
 }
