@@ -152,6 +152,6 @@ public class MediaWriter extends Activity
 		// }
 		//
 		// return fileString.toString();
-		return "";
+		return "<file's content>";
 	}
 }
