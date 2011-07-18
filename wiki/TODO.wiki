@@ -1,4 +1,4 @@
-#labels Phase-Requirements
+#labels Phase-Requirements,Featured
 = TODO =
   # Fix POI so that it doesn't crash the app when it loads. DONE.
   # Authenticate user - tests show that you don't need a token from the form to authenticate but... DONE
