@@ -1,5 +1,7 @@
 #labels Phase-Requirements
 = TODO =
-  # Fix POI so that it doesn't crash the app when it loads.
-  # Authenticate user - tests show that you don't need a token from the form to authenticate but...
-  # Uploading a Geotagged Photo - these forms use a token and you must get it and return it with the post request. Also check out the API-key services for uploading images to Drupal.
+  # Fix POI so that it doesn't crash the app when it loads. DONE.
+  # Authenticate user - tests show that you don't need a token from the form to authenticate but... DONE
+  # Uploading a Geotagged Photo - these forms use a token and you must get it and return it with the post request. Also check out the API-key services for uploading images to Drupal. DONE
+  # WiserPath tab should be able to search and display a route based on criteria like scenic or fastest.
+  # Traces to include POIs if the trace is running and become part of the trace, not a standalone POI (also Incidents).
