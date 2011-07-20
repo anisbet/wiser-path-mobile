@@ -3,10 +3,14 @@
  */
 package path.wiser.mobile.util;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
 import android.app.Activity;
@@ -22,136 +26,187 @@ public class MediaWriter extends Activity
 
 	private static final String	TAG			= "MediaWriter";
 	private static final int	BUFFER_SIZE	= 8192;
-
-	public MediaWriter()
-	{
-
-	}
-
-	public MediaWriter( String path )
-	{
-
-	}
+	boolean						externalStorageAvailable;
+	boolean						externalStorageWriteable;
 
 	/**
 	 * Method to check whether external media available and writable. This is adapted from
 	 * http://developer.android.com/guide/topics/data/data-storage.html#filesExternal
 	 */
-	private void checkExternalMedia()
+	public MediaWriter()
 	{
-		boolean mExternalStorageAvailable = false;
-		boolean mExternalStorageWriteable = false;
+		externalStorageAvailable = false;
+		externalStorageWriteable = false;
 		String state = Environment.getExternalStorageState();
 
 		if (Environment.MEDIA_MOUNTED.equals( state ))
 		{
 			// Can read and write the media
-			mExternalStorageAvailable = mExternalStorageWriteable = true;
+			externalStorageAvailable = externalStorageWriteable = true;
 		}
 		else
 			if (Environment.MEDIA_MOUNTED_READ_ONLY.equals( state ))
 			{
 				// Can only read the media
-				mExternalStorageAvailable = true;
-				mExternalStorageWriteable = false;
+				externalStorageAvailable = true;
+				externalStorageWriteable = false;
 			}
 			else
 			{
 				// Can't read or write
-				mExternalStorageAvailable = mExternalStorageWriteable = false;
+				externalStorageAvailable = externalStorageWriteable = false;
 			}
-		Log.i( TAG, "\n\nExternal Media: readable=" + mExternalStorageAvailable + " writable=" + mExternalStorageWriteable );
+		Log.i( TAG, "\n\nExternal Media: readable=" + externalStorageAvailable + " writable=" + externalStorageWriteable );
 	}
 
 	/**
-	 * Method to write ascii text characters to file on SD card. Note that you must add a
-	 * WRITE_EXTERNAL_STORAGE permission to the manifest file or this method will throw
-	 * a FileNotFound Exception because you won't have write permission.
-	 */
-
-	/**
+	 * @param path under the application directory
+	 * @param fileName name of the file to write to in that directory; any existing
+	 *        file in that directory will be clobbered.
+	 * @return True if the file was written successfully and false otherwise.
 	 * 
 	 */
-	public void writeToSDFile( String data )
+	public boolean writeFile( String path, String fileName, String data )
 	{
 		// Find the root of the external storage.
 		// See http://developer.android.com/guide/topics/data/data-storage.html#filesExternal
-		File root = android.os.Environment.getExternalStorageDirectory();
-
 		// See http://stackoverflow.com/questions/3551821/android-write-to-sd-card-folder
-
-		File dir = new File( root.getAbsolutePath() + "/download" );
-		dir.mkdirs();
-		File file = new File( dir, "myData.txt" );
-
+		File file = getPath( path, fileName );
 		try
 		{
-			FileOutputStream f = new FileOutputStream( file );
-			PrintWriter pw = new PrintWriter( f );
-			pw.println( "Howdy do to you." );
-			pw.println( "Here is a second line." );
+			FileOutputStream fOut = new FileOutputStream( file );
+			PrintWriter pw = new PrintWriter( fOut );
 			pw.println( data );
 			pw.flush();
 			pw.close();
-			f.close();
+			fOut.close();
 		}
 		catch (FileNotFoundException e)
 		{
 			Log.e( TAG, "File not found. Did you have WRITE_EXTERNAL_STORAGE permission?" );
-			e.printStackTrace();
+			return false;
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			Log.e( TAG, "IO error writing file: " + file.getAbsolutePath() );
+			return false;
 		}
-		Log.i( TAG, "\n\nFile written to " + file );
+		Log.i( TAG, "Data written to " + file );
+		return true;
 	}
 
 	/**
-	 * Method to read in a text file placed in the res/raw directory of the application. The
-	 * method reads in all lines of the file sequentially.
+	 * This method will read the file if it is there. Files are expected to be found under the application's
+	 * directory.
+	 * 
+	 * @param path under the application directory: /data/android/path.wiser.mobile/trace
+	 * @param fileName the name of the file to read from the directory.
+	 * @return The content of the file as a String.
 	 */
+	public String readFile( String path, String fileName )
+	{
+		File filePath = getPath( path, fileName );
+		Log.i( TAG, "Data read from :" + filePath.getAbsolutePath() );
+		if (filePath.exists() == false || filePath.length() < 1)
+		{
+			return "";
+		}
+
+		InputStream is = null;
+
+		try
+		{
+			is = new FileInputStream( filePath );
+		}
+		catch (FileNotFoundException e)
+		{
+			Log.e( TAG, filePath.getAbsolutePath() + " file was not found, are manifest permissions set?" );
+			return "";
+		}
+
+		BufferedReader br = new BufferedReader( new InputStreamReader( is ), BUFFER_SIZE ); // 2nd arg is buffer size
+		StringBuffer fileString = new StringBuffer();
+		String text = null;
+		try
+		{
+			while (true)
+			{
+				text = br.readLine();
+				// readLine() returns null if no more lines in the file
+				if (text == null)
+				{
+					break;
+				}
+				fileString.append( text );
+			}
+			is.close();
+			br.close();
+		}
+		catch (IOException e)
+		{
+			Log.e( TAG, filePath.getAbsolutePath() + " IO error reading file." );
+			return "";
+		}
+
+		return fileString.toString();
+	}
 
 	/**
-	 * @return
+	 * @param path on device.
+	 * @param fileName name of the file to save as.
+	 * @return the path of the requested object type.
 	 */
-	public String readRaw()
+	private File getPath( String path, String fileName )
 	{
-		// tv.append( "\nData read from res/raw/textfile.txt:" );
-		// InputStream is = this.getResources().openRawResource( R.raw.textfile );
-		// FileOutputStream fOut = openFileOutput( "samplefile.txt", MODE_WORLD_READABLE );
-		// InputStreamReader isr = new InputStreamReader( is );
-		// BufferedReader br = new BufferedReader( isr, BUFFER_SIZE ); // 2nd arg is buffer size
-		//
-		// // More efficient (less readable) implementation of above is the composite expression
-		// /*
-		// * BufferedReader br = new BufferedReader(new InputStreamReader(
-		// * this.getResources().openRawResource(R.raw.textfile)), 8192);
-		// */
-		// StringBuffer fileString = new StringBuffer();
-		// String text = null;
-		// try
-		// {
-		// while (true)
-		// {
-		// text = br.readLine();
-		// // readLine() returns null if no more lines in the file
-		// if (text == null)
-		// {
-		// break;
-		// }
-		// fileString.append( text );
-		// }
-		// isr.close();
-		// is.close();
-		// br.close();
-		// }
-		// catch (IOException e)
-		// {
-		// e.printStackTrace();
-		// }
-		//
-		// return fileString.toString();
-		return "<file's content>";
+		File storage = null;
+		// TODO add selector to SettingsActivity to determine if the internal or external storage should be used.
+		if (isExternalStorageAvailable())
+		{
+			storage = Environment.getExternalStorageDirectory();
+		}
+		else
+		{
+			storage = getFilesDir(); // place files under the application's directory.
+		}
+
+		File dir = new File( storage.getAbsolutePath() + path );
+
+		if (dir.exists() == false)
+		{
+			dir.mkdirs();
+		}
+
+		return new File( dir, fileName );
+	}
+
+	/**
+	 * @param path
+	 * @param fileName
+	 * @return true if the file was deleted and false otherwise.
+	 */
+	public boolean removeFile( String path, String fileName )
+	{
+		File file = new File( path, fileName );
+		if (file.exists())
+		{
+			return file.delete();
+		}
+		return false;
+	}
+
+	/**
+	 * @return the externalStorageAvailable
+	 */
+	public boolean isExternalStorageAvailable()
+	{
+		return externalStorageAvailable;
+	}
+
+	/**
+	 * @return the externalStorageWriteable
+	 */
+	public boolean isExternalStorageWriteable()
+	{
+		return externalStorageWriteable;
 	}
 }
