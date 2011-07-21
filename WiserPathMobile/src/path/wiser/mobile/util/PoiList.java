@@ -134,14 +134,14 @@ public class PoiList
 			myHead = myHead.getPrevious();
 		}
 		// now at the head proceed through the list
-		KMLDocument doc = new KMLDocument();
+		KMLDocument doc = new KMLDocument( this.getType() );
 		doc.output( myHead );
 		while (myHead.getNext() != null)
 		{
 			myHead = myHead.getNext();
 			doc.output( myHead );
 		}
-		doc.write(/* some file stream or what have you */);
+		doc.write();
 		return false;
 	}
 
@@ -153,7 +153,7 @@ public class PoiList
 	public boolean deserialize()
 	{
 		// go to the head of the list but use a local head so we don't lose our place
-		KMLDocument doc = new KMLDocument();
+		KMLDocument doc = new KMLDocument( this.getType() );
 		return doc.deserialize( this );
 	}
 
