@@ -3,6 +3,7 @@
  */
 package path.wiser.mobile.util;
 
+import java.io.StringReader;
 import java.io.StringWriter;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -20,10 +21,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
+import org.xml.sax.InputSource;
 
 import path.wiser.mobile.geo.Blog;
 import path.wiser.mobile.geo.POI;
+import path.wiser.mobile.geo.POI.Type;
 import path.wiser.mobile.geo.Trace;
+import android.util.Log;
 
 /**
  * @author andrewnisbet
@@ -31,19 +35,32 @@ import path.wiser.mobile.geo.Trace;
  */
 public class KMLDocument
 {
-	private static final String	LINE_TYPE		= "userLineType";
-	private Document			doc				= null;
-	private Element				docRoot			= null;
-	private boolean				includeStyle	= true;
+	// How and by what name the serialized documents appear as.
+	private static final String	LINE_TYPE			= "userLineType";
+	private static final String	TRACE_PATH			= "/trace";
+	private static final String	TRACE_FILENAME		= "trace.kml";
+	private static final String	BLOG_PATH			= "/blog";
+	private static final String	BLOG_FILENAME		= "blog.kml";
+	private static final String	INCIDENT_PATH		= "/incident";
+	private static final String	INCIDENT_FILENAME	= "incident.kml";
+	private static final String	TAG					= "KMLDocument";
+	private Document			doc					= null;
+	private Element				docRoot				= null;
+	private boolean				includeStyle		= true;			// true if the line type style needs to be
+																		// written to the document header and false if
+																		// that has been done
+	private Type				docType;								// type of document to write to file TRACE BLOG
+																		// etc.
 
-	public KMLDocument()
+	public KMLDocument( Type type )
 	{
+		this.docType = type;
 		// We need a Document
-		DocumentBuilderFactory dbfac = DocumentBuilderFactory.newInstance();
+		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder = null;
 		try
 		{
-			docBuilder = dbfac.newDocumentBuilder();
+			docBuilder = docBuilderFactory.newDocumentBuilder();
 		}
 		catch (ParserConfigurationException e)
 		{
@@ -53,7 +70,7 @@ public class KMLDocument
 
 		// Start creating the xml tree.
 		Element root = doc.createElement( "kml" );
-		root.setAttribute( "xmlns", "http://www.opengis.net/kml/2.2" ); // xmlns="http://www.opengis.net/kml/2.2"
+		root.setAttribute( "xmlns", "http://www.opengis.net/kml/2.2" );
 		doc.appendChild( root );
 		docRoot = doc.createElement( "Document" );
 		doc.appendChild( docRoot );
@@ -272,8 +289,10 @@ public class KMLDocument
 
 	/**
 	 * Writes the XML tree to media.
+	 * 
+	 * @return true if the document was successfully written and false otherwise.
 	 */
-	public void write()
+	public boolean write()
 	{
 		// Output the XML
 		TransformerFactory transfac = TransformerFactory.newInstance();
@@ -284,7 +303,8 @@ public class KMLDocument
 		}
 		catch (TransformerConfigurationException e)
 		{
-			e.printStackTrace();
+			Log.e( TAG, "TransformerConfigurationException " );
+			return false;
 		}
 
 		trans.setOutputProperty( OutputKeys.INDENT, "yes" );
@@ -298,10 +318,30 @@ public class KMLDocument
 		}
 		catch (TransformerException e)
 		{
-			e.printStackTrace();
+			Log.e( TAG, "TransformerException " );
+			return false;
 		}
-		// TODO write XML to somewhere more useful.
+		// for testing
 		System.out.println( sw.toString() );
+		// now write the data out to a file.
+		MediaWriter mediaWriter = new MediaWriter();
+		switch (this.docType)
+		{
+		case TRACE:
+			mediaWriter.writeFile( TRACE_PATH, TRACE_FILENAME, sw.toString() );
+			return true;
+		case BLOG:
+			mediaWriter.writeFile( BLOG_PATH, BLOG_FILENAME, sw.toString() );
+			return true;
+		case INCIDENT:
+			mediaWriter.writeFile( INCIDENT_PATH, INCIDENT_FILENAME, sw.toString() );
+			return true;
+		default:
+			Log.e( TAG, "Unknown document type request, contact developer!" );
+			break;
+		}
+
+		return false;
 
 	}
 
@@ -313,9 +353,88 @@ public class KMLDocument
 	 */
 	public boolean deserialize( PoiList poiList )
 	{
+		DocumentBuilder db = null;
+		try
+		{
+			db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		}
+		catch (ParserConfigurationException e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+
 		// read the file and parse it into an XML tree.
 		// get the elements and add them to the poiList.
+		MediaReader mediaReader = new MediaReader();
+		String input = null;
+
+		switch (this.docType)
+		{
+		case TRACE:
+			input = mediaReader.readFile( TRACE_PATH, TRACE_FILENAME );
+			if (setDocRoot( db, input ) == false) return false;
+			return parseTrace();
+		case BLOG:
+			input = mediaReader.readFile( BLOG_PATH, BLOG_FILENAME );
+			return parseBlog();
+		case INCIDENT:
+			input = mediaReader.readFile( INCIDENT_PATH, INCIDENT_FILENAME );
+			return parseIncident();
+		default:
+			Log.e( TAG, "Unknown document type request to read in, contact developer!" );
+			return false;
+		}
+
+	}
+
+	private boolean parseIncident()
+	{
+		// TODO Auto-generated method stub
 		return false;
+	}
+
+	private boolean parseBlog()
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	private boolean parseTrace()
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/**
+	 * @param db document builder
+	 * @param input xml file as a string
+	 * @return true if successful and false otherwise.
+	 */
+	private boolean setDocRoot( DocumentBuilder db, String input )
+	{
+		// File reader returns an empty string if it fails.
+		if (input.length() == 0)
+		{
+			Log.e( TAG, "File was not read. Does it exist?" );
+			return false;
+		}
+
+		InputSource is = new InputSource();
+		is.setCharacterStream( new StringReader( input ) );
+		try
+		{
+			this.doc = db.parse( is );
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+
+		this.docRoot = doc.getDocumentElement();
+
+		return true;
 	}
 
 }
