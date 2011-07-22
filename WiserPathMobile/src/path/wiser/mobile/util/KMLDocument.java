@@ -20,6 +20,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.xml.sax.InputSource;
 
@@ -27,6 +28,7 @@ import path.wiser.mobile.geo.Blog;
 import path.wiser.mobile.geo.POI;
 import path.wiser.mobile.geo.POI.Type;
 import path.wiser.mobile.geo.Trace;
+import android.location.Location;
 import android.util.Log;
 
 /**
@@ -44,6 +46,10 @@ public class KMLDocument
 	private static final String	INCIDENT_PATH		= "/incident";
 	private static final String	INCIDENT_FILENAME	= "incident.kml";
 	private static final String	TAG					= "KMLDocument";
+	private static final String	KML_DOCUMENT		= "Document";
+	private static final String	KML_TITLE			= "name";
+	private static final String	KML_DESCRIPTION		= "description";
+	private static final String	KML_COORDINATES		= "coordinates";
 	private Document			doc					= null;
 	private Element				docRoot				= null;
 	private boolean				includeStyle		= true;			// true if the line type style needs to be
@@ -72,7 +78,7 @@ public class KMLDocument
 		Element root = doc.createElement( "kml" );
 		root.setAttribute( "xmlns", "http://www.opengis.net/kml/2.2" );
 		doc.appendChild( root );
-		docRoot = doc.createElement( "Document" );
+		docRoot = doc.createElement( KML_DOCUMENT );
 		doc.appendChild( docRoot );
 	}
 
@@ -256,7 +262,7 @@ public class KMLDocument
 	private Node getCoordinates( Blog poi )
 	{
 		Element point = doc.createElement( "Point" );
-		Element coordinates = doc.createElement( "coordinates" );
+		Element coordinates = doc.createElement( KML_COORDINATES );
 		Text text = doc.createTextNode( poi.getCoordinates() );
 		coordinates.appendChild( text );
 		point.appendChild( coordinates );
@@ -269,7 +275,7 @@ public class KMLDocument
 	 */
 	private Node getDescription( POI poi )
 	{
-		Element description = doc.createElement( "description" );
+		Element description = doc.createElement( KML_DESCRIPTION );
 		Text text = doc.createTextNode( poi.getDescription() );
 		description.appendChild( text );
 		return description;
@@ -281,7 +287,7 @@ public class KMLDocument
 	 */
 	private Node getName( POI poi )
 	{
-		Element title = doc.createElement( "name" );
+		Element title = doc.createElement( KML_TITLE );
 		Text text = doc.createTextNode( poi.getPoiTitle() );
 		title.appendChild( text );
 		return title;
@@ -374,7 +380,7 @@ public class KMLDocument
 		case TRACE:
 			input = mediaReader.readFile( TRACE_PATH, TRACE_FILENAME );
 			if (setDocRoot( db, input ) == false) return false;
-			return parseTrace();
+			return parseTrace( poiList );
 		case BLOG:
 			input = mediaReader.readFile( BLOG_PATH, BLOG_FILENAME );
 			return parseBlog();
@@ -400,10 +406,96 @@ public class KMLDocument
 		return false;
 	}
 
-	private boolean parseTrace()
+	/**
+	 * Parse and populate the Poilist
+	 * 
+	 * @param poiList
+	 * @return true if successful and false otherwise.
+	 */
+	private boolean parseTrace( PoiList poiList )
 	{
-		// TODO Auto-generated method stub
+		// <?xml version="1.0" encoding="UTF-8"?>
+		// <kml xmlns="http://www.opengis.net/kml/2.2">
+		// <Document>
+		// <Style id="userLineType">
+		// <LineStyle>
+		// <color>7f00ffff</color>
+		// <width>1</width>
+		// </LineStyle>
+		// <PolyStyle>
+		// <color>7f00ffff</color>
+		// </PolyStyle>
+		// </Style>
+		// <Placemark>
+		// <name>My Favourite Trace</name>
+		// <description>Best Route through River Valley</description>
+		// <styleUrl>#userLineType</styleUrl>
+		// <LineString>
+		// <altitudeMode>relativeToGround</altitudeMode>
+		// <!-- tack on ',<altitude>' for traces with altitude -->
+		// <coordinates> -112.2550785337791,36.07954952145647
+		// -112.2549277039738,36.08117083492122
+		// -112.2552505069063,36.08260761307279
+		// -112.2564540158376,36.08395660588506
+		// -112.2580238976449,36.08511401044813
+		// -112.2595218489022,36.08584355239394
+		// -112.2608216347552,36.08612634548589
+		// -112.262073428656,36.08626019085147
+		// -112.2633204928495,36.08621519860091
+		// -112.2644963846444,36.08627897945274
+		// -112.2656969554589,36.08649599090644
+		// </coordinates>
+		// </LineString>
+		// </Placemark>
+		// </Document>
+		// </kml>
+		NodeList nodeList = this.docRoot.getElementsByTagName( KML_DOCUMENT );
+
+		if (nodeList != null && nodeList.getLength() > 0)
+		{
+			Trace trace = (Trace) poiList.getCurrent();
+			for (int i = 0; i < nodeList.getLength(); i++)
+			{
+				// get the Item element
+				Element element = (Element) nodeList.item( i );
+				trace.setPoiTitle( getTextValue( element, KML_TITLE ) );
+				trace.setDescription( getTextValue( element, KML_DESCRIPTION ) );
+				trace.setLocation( getTraceLocations( element, KML_COORDINATES ) );
+			}
+		}
 		return false;
+	}
+
+	private Location getTraceLocations( Element element, String kmlCoordinates )
+	{
+		Location location = null;
+		// this is going to get tricky. You cannot create a Location without providing a String Provider. The provider
+		// is the name of a provider
+		// Each subdirectory under this directory is a location provider and the name of the location provider equals to
+		// the name of the subdirectory.
+		// The files in the subdirectory define the provider.
+		// Two solutions: implement the provider or build a subclass of Location that will take legacy locations and
+		// Locations and use that in the project, or build a location provider from the example code in the downloads
+		// directory and try and make a provider.
+		return null;
+	}
+
+	/**
+	 * @param ele
+	 * @param tagName
+	 * @return String of text of the element that contains a tag of tagName.
+	 */
+	private String getTextValue( Element ele, String tagName )
+	{
+		String text = null;
+		NodeList nodeList = ele.getElementsByTagName( tagName );
+		if (nodeList != null && nodeList.getLength() > 0)
+		{
+			Element element = (Element) nodeList.item( 0 );
+			text = element.getFirstChild().getNodeValue();
+		}
+
+		return text;
 	}
 
 	/**
