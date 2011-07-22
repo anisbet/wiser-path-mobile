@@ -6,7 +6,9 @@ package path.wiser.mobile.geo;
 import path.wiser.mobile.Units;
 import path.wiser.mobile.ui.PointOfInterestActivity;
 import path.wiser.mobile.ui.TraceActivity;
+import path.wiser.mobile.ui.WiserActivityHelper;
 import android.content.Context;
+import android.location.LocationListener;
 import android.location.LocationManager;
 
 /**
@@ -16,13 +18,15 @@ import android.location.LocationManager;
 public class GPS
 {
 
+	private LocationManager	locationManager;
+
 	/**
 	 * Use this constructor if you want to use the lowest possible granularity of location and time interval
 	 * of updates to location.
 	 */
 	public GPS( PointOfInterestActivity activity ) // incident activity extends PointOfInterestActivity
 	{
-		LocationManager locationManager = (LocationManager) activity.getSystemService( Context.LOCATION_SERVICE );
+		this.locationManager = (LocationManager) activity.getSystemService( Context.LOCATION_SERVICE );
 		// TODO in version 2.3.1 and later there is a method to requestSingleUpdate() which would be more efficient.
 		locationManager.requestLocationUpdates( LocationManager.GPS_PROVIDER, 0L, 0.0f, activity );
 	}
@@ -36,8 +40,19 @@ public class GPS
 	{
 		long minimumTime = computeMinimumTime();
 		float minDistance = computeMinimumDistance();
-		LocationManager locationManager = (LocationManager) activity.getSystemService( Context.LOCATION_SERVICE );
+		this.locationManager = (LocationManager) activity.getSystemService( Context.LOCATION_SERVICE );
 		locationManager.requestLocationUpdates( LocationManager.GPS_PROVIDER, minimumTime, minDistance, activity );
+	}
+
+	/**
+	 * Disconnects the update listener from the GPS.
+	 * 
+	 * @param listener The WiserPathActivityHelper that wishes to stop listening for updates.
+	 */
+	public void stopUpdatingLocation( WiserActivityHelper listener )
+	{
+		// Remove the listener you previously added
+		this.locationManager.removeUpdates( (LocationListener) listener );
 	}
 
 	/**
