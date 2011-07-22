@@ -46,7 +46,7 @@ public class PointOfInterestActivity extends Selectable
 		super.onCreate( savedInstanceState );
 		// set content view so you can grab stuff in it.
 		setContentView( R.layout.poi_tab );
-		this.gps = new GPS( this );
+		this.gps = new GPS( this ); // TODO Use the new stopUpdatingLocation of GPS to turn off.
 		// create the container for many blogs
 		this.blogs = new PoiList( POI.Type.BLOG );
 		Blog currentBlog = (Blog) blogs.getCurrent();
@@ -256,6 +256,7 @@ public class PointOfInterestActivity extends Selectable
 			}
 			// if a location has already been stored stop the GPS
 			// turn off the gps.
+			// this.gps.stopUpdatingLocation( this ); // TODO test this.
 			this.gps = null;
 		}
 	}
