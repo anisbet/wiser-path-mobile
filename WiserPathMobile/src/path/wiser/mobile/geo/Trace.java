@@ -42,7 +42,7 @@ public class Trace extends POI implements ComputableTripMetrics
 	public void setLocation( Location location )
 	{
 		// get UTC time and set the locations time
-		location.setTime( System.currentTimeMillis() );
+		location.setTime( System.currentTimeMillis() ); // this now done with WPMLocation
 		// float speed = computeSpeed();
 		// location.setSpeed( speed );
 		this.tracePoints.add( location );
