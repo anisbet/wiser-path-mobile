@@ -42,6 +42,7 @@ public class TraceComputer implements ComputableTripMetrics
 	@Override
 	public String getDistance()
 	{
+		// TODO fix this for total distance of trip.
 		double value = this.locations.firstElement().distanceTo( this.locations.lastElement() );
 		// or should this be the total from point to point.
 		return String.valueOf( value ) + Units.distance();
