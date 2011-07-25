@@ -68,7 +68,7 @@ public class BlogMVC implements ModelViewController
 			textView = (TextView) poi.findViewById( R.id.Poi_Blog );
 			blog.setDescription( textView.getText().toString() );
 			textView = (TextView) poi.findViewById( R.id.Poi_Tag );
-			blog.setTags( textView.getText().toString() );
+			blog.setTags( new Tags( textView.getText().toString() ) );
 			// TODO also include images.
 		}
 		else
