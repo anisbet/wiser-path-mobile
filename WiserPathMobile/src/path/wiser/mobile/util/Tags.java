@@ -7,7 +7,6 @@ import java.util.Vector;
 
 import path.wiser.mobile.ui.BlogMVC;
 
-
 /**
  * This class is the listing of user defined tags.
  * 
@@ -20,31 +19,22 @@ public class Tags
 	public final static String	DELIMITER	= ", ";
 
 	/**
+	 * Constructor that takes a single string of , separated tags.
+	 * 
 	 * @param tag
 	 */
-	public Tags( String tag )
+	public Tags( String tags )
 	{
 		init();
-		tags.add( tag );
+		if (tags != null)
+		{
+			setTags( tags );
+		}
 	}
 
 	public Tags()
 	{
 		init();
-	}
-
-	/**
-	 * @param tag
-	 * @return TODO
-	 */
-	public boolean addTag( String tag )
-	{
-		if (tags.contains( tag )) // don't add tags if they already exist.
-		{
-			return false;
-		}
-		tags.add( tag );
-		return true;
 	}
 
 	/**
@@ -64,6 +54,9 @@ public class Tags
 		tags = new Vector<String>();
 	}
 
+	/**
+	 * @return String array of all the tags.
+	 */
 	public String[] getTags()
 	{
 		String[] retTags = new String[tags.size()];
@@ -79,14 +72,21 @@ public class Tags
 	 * It parses the text it finds there and populates the tag object.
 	 * 
 	 * @param textViewTags
+	 * @return true if all the tags were added and false if at least one was already a member of the tags list.
 	 */
-	public void setTags( String textViewTags )
+	public boolean setTags( String textViewTags )
 	{
 		String[] myTags = textViewTags.split( DELIMITER );
+		boolean result = true;
 		for (String tag : myTags)
 		{
-			this.addTag( tag );
+			if (tags.contains( tag.trim() )) // don't add tags if they already exist.
+			{
+				result = false;
+			}
+			tags.add( tag.trim() );
 		}
+		return result;
 	}
 
 	/*
@@ -100,8 +100,12 @@ public class Tags
 		StringBuffer out = new StringBuffer();
 		for (String tag : tags)
 		{
-			out.append( tag + DELIMITER );
+			if (tags.size() > 0)
+			{
+				out.append( tag + DELIMITER );
+			}
 		}
+
 		return out.toString();
 	}
 
