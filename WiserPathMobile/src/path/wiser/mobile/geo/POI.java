@@ -23,6 +23,7 @@ public abstract class POI implements Comparable<POI>
 	protected String	title		= "";
 	protected String	description	= "";
 	protected boolean	isUploaded	= false;
+	protected Tags		tags		= null;
 	private POI			previous	= null;
 	private POI			next		= null;
 	private Type		type;
@@ -62,14 +63,28 @@ public abstract class POI implements Comparable<POI>
 	}
 
 	/**
-	 * @return the tags
+	 * @param tags the tags to set this POI to.
 	 */
-	public abstract Tags getTags();
+	public void setTags( Tags tags )
+	{
+		this.tags = tags;
+	}
 
 	/**
-	 * @param tags the tags to set
+	 * @return false for Blogs, Incidents which extend this class return true.
 	 */
-	public abstract void setTags( String tags );
+	public boolean isIncident()
+	{
+		return false;
+	}
+
+	/**
+	 * @return Tags for this POI.
+	 */
+	public Tags getTags()
+	{
+		return this.tags;
+	}
 
 	/**
 	 * @param blog

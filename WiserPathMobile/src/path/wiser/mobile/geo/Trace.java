@@ -18,7 +18,6 @@ public class Trace extends POI implements ComputableTripMetrics
 {
 	private Vector<Location>		tracePoints		= null;
 	private ComputableTripMetrics	traceComputer	= null;
-	private Tags					tags;
 
 	public enum TrailNode // used to identify which node you would like.
 	{
@@ -95,19 +94,6 @@ public class Trace extends POI implements ComputableTripMetrics
 	{
 		// TODO Auto-generated method stub
 		return false;
-	}
-
-	@Override
-	public Tags getTags()
-	{
-
-		return this.tags;
-	}
-
-	@Override
-	public void setTags( String tags )
-	{
-		this.tags.setTags( tags );
 	}
 
 	/**
