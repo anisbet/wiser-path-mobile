@@ -37,26 +37,50 @@ import android.util.Log;
  */
 public class KMLDocument
 {
+	public enum ExtendedDataType
+	{
+		IMAGE_PATH, TAGS, IS_INCIDENT
+	};
+
 	// How and by what name the serialized documents appear as.
-	private static final String	LINE_TYPE			= "userLineType";
-	private static final String	TRACE_PATH			= "/trace";
-	private static final String	TRACE_FILENAME		= "trace.kml";
-	private static final String	BLOG_PATH			= "/blog";
-	private static final String	BLOG_FILENAME		= "blog.kml";
-	private static final String	INCIDENT_PATH		= "/incident";
-	private static final String	INCIDENT_FILENAME	= "incident.kml";
-	private static final String	TAG					= "KMLDocument";
-	private static final String	KML_DOCUMENT		= "Document";
-	private static final String	KML_TITLE			= "name";
-	private static final String	KML_DESCRIPTION		= "description";
-	private static final String	KML_COORDINATES		= "coordinates";
-	private Document			doc					= null;
-	private Element				docRoot				= null;
-	private boolean				includeStyle		= true;			// true if the line type style needs to be
-																		// written to the document header and false if
-																		// that has been done
-	private Type				docType;								// type of document to write to file TRACE BLOG
-																		// etc.
+	private static final String	LINE_TYPE					= "userLineType";
+	private static final String	TRACE_PATH					= "/trace";
+	private static final String	TRACE_FILENAME				= "trace.kml";
+	private static final String	BLOG_PATH					= "/blog";
+	private static final String	BLOG_FILENAME				= "blog.kml";
+	private static final String	INCIDENT_PATH				= "/incident";
+	private static final String	INCIDENT_FILENAME			= "incident.kml";
+	private static final String	TAG							= "KMLDocument";
+	private static final String	KML_DOCUMENT				= "Document";
+	private static final String	KML_TITLE					= "name";
+	private static final String	KML_DESCRIPTION				= "description";
+	private static final String	KML_COORDINATES				= "coordinates";
+	private static final int	LATITUDE					= 0;
+	private static final int	LONGITUDE					= 1;
+	private static final String	KML_DATA_TAG				= "Data";
+	private static final String	KML_ATTRIB_NAME				= "name";
+	private static final String	KML_TAG_ATTRIB_NAME			= "tag";
+	private static final String	KML_VALUE_TAG				= "value";
+	private static final String	KML_EXTENDED_DATA			= "ExtendedData";
+	private static final String	KML_IMAGEPATH_ATTRIB_NAME	= "imagePath";
+	private static final String	KML_DATA					= "Data";
+	private static final String	KML_IS_INCIDENT_ATTRIB_NAME	= "isIncident";
+	private static final String	KML_LINE_STRING_TAG			= "LineString";
+	private static final String	KML_ALTITUDE_MODE			= "altitudeMode";
+	private static final String	KML_ALTITUDE_MODE_TEXT		= "relativeToGround";
+	private static final String	KML_COORDINATES_TAG			= "coordinates";
+	private Document			doc							= null;
+	private Element				docRoot						= null;
+	private boolean				includeStyle				= true;				// true if the line type style needs
+																					// to
+																					// be
+																					// written to the document header
+																					// and
+																					// false if
+																					// that has been done
+	private Type				docType;											// type of document to write to file
+																					// TRACE BLOG
+																					// etc.
 
 	public KMLDocument( Type type )
 	{
@@ -134,8 +158,87 @@ public class KMLDocument
 		// add the title of the blog.
 		placeMark.appendChild( getName( poi ) );
 		placeMark.appendChild( getDescription( poi ) );
+		placeMark.appendChild( getExtendedData( (Blog) poi ) );
 		placeMark.appendChild( getCoordinates( (Blog) poi ) );
 		this.docRoot.appendChild( placeMark );
+	}
+
+	/**
+	 * @param poi
+	 * @return Node of the element externalData.
+	 */
+	private Node getExtendedData( Blog poi )
+	{
+		// <ExtendedData>
+		// <Data name="imagePath">
+		// <value>/path/to/image.jpg</value>
+		// </Data>
+		// <Data name="tag">
+		// <value>LRT,LRT south,LRT downtown,#LRT Edmonton</value>
+		// </Data>
+		// <!-- incidents use this flag -->
+		// <Data name="isIncident">
+		// <value>true</value>
+		// </Data>
+		// </ExtendedData>
+		Element extendedData = doc.createElement( KML_EXTENDED_DATA );
+		if (poi.hasImage())
+		{
+			Element dataImage = getExtendedDataElement( ExtendedDataType.IMAGE_PATH, KML_IMAGEPATH_ATTRIB_NAME, poi );
+			extendedData.appendChild( dataImage );
+		}
+		// now add the is incident flag Blogs false Incidents true.
+		Element dataIsIncident = getExtendedDataElement( ExtendedDataType.IS_INCIDENT, KML_IS_INCIDENT_ATTRIB_NAME, poi );
+		extendedData.appendChild( dataIsIncident );
+
+		Element dataTags = getExtendedDataElement( ExtendedDataType.TAGS, KML_TAG_ATTRIB_NAME, poi );
+		extendedData.appendChild( dataTags );
+
+		return extendedData; // which should not be null because there all blogs and incidents have true or false for
+								// isIncident.
+	}
+
+	/**
+	 * @param type type of extended data.
+	 * @param attribValue the value for the attribute name="attributeValue"
+	 * @param poi the object inquestion.
+	 * @return Data element with child element of value whose text node is the extended data retrieved from the POI
+	 *         object.
+	 */
+	private Element getExtendedDataElement( ExtendedDataType type, String attribValue, POI poi )
+	{
+		switch (type)
+		{
+		case IMAGE_PATH:
+			Element imageData = doc.createElement( KML_DATA );
+			imageData.setAttribute( KML_ATTRIB_NAME, attribValue );
+			Element imageValue = doc.createElement( KML_VALUE_TAG );
+			Text imageText = doc.createTextNode( ( (Blog) poi ).getImagePath() ); // Blog or incident. Traces don't
+																					// have this method.
+			imageValue.appendChild( imageText );
+			imageData.appendChild( imageValue );
+			return imageData;
+		case TAGS:
+			Element tagsData = doc.createElement( KML_DATA );
+			tagsData.setAttribute( KML_ATTRIB_NAME, attribValue );
+			Element tagsValue = doc.createElement( KML_VALUE_TAG );
+			Text tagsText = doc.createTextNode( poi.getTags().toString() );
+			tagsValue.appendChild( tagsText );
+			tagsData.appendChild( tagsValue );
+			return tagsData;
+		case IS_INCIDENT:
+			Element isIncidentData = doc.createElement( KML_DATA );
+			isIncidentData.setAttribute( KML_ATTRIB_NAME, attribValue );
+			Element isIncidentValue = doc.createElement( KML_VALUE_TAG );
+			Text isIncidentText = doc.createTextNode( String.valueOf( poi.isIncident() ) );
+			isIncidentValue.appendChild( isIncidentText );
+			isIncidentData.appendChild( isIncidentValue );
+			return isIncidentData;
+		default:
+			Log.e( TAG, "error in getExtendedDataElement(); writing unknown type to XML." );
+			break;
+		}
+		return null;
 	}
 
 	private void outputTrace( POI poi )
@@ -184,36 +287,73 @@ public class KMLDocument
 		// add the title of the trace.
 		placeMark.appendChild( getName( poi ) );
 		placeMark.appendChild( getDescription( poi ) );
-		// add the styling for the line type.
+		placeMark.appendChild( getExtendedData( (Trace) poi ) );
+
+		// add the styling to the placemark
 		Element styleUrl = doc.createElement( "styleUrl" );
 		Text text = doc.createTextNode( "#" + LINE_TYPE );
 		styleUrl.appendChild( text );
 		placeMark.appendChild( styleUrl );
 
-		Element lineString = doc.createElement( "LineString" );
-		// Altitude mode
-		Element altitudeMode = doc.createElement( "altitudeMode" );
-		text = doc.createTextNode( "relativeToGround" );
-		altitudeMode.appendChild( text );
-		lineString.appendChild( altitudeMode );
-		// now the coordinates
-		Element coordinates = doc.createElement( "coordinates" );
-		coordinates.appendChild( getCoordinates( (Trace) poi ) );
-		lineString.appendChild( coordinates );
-		placeMark.appendChild( lineString );
-
+		placeMark.appendChild( getCoordinates( (Trace) poi ) );
 		this.docRoot.appendChild( placeMark );
 	}
 
+	/**
+	 * Gets the extended data from a Trace object.
+	 * 
+	 * @param poi trace to get the data from
+	 * @return element of externalData and all children.
+	 */
+	private Node getExtendedData( Trace poi )
+	{
+		// <ExtendedData>
+		// <Data name="tag">
+		// <value>LRT,LRT south,LRT downtown,#LRT Edmonton</value>
+		// </Data>
+		// <!-- incidents use this flag -->
+		// <Data name="isIncident">
+		// <value>false</value>
+		// </Data>
+		// </ExtendedData>
+		Element extendedData = doc.createElement( KML_EXTENDED_DATA );
+
+		// now add the is incident flag Blogs false Incidents true.
+		Element dataIsIncident = getExtendedDataElement( ExtendedDataType.IS_INCIDENT, KML_IS_INCIDENT_ATTRIB_NAME, poi );
+		extendedData.appendChild( dataIsIncident );
+
+		Element dataTags = getExtendedDataElement( ExtendedDataType.TAGS, KML_TAG_ATTRIB_NAME, poi );
+		extendedData.appendChild( dataTags );
+
+		return extendedData; // which should not be null because there should all POIs answer the question are you an
+								// incident?
+	}
+
+	/**
+	 * @param poi
+	 * @return coordinates of the trace as a string of comma separated values lat, long terminated with a new line
+	 *         character.
+	 */
 	private Node getCoordinates( Trace poi )
 	{
+		// <lineString> contains the altitude and coordinates.
+		Element lineString = doc.createElement( KML_LINE_STRING_TAG );
+		// Altitude mode
+		Element altitudeMode = doc.createElement( KML_ALTITUDE_MODE );
+		Text text = doc.createTextNode( KML_ALTITUDE_MODE_TEXT );
+		altitudeMode.appendChild( text );
+		lineString.appendChild( altitudeMode );
+		// now the coordinates
+		Element coordinates = doc.createElement( KML_COORDINATES_TAG );
 		// -112.2550785337791,36.07954952145647
 		// -112.2549277039738,36.08117083492122
 		// -112.2552505069063,36.08260761307279
 		// ...
-		Text text = doc.createTextNode( poi.getCoordinates() );
+		text = doc.createTextNode( poi.getCoordinates() );
+		coordinates.appendChild( text );
+		lineString.appendChild( coordinates );
 
-		return text;
+		return lineString;
 	}
 
 	/**
@@ -460,29 +600,93 @@ public class KMLDocument
 				Element element = (Element) nodeList.item( i );
 				trace.setPoiTitle( getTextValue( element, KML_TITLE ) );
 				trace.setDescription( getTextValue( element, KML_DESCRIPTION ) );
-				trace.setLocation( getTraceLocations( element, KML_COORDINATES ) );
+				setTraceLocations( trace, getTextValue( element, KML_COORDINATES ) );
+				setTraceTags( trace, element );
 			}
 		}
 		return false;
 	}
 
-	private Location getTraceLocations( Element element, String kmlCoordinates )
+	/**
+	 * Reads the tags from the XML doc and populates the trace's tags.
+	 * 
+	 * @param trace the trace to put the tags into
+	 * @param element the parent element of the extended data.
+	 */
+	private void setTraceTags( Trace trace, Element element )
 	{
+		// look for the extended data type in the xml and extract the tags. Looks like:
+		// <ExtendedData>
+		// <Data name="imagePath">
+		// <value>/path/to/image.jpg</value>
+		// </Data>
+		// <Data name="tag">
+		// <value>LRT,LRT south,LRT downtown,#LRT Edmonton</value>
+		// </Data>
+		// <Data name="imagePath">
+		// <value>/path/to/image.jpg</value>
+		// </Data>
+		// <!-- incidents use this flag -->
+		// <Data name="isIncident">
+		// <value>true</value>
+		// </Data>
+		// </ExtendedData>
+		NodeList nodeList = element.getElementsByTagName( KML_DATA_TAG );
+
+		if (nodeList != null && nodeList.getLength() > 0)
+		{
+			// search each of the child Data elements.
+			for (int i = 0; i < nodeList.getLength(); i++)
+			{
+				// get the Item element
+				Element dataElement = (Element) nodeList.item( i );
+				// get the Data tag's attribute "name"
+				String whichDataElement = dataElement.getAttribute( KML_ATTRIB_NAME );
+				// and see if it is "tag"
+				if (whichDataElement.matches( KML_TAG_ATTRIB_NAME ))
+				{
+					Tags tags = new Tags( getTextValue( dataElement, KML_VALUE_TAG ) );
+					trace.setTags( tags );
+					return;
+				}
+			}
+		}
+	}
+
+	private void setTraceLocations( Trace trace, String textValue )
+	{
+		// the coordinates look like this:
+		// -112.2549277039738,36.08117083492122
+		// -112.2552505069063,36.08260761307279
+		// -112.2564540158376,36.08395660588506
+		// -112.2580238976449,36.08511401044813
+		// ...
+		String[] strCoordinates = textValue.split( "\\n" ); // breaks them into lines
+		// for each pair split them on the ',' and apply to a new location.
 		Location location = null;
-		// this is going to get tricky. You cannot create a Location without providing a String Provider. The provider
-		// is the name of a provider
-		// Each subdirectory under this directory is a location provider and the name of the location provider equals to
-		// the name of the subdirectory.
-		// The files in the subdirectory define the provider.
-		// Two solutions: implement the provider or build a subclass of Location that will take legacy locations and
-		// Locations and use that in the project, or build a location provider from the example code in the downloads
-		// directory and try and make a provider.
-		return null;
+		for (int i = 0; i < strCoordinates.length; i++)
+		{
+			String[] thisCoordinate = strCoordinates[i].split( "," );
+			if (thisCoordinate.length > 1)
+			{
+				// this creates a new Location with no location provider. Normally when collecting data
+				// you would specify GPS but not when you restore.
+				location = new Location( (String) null );
+				location.setLatitude( Double.parseDouble( thisCoordinate[LATITUDE] ) );
+				location.setLongitude( Double.parseDouble( thisCoordinate[LONGITUDE] ) );
+				trace.setLocation( location );
+			}
+			else
+			{
+				Log.e( TAG, "Failed to load trace coordinates from media due to a formatting error of the coordinates pairs in XML document." );
+			}
+		}
+
 	}
 
 	/**
-	 * @param ele
-	 * @param tagName
+	 * @param ele a parent element beneath which the tagName is to be found.
+	 * @param tagName of the child element of ele.
 	 * @return String of text of the element that contains a tag of tagName.
 	 */
 	private String getTextValue( Element ele, String tagName )
