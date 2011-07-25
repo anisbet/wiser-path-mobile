@@ -19,7 +19,6 @@ public class Blog extends POI
 {
 	// a blog has a single location.
 	private Location	location	= null;
-	private Tags		tags		= null;
 	private String		imagePath	= null;
 	private ImageType	extension;
 
@@ -53,18 +52,6 @@ public class Blog extends POI
 	public boolean validate()
 	{
 		return this.title.length() > 0 && this.description.length() > 0 && ( needsLocation() == false );
-	}
-
-	@Override
-	public Tags getTags()
-	{
-		return this.tags;
-	}
-
-	@Override
-	public void setTags( String tags )
-	{
-		this.tags.setTags( tags );
 	}
 
 	/**
