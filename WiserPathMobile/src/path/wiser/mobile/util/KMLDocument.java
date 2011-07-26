@@ -102,12 +102,19 @@ public class KMLDocument
 		Element root = doc.createElement( "kml" );
 		root.setAttribute( "xmlns", "http://www.opengis.net/kml/2.2" );
 		doc.appendChild( root );
-		docRoot = doc.createElement( KML_DOCUMENT );
-		doc.appendChild( docRoot );
+
 	}
 
+	/**
+	 * Call this method for each POI and then call the {@link #write()} method to write to file.
+	 * 
+	 * @param poi the object to output.
+	 */
 	public void output( POI poi )
 	{
+		// Create a new document for each POI object.
+		docRoot = doc.createElement( KML_DOCUMENT );
+		doc.appendChild( docRoot );
 		switch (poi.getType())
 		{
 		case TRACE:
@@ -116,16 +123,24 @@ public class KMLDocument
 		case BLOG:
 			outputBlog( poi );
 			break;
-		default:
+		case INCIDENT:
 			outputIncident( poi );
+			break;
+		default:
+			Log.e( TAG, "Unknown POI object type, please contact developer for assistance." );
 		}
 
 	}
 
+	/**
+	 * Outputs an Incident object, which is the equivalent of {@link #outputBlog(POI)}.
+	 * 
+	 * @param poi
+	 */
 	private void outputIncident( POI poi )
 	{
-		// TODO Auto-generated method stub
-
+		// this is the equivalent of:
+		outputBlog( poi );
 	}
 
 	/**
@@ -164,6 +179,8 @@ public class KMLDocument
 	}
 
 	/**
+	 * Adds extended data types to the KML file.
+	 * 
 	 * @param poi
 	 * @return Node of the element externalData.
 	 */
@@ -201,7 +218,7 @@ public class KMLDocument
 	/**
 	 * @param type type of extended data.
 	 * @param attribValue the value for the attribute name="attributeValue"
-	 * @param poi the object inquestion.
+	 * @param poi the object in question.
 	 * @return Data element with child element of value whose text node is the extended data retrieved from the POI
 	 *         object.
 	 */
@@ -241,6 +258,11 @@ public class KMLDocument
 		return null;
 	}
 
+	/**
+	 * Outputs the Trace specifically.
+	 * 
+	 * @param poi
+	 */
 	private void outputTrace( POI poi )
 	{
 		// <?xml version="1.0" encoding="UTF-8"?>
@@ -410,6 +432,8 @@ public class KMLDocument
 	}
 
 	/**
+	 * Creates the KML description elements from the data in the argument poi.
+	 * 
 	 * @param poi
 	 * @return XML node of the correctly formed description element.
 	 */
@@ -422,6 +446,8 @@ public class KMLDocument
 	}
 
 	/**
+	 * Creates the KML name elements from the data in the argument poi.
+	 * 
 	 * @param poi
 	 * @return a node with the correctly formed XML name of the POI.
 	 */
@@ -434,7 +460,7 @@ public class KMLDocument
 	}
 
 	/**
-	 * Writes the XML tree to media.
+	 * Writes the XML tree to media. To be called after the all the POI objects have {@link #output(POI)}ed.
 	 * 
 	 * @return true if the document was successfully written and false otherwise.
 	 */
@@ -599,9 +625,9 @@ public class KMLDocument
 				// get the Item element
 				Element element = (Element) nodeList.item( i );
 				trace.setPoiTitle( getTextValue( element, KML_TITLE ) );
-				trace.setDescription( getTextValue( element, KML_DESCRIPTION ) );
-				setTraceLocations( trace, getTextValue( element, KML_COORDINATES ) );
+				trace.setPoiDescription( getTextValue( element, KML_DESCRIPTION ) );
 				setTraceTags( trace, element );
+				setTraceLocations( trace, getTextValue( element, KML_COORDINATES ) );
 			}
 		}
 		return false;
