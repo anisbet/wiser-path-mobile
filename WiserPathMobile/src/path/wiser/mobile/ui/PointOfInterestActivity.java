@@ -50,7 +50,7 @@ public class PointOfInterestActivity extends Selectable
 		// create the container for many blogs
 		this.blogs = new PoiList( POI.Type.BLOG );
 		Blog currentBlog = (Blog) blogs.getCurrent();
-		currentBlog.setPoiTitle( "Andrew's test currentBlog" );
+		currentBlog.setTitle( "Andrew's test currentBlog" );
 
 		// test code
 		BlogMVC mvc = new BlogMVC( this, currentBlog );
