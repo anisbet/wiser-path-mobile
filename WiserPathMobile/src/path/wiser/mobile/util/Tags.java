@@ -98,11 +98,19 @@ public class Tags
 	public String toString()
 	{
 		StringBuffer out = new StringBuffer();
-		for (String tag : tags)
+		// for (String tag : tags)
+		for (int i = 0; i < tags.size(); i++)
 		{
 			if (tags.size() > 0)
 			{
-				out.append( tag + DELIMITER );
+				if (i < tags.size() - 1)
+				{
+					out.append( tags.get( i ) + DELIMITER );
+				}
+				else
+				{
+					out.append( tags.get( i ) );
+				}
 			}
 		}
 
