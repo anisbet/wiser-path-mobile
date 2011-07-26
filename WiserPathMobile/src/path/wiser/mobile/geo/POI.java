@@ -57,7 +57,7 @@ public abstract class POI implements Comparable<POI>
 	/**
 	 * @param title the title to set
 	 */
-	public void setPoiTitle( String title )
+	public void setTitle( String title )
 	{
 		this.title = title;
 	}
