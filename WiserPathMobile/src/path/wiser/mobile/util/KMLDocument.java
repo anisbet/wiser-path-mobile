@@ -624,8 +624,8 @@ public class KMLDocument
 			{
 				// get the Item element
 				Element element = (Element) nodeList.item( i );
-				trace.setPoiTitle( getTextValue( element, KML_TITLE ) );
-				trace.setPoiDescription( getTextValue( element, KML_DESCRIPTION ) );
+				trace.setTitle( getTextValue( element, KML_TITLE ) );
+				trace.setDescription( getTextValue( element, KML_DESCRIPTION ) );
 				setTraceTags( trace, element );
 				setTraceLocations( trace, getTextValue( element, KML_COORDINATES ) );
 			}
