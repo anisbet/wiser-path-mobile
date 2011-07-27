@@ -169,4 +169,11 @@ public abstract class POI implements Comparable<POI>
 		this.type = type;
 	}
 
+	/**
+	 * Sets the type of Object this is because Blogs and Incidents are very similar.
+	 * 
+	 * @param isIncident
+	 */
+	public abstract void setIsIncident( String isIncident );
+
 }
