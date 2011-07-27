@@ -112,4 +112,12 @@ public class Trace extends POI implements ComputableTripMetrics
 		return buffer.toString();
 	}
 
+	@Override
+	public void setIsIncident( String isIncident )
+	{
+		// this method has no meaning currently, but this flag is stored when the object
+		// is serialized. It does have meaning for Blogs and Incidents.
+		return;
+	}
+
 }

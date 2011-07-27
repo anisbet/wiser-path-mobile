@@ -21,6 +21,7 @@ public class Blog extends POI
 	private Location	location	= null;
 	private String		imagePath	= null;
 	private ImageType	extension;
+	protected boolean	isIncident;
 
 	// TODO include image
 	public Blog()
@@ -141,6 +142,11 @@ public class Blog extends POI
 	public ImageType getExtension()
 	{
 		return extension;
+	}
+
+	public void setIsIncident( String isIncident )
+	{
+		this.isIncident = Boolean.parseBoolean( isIncident );
 	}
 
 }
