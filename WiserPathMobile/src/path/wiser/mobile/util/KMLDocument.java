@@ -418,6 +418,8 @@ public class KMLDocument
 	}
 
 	/**
+	 * Read a single coordinate set from the XML doc and sent them to the Blog object.
+	 * 
 	 * @param poi a blog poi.
 	 * @return XML node of the correctly formed coordinates of the blog.
 	 */
@@ -525,10 +527,10 @@ public class KMLDocument
 	 */
 	public boolean deserialize( PoiList poiList )
 	{
-		DocumentBuilder db = null;
+		DocumentBuilder documentBuilder = null;
 		try
 		{
-			db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		}
 		catch (ParserConfigurationException e)
 		{
@@ -545,14 +547,16 @@ public class KMLDocument
 		{
 		case TRACE:
 			input = mediaReader.readFile( TRACE_PATH, TRACE_FILENAME );
-			if (setDocRoot( db, input ) == false) return false;
+			if (setDocRoot( documentBuilder, input ) == false) return false; // the file is empty
 			return parseTrace( poiList );
 		case BLOG:
 			input = mediaReader.readFile( BLOG_PATH, BLOG_FILENAME );
-			return parseBlog();
+			if (setDocRoot( documentBuilder, input ) == false) return false;
+			return parseBlog( poiList );
 		case INCIDENT:
 			input = mediaReader.readFile( INCIDENT_PATH, INCIDENT_FILENAME );
-			return parseIncident();
+			if (setDocRoot( documentBuilder, input ) == false) return false;
+			return parseIncident( poiList );
 		default:
 			Log.e( TAG, "Unknown document type request to read in, contact developer!" );
 			return false;
@@ -560,20 +564,75 @@ public class KMLDocument
 
 	}
 
-	private boolean parseIncident()
+	/**
+	 * Sets the information of an incident from the XML document.
+	 * 
+	 * @param poiList the list of incidents.
+	 * @return true if the incident was parsed and created correctly and false otherwise.
+	 */
+	private boolean parseIncident( PoiList poiList )
 	{
-		// TODO Auto-generated method stub
-		return false;
+		return parseBlog( poiList );
 	}
 
-	private boolean parseBlog()
+	/**
+	 * Parses the XML file and fills in the data of the PoiList which will create new objects as necessary.
+	 * 
+	 * @param poiList the linked list of POIs to add new objects to.
+	 * @return true if the parsing was completed successfully and false otherwise.
+	 */
+	private boolean parseBlog( PoiList poiList )
 	{
-		// TODO Auto-generated method stub
+		NodeList nodeList = this.docRoot.getElementsByTagName( KML_DOCUMENT );
+
+		if (nodeList != null && nodeList.getLength() > 0)
+		{
+			Blog blog = (Blog) poiList.getCurrent();
+			for (int i = 0; i < nodeList.getLength(); i++)
+			{
+				// get the Item element
+				Element element = (Element) nodeList.item( i );
+				blog.setTitle( getTextValue( element, KML_TITLE ) );
+				blog.setDescription( getTextValue( element, KML_DESCRIPTION ) );
+				setExtendedData( blog, element ); // set tags imagepath etc.
+				setBlogLocation( blog, getTextValue( element, KML_COORDINATES ) );
+			}
+		}
 		return false;
 	}
 
 	/**
-	 * Parse and populate the Poilist
+	 * Sets the Blog's Location.
+	 * 
+	 * @param blog
+	 * @param textValue the text from the coordinates tag.
+	 */
+	private void setBlogLocation( Blog blog, String textValue )
+	{
+
+		// for each pair split them on the ',' and apply to a new location.
+		Location location = null;
+
+		String[] thisCoordinate = textValue.split( "," );
+		if (thisCoordinate.length > 1) // in the future this could be length 3 if altitude is captured too.
+		{
+			// this creates a new Location with no location provider. Normally when collecting data
+			// you would specify GPS but not when you restore.
+			location = new Location( (String) null );
+			location.setLatitude( Double.parseDouble( thisCoordinate[LATITUDE] ) );
+			location.setLongitude( Double.parseDouble( thisCoordinate[LONGITUDE] ) );
+			blog.setLocation( location );
+		}
+		else
+		{
+			Log.e( TAG,
+				"Failed to load Blog coordinates from media due to a formatting error of the coordinates pairs in XML document, or they are missing." );
+		}
+
+	}
+
+	/**
+	 * Parse the XML Trace document and populate the Poilist with Trace objects.
 	 * 
 	 * @param poiList
 	 * @return true if successful and false otherwise.
@@ -626,7 +685,7 @@ public class KMLDocument
 				Element element = (Element) nodeList.item( i );
 				trace.setTitle( getTextValue( element, KML_TITLE ) );
 				trace.setDescription( getTextValue( element, KML_DESCRIPTION ) );
-				setTraceTags( trace, element );
+				setExtendedData( trace, element );
 				setTraceLocations( trace, getTextValue( element, KML_COORDINATES ) );
 			}
 		}
@@ -634,12 +693,12 @@ public class KMLDocument
 	}
 
 	/**
-	 * Reads the tags from the XML doc and populates the trace's tags.
+	 * Reads all the extended data from the XML and populate the POI.
 	 * 
-	 * @param trace the trace to put the tags into
-	 * @param element the parent element of the extended data.
+	 * @param poi the poi to populate.
+	 * @param element the ExtendedData tag or a child of it.
 	 */
-	private void setTraceTags( Trace trace, Element element )
+	private void setExtendedData( POI poi, Element element )
 	{
 		// look for the extended data type in the xml and extract the tags. Looks like:
 		// <ExtendedData>
@@ -648,10 +707,6 @@ public class KMLDocument
 		// </Data>
 		// <Data name="tag">
 		// <value>LRT,LRT south,LRT downtown,#LRT Edmonton</value>
-		// </Data>
-		// <Data name="imagePath">
-		// <value>/path/to/image.jpg</value>
-		// </Data>
 		// <!-- incidents use this flag -->
 		// <Data name="isIncident">
 		// <value>true</value>
@@ -672,13 +727,31 @@ public class KMLDocument
 				if (whichDataElement.matches( KML_TAG_ATTRIB_NAME ))
 				{
 					Tags tags = new Tags( getTextValue( dataElement, KML_VALUE_TAG ) );
-					trace.setTags( tags );
+					poi.setTags( tags );
 					return;
 				}
+				else
+					if (whichDataElement.matches( KML_IMAGEPATH_ATTRIB_NAME ))
+					{
+						// this will throw a ClassCastException if the argument poi was not the expected type!
+						( (Blog) poi ).setImagePath( getTextValue( dataElement, KML_IMAGEPATH_ATTRIB_NAME ) );
+					}
+					else
+						if (whichDataElement.matches( KML_IS_INCIDENT_ATTRIB_NAME ))
+						// You will need to extend this if statement if you decide to include more extended data.
+						{
+							poi.setIsIncident( getTextValue( dataElement, KML_IMAGEPATH_ATTRIB_NAME ) );
+						}
 			}
 		}
 	}
 
+	/**
+	 * Sets the locations for the argument trace.
+	 * 
+	 * @param trace the trace that needs locations added to it.
+	 * @param textValue the value (child text node in DOM speak) of the coordinate tag.
+	 */
 	private void setTraceLocations( Trace trace, String textValue )
 	{
 		// the coordinates look like this:
@@ -729,6 +802,8 @@ public class KMLDocument
 	}
 
 	/**
+	 * Opens the document for reading as XML and sets the document root element.
+	 * 
 	 * @param db document builder
 	 * @param input xml file as a string
 	 * @return true if successful and false otherwise.
@@ -738,7 +813,7 @@ public class KMLDocument
 		// File reader returns an empty string if it fails.
 		if (input.length() == 0)
 		{
-			Log.e( TAG, "File was not read. Does it exist?" );
+			Log.e( TAG, "File was not read because it is empty." );
 			return false;
 		}
 
