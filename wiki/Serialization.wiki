@@ -91,3 +91,5 @@ The following are the list of classes effected by Serialization:
   * Trace.java
   * Blog.java
   * Tags.java
+
+Serialization (and deserialization) are now finished but untested.
