@@ -9,23 +9,27 @@
    	<uses-permission android:name="android.permission.CAMERA" />
    	<!-- For storing images, traces and points of interest until you can get to a wifi hotspot -->
    	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-   	
+   	<!-- Although recommended for use in anticipation of Android 3 and up, enabling this causes the emulator not to load after project converted to Google API -->
+   	<!-- <uses-feature android:name="android.hardware.location" android:required="true"></uses-feature> -->
+   	<!-- 	<uses-feature android:name="android.hardware.wifi"></uses-feature> -->
    	<!-- GPS requirements -->
-   	<uses-feature android:name="android.hardware.location" android:required="true"></uses-feature>
    	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
    	<!-- TODO We could also use coarser grained locations like cell towers and wifi location... -->
    	<!--  For testing only! -->
    	<uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"/>
    	<!--  For testing only! -->
 	
-   	<uses-feature android:name="android.hardware.wifi"></uses-feature>
+   
    	<uses-permission android:name="android.permission.INTERNET" />
    	
     <application android:icon="@drawable/icon" android:label="@string/app_name" android:debuggable="true" android:allowBackup="true">
+    	<uses-library android:name="com.google.android.maps" /><!-- Add google maps -->
         <activity android:label="@string/app_name" android:name=".ui.TraceActivity" android:theme="@android:style/Theme.NoTitleBar"></activity>
 		<activity android:label="@string/app_name" android:name=".ui.PointOfInterestActivity" android:theme="@android:style/Theme.NoTitleBar"></activity>
     	<activity android:label="@string/app_name" android:name=".ui.IncidentActivity" android:theme="@android:style/Theme.NoTitleBar"></activity>
-    	<activity android:label="@string/app_name" android:name=".ui.WiserPathActivity" android:theme="@android:style/Theme.NoTitleBar"></activity>
+    	<activity android:label="@string/app_name" android:name=".ui.WiserPathActivity" android:theme="@android:style/Theme.NoTitleBar">
+    	
+    	</activity>
     	<activity android:label="@string/app_name" android:name=".ui.SettingsActivity" android:theme="@android:style/Theme.NoTitleBar"></activity>
 
     	<activity android:name=".WiserPathMobile" android:label="@string/app_name" android:theme="@android:style/Theme.NoTitleBar">
