@@ -10,7 +10,7 @@ Based on the techniques found on the tutorial at [http://developer.android.com/g
   # Get an API Key from Google that can be done [http://code.google.com/android/add-ons/google-apis/ here].
   # Changed the project > Properties > Android target application to Google-API (Android + Google-API).
   # Added the {{{<uses-library android:name="com.google.android.maps" />}}} to the {{{<application>}}} tag.
-  # Made changes to the {{{wiserpathactivity-tab.xml}}} resource.
+  # Made changes to the {{{wiserpathactivity-tab.xml}}} resource to include the API key and fill the parent container.
   # Extended *WiserPathActivity* class to extend *MapActivity* rather than *Activity*.
   # added
 {{{
