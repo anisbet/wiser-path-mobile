@@ -18,7 +18,7 @@ Based on the techniques found on the tutorial at [http://developer.android.com/g
   MapView mapView = (MapView) findViewById( R.id.mapview );
   mapView.setBuiltInZoomControls( true );
 }}} 
-and implemented
+to {{{onCreate()}}} and implemented
 {{{
 @Override
 protected boolean isRouteDisplayed()
