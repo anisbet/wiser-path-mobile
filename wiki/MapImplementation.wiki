@@ -1,0 +1,28 @@
+#labels Phase-Design
+This page includes notes for implementing the map in the {{{WiserPathActivity}}} tab.
+
+= Introduction =
+
+Based on the techniques found on the tutorial at [http://developer.android.com/guide/tutorials/views/hello-mapview.html Android Developers], I put together a simple project to test the concept, and then moved the code to WiserPathMobile.
+
+
+= Details =
+  # Get an API Key from Google that can be done [http://code.google.com/android/add-ons/google-apis/ here].
+  # Changed the project > Properties > Android target application to Google-API (Android + Google-API).
+  # Added the {{{<uses-library android:name="com.google.android.maps" />}}} to the {{{<application>}}} tag.
+  # Made changes to the {{{wiserpathactivity-tab.xml}}} resource.
+  # Extended *WiserPathActivity* class to extend *MapActivity* rather than *Activity*.
+  # added
+{{{
+  setContentView( R.layout.wiserpath_tab );
+  MapView mapView = (MapView) findViewById( R.id.mapview );
+  mapView.setBuiltInZoomControls( true );
+}}} 
+and implemented
+{{{
+@Override
+protected boolean isRouteDisplayed()
+{
+	return false;
+}
+}}}
