@@ -1,19 +1,27 @@
 package path.wiser.mobile.ui;
 
-import android.app.Activity;
+import path.wiser.mobile.R;
 import android.os.Bundle;
-import android.widget.TextView;
 
-public class WiserPathActivity extends Activity
+import com.google.android.maps.MapActivity;
+import com.google.android.maps.MapView;
+
+public class WiserPathActivity extends MapActivity
 {
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate( Bundle savedInstanceState )
 	{
 		super.onCreate( savedInstanceState );
+		setContentView( R.layout.wiserpath_tab );
+		MapView mapView = (MapView) findViewById( R.id.mapview );
+		mapView.setBuiltInZoomControls( true );
+	}
 
-		TextView textview = new TextView( this );
-		textview.setText( "This is the WiTP tab" );
-		setContentView( textview );
+	@Override
+	protected boolean isRouteDisplayed()
+	{
+		// TODO Auto-generated method stub
+		return false;
 	}
 }
