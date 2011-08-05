@@ -103,12 +103,12 @@ public abstract class POI implements Comparable<POI>
 	}
 
 	/**
-	 * Checks if the object is valid, that is, is all the information
+	 * Checks if the object is valid, that is, is all the mandatory information
 	 * that WiserPath is expecting filled out in the object.
 	 * 
 	 * @return True if this is a valid object and false otherwise.
 	 */
-	public abstract boolean validate();
+	public abstract boolean isValid();
 
 	/*
 	 * (non-Javadoc)

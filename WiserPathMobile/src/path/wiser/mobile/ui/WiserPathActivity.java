@@ -13,12 +13,19 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
+/**
+ * This class is the UI for the Wiser Path tab of the application. Note that this class subclasses MapActivity, not
+ * {@link path.wiser.mobile.ui.WiserPathHelper}.
+ * 
+ * @author andrewnisbet
+ * 
+ */
 public class WiserPathActivity extends MapActivity
 {
 
 	private List<Overlay>	mapOverlays;
 	private Drawable		drawable;
-	private MapOverlayItems		itemizedOverlay;
+	private MapOverlayItems	itemizedOverlay;
 
 	/** Called when the activity is first created. */
 	@Override

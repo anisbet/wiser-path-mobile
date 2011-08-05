@@ -4,11 +4,8 @@
 package path.wiser.mobile.util;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import android.util.Log;
@@ -21,6 +18,7 @@ public class MediaReader extends MediaIO
 {
 	private static final String	TAG			= "MediaReader";
 	private static final int	BUFFER_SIZE	= 8192;
+	private String				fileName	= "";
 
 	/**
 	 * Method to check whether external media available and writable. This is adapted from
@@ -41,24 +39,27 @@ public class MediaReader extends MediaIO
 	 */
 	public String readFile( String path, String fileName )
 	{
-		File filePath = getPath( path, fileName );
-		Log.i( TAG, "Data read from :" + filePath.getAbsolutePath() );
-		if (filePath.exists() == false || filePath.length() < 1)
-		{
-			return "";
-		}
-
-		InputStream is = null;
-
-		try
-		{
-			is = new FileInputStream( filePath );
-		}
-		catch (FileNotFoundException e)
-		{
-			Log.e( TAG, filePath.getAbsolutePath() + " file was not found, are manifest permissions set?" );
-			return "";
-		}
+		// get an input stream to read from.
+		this.fileName = fileName;
+		FileInputStream is = getInputStream( path, this.fileName );
+		// File filePath = getPath( path, fileName );
+		// Log.i( TAG, "Data read from :" + filePath.getAbsolutePath() );
+		// if (filePath.exists() == false || filePath.length() < 1)
+		// {
+		// return "";
+		// }
+		//
+		// InputStream is = null;
+		//
+		// try
+		// {
+		// is = new FileInputStream( filePath );
+		// }
+		// catch (FileNotFoundException e)
+		// {
+		// Log.e( TAG, filePath.getAbsolutePath() + " file was not found, are manifest permissions set?" );
+		// return "";
+		// }
 
 		BufferedReader br = new BufferedReader( new InputStreamReader( is ), BUFFER_SIZE ); // 2nd arg is buffer size
 		StringBuffer fileString = new StringBuffer();
@@ -80,7 +81,7 @@ public class MediaReader extends MediaIO
 		}
 		catch (IOException e)
 		{
-			Log.e( TAG, filePath.getAbsolutePath() + " IO error reading file." );
+			Log.e( TAG, this.fileName + " IO error reading file." );
 			return "";
 		}
 

@@ -50,7 +50,7 @@ public class Blog extends POI
 	 * This method ensures that the minimal information for a POI in Wiser Path
 	 * has been met. The GeoBlog must have a title, location and text body.
 	 */
-	public boolean validate()
+	public boolean isValid()
 	{
 		return this.title.length() > 0 && this.description.length() > 0 && ( needsLocation() == false );
 	}

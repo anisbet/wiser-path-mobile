@@ -11,7 +11,7 @@ import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.OverlayItem;
 
 /**
- * This class represents the items to be drawn on a google map.
+ * This class creates and manages the items to be drawn on a google map.
  * 
  * @author andrewnisbet
  * 
