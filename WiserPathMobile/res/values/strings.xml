@@ -26,6 +26,10 @@
     <string name="s_use_location_title">Use Location</string>
     <string name="s_use_location_summary">Use your GPS to record information</string>
     
+    <!-- Use external settings when possible -->
+    <string name="s_use_external_storage">Save Data to SD Card</string>
+    <string name="s_use_external_storage_summary">Use SD card for external file storage (if available)</string>
+    
     <!-- Messages -->
     <!-- Settings messages -->
     <string name="s_welcome_msg">Welcome to the Wiser Path Community %s!</string>
