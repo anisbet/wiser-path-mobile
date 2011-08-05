@@ -44,12 +44,12 @@
 		</PreferenceScreen>
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/s_settings_title">
-        <!-- <CheckBoxPreference
-			android:title="Work online"
-			android:name="Online"
-			android:defaultValue="true"
-			android:summary="Connect with Wiser Path on line when possible?"
-			android:key="ONLINE"/> -->
+        <CheckBoxPreference
+			android:title="@string/s_use_external_storage"
+			android:name="UseExternalStorage"
+			android:defaultValue="false"
+			android:summary="@string/s_use_external_storage_summary"
+			android:key="USE_EXTERNAL_STORAGE"/>
 		<CheckBoxPreference
 		   android:title="@string/s_use_location_title"
 		   android:name="UseLocation"
