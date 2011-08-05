@@ -133,7 +133,6 @@ public class PointOfInterestActivity extends Selectable
 	@Override
 	protected void delete()
 	{
-		// TODO Auto-generated method stub
 		Blog currentBlog = (Blog) this.blogs.deleteCurrent();
 		BlogMVC mvc = new BlogMVC( this, currentBlog );
 		mvc = new BlogMVC( this, currentBlog );
@@ -202,7 +201,7 @@ public class PointOfInterestActivity extends Selectable
 		// sync the data from the UI to the blog
 		mvc.change();
 		// Make sure the currentBlog is ready to go.
-		if (currentBlog.validate())
+		if (currentBlog.isValid())
 		{
 			// get the HTTPService for posting data.
 			HTTPService service = HTTPService.getInstance();

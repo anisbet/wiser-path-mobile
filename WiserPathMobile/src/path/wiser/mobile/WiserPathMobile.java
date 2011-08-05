@@ -26,7 +26,7 @@ import android.widget.TabWidget;
  */
 public class WiserPathMobile extends TabActivity
 {
-	public enum Tab
+	public static enum Tab
 	{
 		TRACE, POI, WP, INCIDENT, PREFS
 	}
@@ -119,10 +119,10 @@ public class WiserPathMobile extends TabActivity
 	/**
 	 * Turns a tab either on or off.
 	 */
-	public static final void enableTab( int tabNumber, boolean onOff )
+	public static final void enableTab( Tab tabNumber, boolean onOff )
 	{
 		TabWidget tabWidget = tabHost.getTabWidget();
-		View tab = tabWidget.getChildTabViewAt( tabNumber );
+		View tab = tabWidget.getChildTabViewAt( tabNumber.ordinal() );
 		tab.setEnabled( onOff );
 	}
 

@@ -70,7 +70,7 @@ public class KMLDocument
 	private static final String	KML_ALTITUDE_MODE_TEXT		= "relativeToGround";
 	private static final String	KML_COORDINATES_TAG			= "coordinates";
 	private Document			doc							= null;
-	private Element				docRoot						= null;
+	// private Element docRoot = null;
 	private boolean				includeStyle				= true;				// true if the line type style needs
 																					// to
 																					// be
@@ -81,8 +81,15 @@ public class KMLDocument
 	private Type				docType;											// type of document to write to file
 																					// TRACE BLOG
 																					// etc.
+	private boolean				isSerializing;
 
-	public KMLDocument( Type type )
+	/**
+	 * Use this constructor to when you want to serialize the document to media.
+	 * 
+	 * @param type of document you want.
+	 * @param openForWriting TODO
+	 */
+	public KMLDocument( Type type, boolean openForWriting )
 	{
 		this.docType = type;
 		// We need a Document
@@ -96,59 +103,78 @@ public class KMLDocument
 		{
 			e.printStackTrace();
 		}
-		Document doc = docBuilder.newDocument();
-
-		// Start creating the xml tree.
-		Element root = doc.createElement( "kml" );
-		root.setAttribute( "xmlns", "http://www.opengis.net/kml/2.2" );
-		doc.appendChild( root );
+		doc = docBuilder.newDocument();
+		this.isSerializing = openForWriting;
+		if (this.isSerializing)
+		{
+			// Start creating the xml tree.
+			Element docRoot = doc.createElement( "kml" );
+			docRoot.setAttribute( "xmlns", "http://www.opengis.net/kml/2.2" );
+			doc.appendChild( docRoot );
+		}
+		// else deserializing -- retrieving from media.
 
 	}
 
 	/**
-	 * Call this method for each POI and then call the {@link #write()} method to write to file.
+	 * Call this method for each POI and then call the {@link #serialize()} method to write to file.
+	 * A POI is not serialized if the {@link POI#isValid()} returns false.
 	 * 
 	 * @param poi the object to output.
 	 */
 	public void output( POI poi )
 	{
+		if (poi == null || poi.isValid() == false)
+		{
+			return; // this happens for the new element at the end of a list or for non-valid POIs.
+		}
 		// Create a new document for each POI object.
-		docRoot = doc.createElement( KML_DOCUMENT );
-		doc.appendChild( docRoot );
+		Element document = doc.createElement( KML_DOCUMENT );
+		Element documentRoot = doc.getDocumentElement();
+		if (documentRoot == null)
+		{
+			Log.e( TAG, "Could not find the document root element." );
+			return;
+		}
+
 		switch (poi.getType())
 		{
 		case TRACE:
-			outputTrace( poi );
+			outputTrace( poi, documentRoot ); // rince and repeat for the other methods.
 			break;
 		case BLOG:
-			outputBlog( poi );
+			outputBlog( poi, documentRoot );
 			break;
 		case INCIDENT:
-			outputIncident( poi );
+			outputIncident( poi, documentRoot );
 			break;
 		default:
 			Log.e( TAG, "Unknown POI object type, please contact developer for assistance." );
 		}
 
+		documentRoot.appendChild( document );
+
 	}
 
 	/**
-	 * Outputs an Incident object, which is the equivalent of {@link #outputBlog(POI)}.
+	 * Outputs an Incident object, which is the equivalent of {@link #outputBlog(POI, Element)}.
 	 * 
 	 * @param poi
+	 * @param documentElement TODO
 	 */
-	private void outputIncident( POI poi )
+	private void outputIncident( POI poi, Element documentElement )
 	{
 		// this is the equivalent of:
-		outputBlog( poi );
+		outputBlog( poi, documentElement );
 	}
 
 	/**
 	 * Output a Blog to XML
 	 * 
 	 * @param poi
+	 * @param documentElement the document element for this, well, document.
 	 */
-	private void outputBlog( POI poi )
+	private void outputBlog( POI poi, Element documentElement )
 	{
 		// Example of a serialized POI
 		// <?xml version="1.0" encoding="UTF-8"?>
@@ -175,7 +201,7 @@ public class KMLDocument
 		placeMark.appendChild( getDescription( poi ) );
 		placeMark.appendChild( getExtendedData( (Blog) poi ) );
 		placeMark.appendChild( getCoordinates( (Blog) poi ) );
-		this.docRoot.appendChild( placeMark );
+		documentElement.appendChild( placeMark );
 	}
 
 	/**
@@ -262,8 +288,9 @@ public class KMLDocument
 	 * Outputs the Trace specifically.
 	 * 
 	 * @param poi
+	 * @param documentElement the parent document element.
 	 */
-	private void outputTrace( POI poi )
+	private void outputTrace( POI poi, Element documentElement )
 	{
 		// <?xml version="1.0" encoding="UTF-8"?>
 		// <kml xmlns="http://www.opengis.net/kml/2.2">
@@ -302,7 +329,7 @@ public class KMLDocument
 		// </kml>
 		if (this.includeStyle)
 		{
-			this.docRoot.appendChild( getTraceStyle() );
+			documentElement.appendChild( getTraceStyle() );
 			this.includeStyle = false;
 		}
 		Element placeMark = doc.createElement( "Placemark" );
@@ -318,7 +345,7 @@ public class KMLDocument
 		placeMark.appendChild( styleUrl );
 
 		placeMark.appendChild( getCoordinates( (Trace) poi ) );
-		this.docRoot.appendChild( placeMark );
+		documentElement.appendChild( placeMark );
 	}
 
 	/**
@@ -466,8 +493,9 @@ public class KMLDocument
 	 * 
 	 * @return true if the document was successfully written and false otherwise.
 	 */
-	public boolean write()
+	public boolean serialize()
 	{
+		if (this.isSerializing == false) return false; // not permitted when you requested to deserialize.
 		// Output the XML
 		TransformerFactory transfac = TransformerFactory.newInstance();
 		Transformer trans = null;
@@ -527,6 +555,11 @@ public class KMLDocument
 	 */
 	public boolean deserialize( PoiList poiList )
 	{
+		if (this.isSerializing)
+		{
+			Log.w( TAG, "Tried to write a document while in read mode." );
+			return false;
+		}
 		DocumentBuilder documentBuilder = null;
 		try
 		{
@@ -547,21 +580,51 @@ public class KMLDocument
 		{
 		case TRACE:
 			input = mediaReader.readFile( TRACE_PATH, TRACE_FILENAME );
-			if (setDocRoot( documentBuilder, input ) == false) return false; // the file is empty
+			if (parseInputDocument( documentBuilder, input ) == false) return false; // the file is empty
 			return parseTrace( poiList );
 		case BLOG:
 			input = mediaReader.readFile( BLOG_PATH, BLOG_FILENAME );
-			if (setDocRoot( documentBuilder, input ) == false) return false;
+			if (parseInputDocument( documentBuilder, input ) == false) return false;
 			return parseBlog( poiList );
 		case INCIDENT:
 			input = mediaReader.readFile( INCIDENT_PATH, INCIDENT_FILENAME );
-			if (setDocRoot( documentBuilder, input ) == false) return false;
+			if (parseInputDocument( documentBuilder, input ) == false) return false;
 			return parseIncident( poiList );
 		default:
 			Log.e( TAG, "Unknown document type request to read in, contact developer!" );
 			return false;
 		}
+	}
 
+	/**
+	 * Opens the document for reading as XML and sets the document root element.
+	 * 
+	 * @param db document builder
+	 * @param input xml file as a string
+	 * @return true if successful and false otherwise.
+	 */
+	private boolean parseInputDocument( DocumentBuilder db, String input )
+	{
+		// File reader returns an empty string if it fails.
+		if (input.length() == 0)
+		{
+			Log.e( TAG, "File was not read because it is empty." );
+			return false;
+		}
+
+		InputSource is = new InputSource();
+		is.setCharacterStream( new StringReader( input ) );
+		try
+		{
+			this.doc = db.parse( is );
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -583,7 +646,13 @@ public class KMLDocument
 	 */
 	private boolean parseBlog( PoiList poiList )
 	{
-		NodeList nodeList = this.docRoot.getElementsByTagName( KML_DOCUMENT );
+		Element documentRoot = this.doc.getDocumentElement();
+		if (documentRoot == null)
+		{
+			Log.e( TAG, "Error parsing the blogs XML document -- no root element." );
+			return false;
+		}
+		NodeList nodeList = documentRoot.getElementsByTagName( KML_DOCUMENT );
 
 		if (nodeList != null && nodeList.getLength() > 0)
 		{
@@ -674,7 +743,13 @@ public class KMLDocument
 		// </Placemark>
 		// </Document>
 		// </kml>
-		NodeList nodeList = this.docRoot.getElementsByTagName( KML_DOCUMENT );
+		Element documentElement = this.doc.getDocumentElement();
+		if (documentElement == null)
+		{
+			Log.e( TAG, "Unable to parse trace document because there was no root element. Is the XML file well formed?" );
+			return false;
+		}
+		NodeList nodeList = documentElement.getElementsByTagName( KML_DOCUMENT );
 
 		if (nodeList != null && nodeList.getLength() > 0)
 		{
@@ -799,39 +874,6 @@ public class KMLDocument
 		}
 
 		return text;
-	}
-
-	/**
-	 * Opens the document for reading as XML and sets the document root element.
-	 * 
-	 * @param db document builder
-	 * @param input xml file as a string
-	 * @return true if successful and false otherwise.
-	 */
-	private boolean setDocRoot( DocumentBuilder db, String input )
-	{
-		// File reader returns an empty string if it fails.
-		if (input.length() == 0)
-		{
-			Log.e( TAG, "File was not read because it is empty." );
-			return false;
-		}
-
-		InputSource is = new InputSource();
-		is.setCharacterStream( new StringReader( input ) );
-		try
-		{
-			this.doc = db.parse( is );
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			return false;
-		}
-
-		this.docRoot = doc.getDocumentElement();
-
-		return true;
 	}
 
 }

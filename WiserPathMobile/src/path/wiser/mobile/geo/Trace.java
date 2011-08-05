@@ -90,7 +90,7 @@ public class Trace extends POI implements ComputableTripMetrics
 	}
 
 	@Override
-	public boolean validate()
+	public boolean isValid()
 	{
 		// TODO Auto-generated method stub
 		return false;
