@@ -4,6 +4,7 @@
 package path.wiser.mobile.ui;
 
 import path.wiser.mobile.R;
+import path.wiser.mobile.WPEnvironment;
 import path.wiser.mobile.WiserPathMobile;
 import path.wiser.mobile.services.Credential;
 import path.wiser.mobile.services.HTTPService;
@@ -63,13 +64,13 @@ public class SettingsActivity extends PreferenceActivity
 		regEmail.setOnPreferenceChangeListener( wlcl );
 
 		// create a new click listener for the switch. It is used later to save the setting.
-		this.useLocationClickListener = new WiserPreferenceClickListener( WiserPathMobile.Tab.POI.ordinal() );
+		this.useLocationClickListener = new UseLocationClickListener();
 		Preference useLocationPreference = (Preference) findPreference( SettingsActivity.USE_LOCATION );
 		useLocationPreference.setOnPreferenceClickListener( this.useLocationClickListener );
 		this.useLocationClickListener.set( useLocationPreference.isEnabled() );
 
 		// create a new click listener external memory use switch.
-		this.useSDCardClickListener = new WiserPreferenceClickListener();
+		this.useSDCardClickListener = new UseExternalStorageClickListener();
 		Preference useSDCardPreference = (Preference) findPreference( SettingsActivity.USE_EXTERNAL_STORAGE );
 		if (MediaIO.deviceHasWritableExternalMedia()) // this adds a listener only if there is a card and it's writable
 		{
@@ -200,7 +201,6 @@ public class SettingsActivity extends PreferenceActivity
 				String text = String.format( res.getString( R.string.s_login_fail_msg ), this.name );
 				CharSequence msg = Html.fromHtml( text );
 				Toast.makeText( getBaseContext(), msg, Toast.LENGTH_LONG ).show();
-				return false;
 			}
 			return false;
 		}
@@ -209,36 +209,22 @@ public class SettingsActivity extends PreferenceActivity
 
 	/**
 	 * Registers a click occurred and saves the new value to the preferences.
-	 * This class also encapsulates the boolean value as well.
+	 * This class also encapsulates the boolean value as well, but extend it
+	 * to do something useful like alerting a class of a change.
+	 * 
+	 * @see UseLocationClickListener, UseExternalStorageClickListener
 	 * 
 	 * @author andrewnisbet
 	 * 
 	 */
 	public class WiserPreferenceClickListener implements OnPreferenceClickListener
 	{
-		private int		modifyTabNumber;
-		private boolean	setting	= true;
-
-		public WiserPreferenceClickListener( int whichTabModified )
-		{
-			this.modifyTabNumber = whichTabModified;
-		}
-
-		public WiserPreferenceClickListener()
-		{
-			this.modifyTabNumber = -1;
-		}
+		protected boolean	setting;
 
 		@Override
 		public boolean onPreferenceClick( Preference preference )
 		{
 			this.setting = !this.setting;
-			if (this.modifyTabNumber >= 0)
-			{
-				// switch off the tab that uses the GPS
-				// TODO fix this so this isn't part of this class's job -- refactor and extend this class
-				WiserPathMobile.enableTab( modifyTabNumber, this.setting );
-			}
 			return true;
 		}
 
@@ -258,5 +244,43 @@ public class SettingsActivity extends PreferenceActivity
 			this.setting = enabled;
 		}
 
+	}
+
+	/**
+	 * Registers a click occurred and saves the new value to the preferences.
+	 * This class also encapsulates the boolean value as well.
+	 * 
+	 * @author andrewnisbet
+	 * 
+	 */
+	public class UseLocationClickListener extends WiserPreferenceClickListener
+	{
+
+		@Override
+		public boolean onPreferenceClick( Preference preference )
+		{
+			this.setting = !this.setting;
+			WiserPathMobile.enableTab( WiserPathMobile.Tab.INCIDENT, this.setting );
+			WiserPathMobile.enableTab( WiserPathMobile.Tab.TRACE, this.setting );
+			WiserPathMobile.enableTab( WiserPathMobile.Tab.POI, this.setting );
+			return true;
+		}
+	}
+
+	/**
+	 * Alerts the environment about the preference of the user as far as using external storage preference.
+	 * 
+	 * @author andrewnisbet
+	 * 
+	 */
+	public class UseExternalStorageClickListener extends WiserPreferenceClickListener
+	{
+		@Override
+		public boolean onPreferenceClick( Preference preference )
+		{
+			this.setting = !this.setting;
+			WPEnvironment.setPreferExternalStorage( this.setting );
+			return true;
+		}
 	}
 }
