@@ -7,6 +7,7 @@ import path.wiser.mobile.R;
 import path.wiser.mobile.WiserPathMobile;
 import path.wiser.mobile.services.Credential;
 import path.wiser.mobile.services.HTTPService;
+import path.wiser.mobile.util.MediaIO;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -24,12 +25,17 @@ import android.widget.Toast;
  */
 public class SettingsActivity extends PreferenceActivity
 {
-	public static final String				PREFS_FILE_NAME		= "MyPrefsFile";
-	public static final String				USE_LOCATION		= "USE_LOCATION";
+	public static final String				PREFS_FILE_NAME			= "MyPrefsFile";
+	public static final String				USE_LOCATION			= "USE_LOCATION";			// These are keys from
+																								// the
+																								// xml/preferences.xml
+																								// file.
+	public static final String				USE_EXTERNAL_STORAGE	= "USE_EXTERNAL_STORAGE";
 	// USER_NAME contained in Credential.
-	public static final String				REGISTER_USER_NAME	= "REGISTER_USER_NAME";
-	public static final String				EMAIL				= "EMAIL";
-	private WiserPreferenceClickListener	useLocation;
+	public static final String				REGISTER_USER_NAME		= "REGISTER_USER_NAME";
+	public static final String				EMAIL					= "EMAIL";
+	private WiserPreferenceClickListener	useLocationClickListener;
+	private WiserPreferenceClickListener	useSDCardClickListener;
 
 	@Override
 	protected void onCreate( Bundle savedInstanceState )
@@ -57,11 +63,21 @@ public class SettingsActivity extends PreferenceActivity
 		regEmail.setOnPreferenceChangeListener( wlcl );
 
 		// create a new click listener for the switch. It is used later to save the setting.
-		this.useLocation = new WiserPreferenceClickListener( WiserPathMobile.Tab.POI.ordinal() );
+		this.useLocationClickListener = new WiserPreferenceClickListener( WiserPathMobile.Tab.POI.ordinal() );
 		Preference useLocationPreference = (Preference) findPreference( SettingsActivity.USE_LOCATION );
-		useLocationPreference.setOnPreferenceClickListener( this.useLocation );
-		this.useLocation.set( useLocationPreference.isEnabled() );
+		useLocationPreference.setOnPreferenceClickListener( this.useLocationClickListener );
+		this.useLocationClickListener.set( useLocationPreference.isEnabled() );
 
+		// create a new click listener external memory use switch.
+		this.useSDCardClickListener = new WiserPreferenceClickListener();
+		Preference useSDCardPreference = (Preference) findPreference( SettingsActivity.USE_EXTERNAL_STORAGE );
+		if (MediaIO.deviceHasWritableExternalMedia()) // this adds a listener only if there is a card and it's writable
+		{
+			useSDCardPreference.setOnPreferenceClickListener( this.useSDCardClickListener );
+			this.useSDCardClickListener.set( useSDCardPreference.isEnabled() );
+		}
+		useSDCardPreference.setEnabled( MediaIO.deviceHasWritableExternalMedia() ); // if true enable and disable
+																					// otherwise.
 	}
 
 	@Override
@@ -76,7 +92,8 @@ public class SettingsActivity extends PreferenceActivity
 		SharedPreferences mySharedPreferences = getSharedPreferences( SettingsActivity.PREFS_FILE_NAME, Activity.MODE_PRIVATE );
 		// the user name and password are already done because they have change listeners that will commit any changes.
 		SharedPreferences.Editor editor = mySharedPreferences.edit();
-		editor.putBoolean( SettingsActivity.USE_LOCATION, useLocation.getCurrentSetting() );
+		editor.putBoolean( SettingsActivity.USE_LOCATION, useLocationClickListener.getCurrentSetting() );
+		editor.putBoolean( SettingsActivity.USE_EXTERNAL_STORAGE, useSDCardClickListener.getCurrentSetting() );
 		editor.commit();
 	}
 
@@ -219,6 +236,7 @@ public class SettingsActivity extends PreferenceActivity
 			if (this.modifyTabNumber >= 0)
 			{
 				// switch off the tab that uses the GPS
+				// TODO fix this so this isn't part of this class's job -- refactor and extend this class
 				WiserPathMobile.enableTab( modifyTabNumber, this.setting );
 			}
 			return true;
