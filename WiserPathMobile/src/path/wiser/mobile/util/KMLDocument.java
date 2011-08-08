@@ -140,13 +140,13 @@ public class KMLDocument
 		switch (poi.getType())
 		{
 		case TRACE:
-			outputTrace( poi, documentRoot ); // rince and repeat for the other methods.
+			outputTrace( poi, document ); // rince and repeat for the other methods.
 			break;
 		case BLOG:
-			outputBlog( poi, documentRoot );
+			outputBlog( poi, document );
 			break;
 		case INCIDENT:
-			outputIncident( poi, documentRoot );
+			outputIncident( poi, document );
 			break;
 		default:
 			Log.e( TAG, "Unknown POI object type, please contact developer for assistance." );
@@ -160,7 +160,7 @@ public class KMLDocument
 	 * Outputs an Incident object, which is the equivalent of {@link #outputBlog(POI, Element)}.
 	 * 
 	 * @param poi
-	 * @param documentElement TODO
+	 * @param documentElement the Document element.
 	 */
 	private void outputIncident( POI poi, Element documentElement )
 	{
