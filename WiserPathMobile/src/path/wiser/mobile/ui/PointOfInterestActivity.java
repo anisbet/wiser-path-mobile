@@ -49,16 +49,16 @@ public class PointOfInterestActivity extends Selectable
 		this.gps = new GPS( this ); // TODO Use the new stopUpdatingLocation of GPS to turn off.
 		// create the container for many blogs
 		this.blogs = new PoiList( POI.Type.BLOG );
-		Blog currentBlog = (Blog) blogs.getCurrent();
-		currentBlog.setTitle( "Andrew's test currentBlog" );
+		Blog currentBlog = null;
+		// TODO trouble shoot this in the morning.
+		if (this.blogs.deserialize() == false) // there was no blog to deserialize.
+		{
+			currentBlog = (Blog) blogs.getCurrent();
+			currentBlog.setTitle( "Swipe to enter text." );
+		}
 
-		// test code
 		BlogMVC mvc = new BlogMVC( this, currentBlog );
 		mvc.update();
-		currentBlog.setDescription( "Oh, how nice, a new currentBlog!" );
-		mvc.update();
-
-		// test code
 
 		// add a onClick listener to the text screens so we can remove the
 		// existing text and allow the user to start entering text.
@@ -237,7 +237,7 @@ public class PointOfInterestActivity extends Selectable
 	public void onStop()
 	{
 		super.onStop();
-		this.blogs.serialize();
+		save();
 	}
 
 	@Override
