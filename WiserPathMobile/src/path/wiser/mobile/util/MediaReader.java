@@ -4,10 +4,13 @@
 package path.wiser.mobile.util;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import android.os.Environment;
 import android.util.Log;
 
 /**
@@ -41,7 +44,19 @@ public class MediaReader extends MediaIO
 	{
 		// get an input stream to read from.
 		this.fileName = fileName;
-		FileInputStream is = getInputStream( path, this.fileName );
+		// FileInputStream is = getInputStream( path, this.fileName );
+		File dir = Environment.getExternalStorageDirectory();
+		File file = new File( dir, path + "/" + fileName );
+		FileInputStream is = null;
+		try
+		{
+			is = new FileInputStream( file );
+		}
+		catch (FileNotFoundException e1)
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		// File filePath = getPath( path, fileName );
 		// Log.i( TAG, "Data read from :" + filePath.getAbsolutePath() );
 		// if (filePath.exists() == false || filePath.length() < 1)

@@ -46,19 +46,17 @@ public class PointOfInterestActivity extends Selectable
 		super.onCreate( savedInstanceState );
 		// set content view so you can grab stuff in it.
 		setContentView( R.layout.poi_tab );
-		this.gps = new GPS( this ); // TODO Use the new stopUpdatingLocation of GPS to turn off.
+		this.gps = new GPS( this );
 		// create the container for many blogs
 		this.blogs = new PoiList( POI.Type.BLOG );
 		Blog currentBlog = null;
 		// TODO trouble shoot this in the morning.
-		if (this.blogs.deserialize() == false) // there was no blog to deserialize.
+		if (this.blogs.deserialize()) // there was no blog to deserialize.
 		{
 			currentBlog = (Blog) blogs.getCurrent();
-			currentBlog.setTitle( "Swipe to enter text." );
+			BlogMVC mvc = new BlogMVC( this, currentBlog );
+			mvc.update();
 		}
-
-		BlogMVC mvc = new BlogMVC( this, currentBlog );
-		mvc.update();
 
 		// add a onClick listener to the text screens so we can remove the
 		// existing text and allow the user to start entering text.
