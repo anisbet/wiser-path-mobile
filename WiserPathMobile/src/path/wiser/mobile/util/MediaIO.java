@@ -76,31 +76,22 @@ public abstract class MediaIO extends Activity
 	{
 		File storage = null;
 		// TODO add selector to SettingsActivity to determine if the internal or external storage should be used.
-		if (isExternalStorageAvailable())
+		if (isExternalStorageAvailable() && WPEnvironment.isPreferExternalStorage())
 		{
-			storage = Environment.getExternalStorageDirectory();
+			storage = getExternalFilesDir( path );
 		}
 		else
 		{
 			// storage = getFilesDir(); // place files under the application's directory. // TODO fix me
 			// storage = getDir( "data", MODE_WORLD_WRITEABLE ); // place files under the application's 'data'
-			// directory.
-			try
-			{
-				FileOutputStream fw = this.openFileOutput( fileName, MODE_WORLD_READABLE );
-			}
-			catch (FileNotFoundException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			// directory
 		}
 
 		File dir = new File( storage.getAbsolutePath() + path );
 
-		if (dir.exists() == false)
+		if (storage.exists() == false)
 		{
-			dir.mkdirs();
+			storage.mkdirs();
 		}
 
 		return new File( dir, fileName );
@@ -157,17 +148,19 @@ public abstract class MediaIO extends Activity
 		{
 			File storage = Environment.getExternalStorageDirectory();
 
-			File dir = new File( storage.getAbsolutePath() + path );
+			// File dir = new File( storage.getAbsolutePath() + path + "/" + fileName );
 
-			Log.i( TAG, "Data read from :" + dir.getAbsolutePath() );
+			// Log.i( TAG, "Data read from :" + dir.getAbsolutePath() );
 
 			try
 			{
+				// File dir = new File( storage.getAbsolutePath() + path + "/" + fileName );
+				File dir = getExternalFilesDir( path + "/" + fileName );
 				return new FileInputStream( dir );
 			}
-			catch (FileNotFoundException e)
+			catch (Exception e)
 			{
-				Log.e( TAG, dir.getAbsolutePath() + " file was not found, are manifest permissions set?" );
+				Log.e( TAG, /* dir.getAbsolutePath() + */" file was not found, are manifest permissions set?" );
 			}
 		}
 		else

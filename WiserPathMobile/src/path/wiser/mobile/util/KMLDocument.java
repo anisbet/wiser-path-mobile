@@ -667,7 +667,7 @@ public class KMLDocument
 				setBlogLocation( blog, getTextValue( element, KML_COORDINATES ) );
 			}
 		}
-		return false;
+		return true;
 	}
 
 	/**
@@ -870,7 +870,10 @@ public class KMLDocument
 		if (nodeList != null && nodeList.getLength() > 0)
 		{
 			Element element = (Element) nodeList.item( 0 );
-			text = element.getFirstChild().getNodeValue();
+			if (element.getFirstChild() != null)
+			{
+				text = element.getFirstChild().getNodeValue();
+			}
 		}
 
 		return text;
