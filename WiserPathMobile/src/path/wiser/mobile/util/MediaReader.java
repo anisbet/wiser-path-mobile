@@ -57,24 +57,6 @@ public class MediaReader extends MediaIO
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		// File filePath = getPath( path, fileName );
-		// Log.i( TAG, "Data read from :" + filePath.getAbsolutePath() );
-		// if (filePath.exists() == false || filePath.length() < 1)
-		// {
-		// return "";
-		// }
-		//
-		// InputStream is = null;
-		//
-		// try
-		// {
-		// is = new FileInputStream( filePath );
-		// }
-		// catch (FileNotFoundException e)
-		// {
-		// Log.e( TAG, filePath.getAbsolutePath() + " file was not found, are manifest permissions set?" );
-		// return "";
-		// }
 
 		BufferedReader br = new BufferedReader( new InputStreamReader( is ), BUFFER_SIZE ); // 2nd arg is buffer size
 		StringBuffer fileString = new StringBuffer();

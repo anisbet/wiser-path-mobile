@@ -575,25 +575,28 @@ public class KMLDocument
 		// get the elements and add them to the poiList.
 		MediaReader mediaReader = new MediaReader();
 		String input = null;
-
 		switch (this.docType)
 		{
 		case TRACE:
 			input = mediaReader.readFile( TRACE_PATH, TRACE_FILENAME );
-			if (parseInputDocument( documentBuilder, input ) == false) return false; // the file is empty
-			return parseTrace( poiList );
+			break;
 		case BLOG:
 			input = mediaReader.readFile( BLOG_PATH, BLOG_FILENAME );
-			if (parseInputDocument( documentBuilder, input ) == false) return false;
-			return parseBlog( poiList );
+			break;
 		case INCIDENT:
 			input = mediaReader.readFile( INCIDENT_PATH, INCIDENT_FILENAME );
-			if (parseInputDocument( documentBuilder, input ) == false) return false;
-			return parseIncident( poiList );
+			break;
 		default:
 			Log.e( TAG, "Unknown document type request to read in, contact developer!" );
 			return false;
 		}
+
+		if (isInputDocumentParsed( documentBuilder, input ))
+		{
+			return populatePOIDataFromXMLSource( poiList );
+		}
+
+		return false;
 	}
 
 	/**
@@ -603,7 +606,7 @@ public class KMLDocument
 	 * @param input xml file as a string
 	 * @return true if successful and false otherwise.
 	 */
-	private boolean parseInputDocument( DocumentBuilder db, String input )
+	private boolean isInputDocumentParsed( DocumentBuilder db, String input )
 	{
 		// File reader returns an empty string if it fails.
 		if (input.length() == 0)
@@ -628,23 +631,12 @@ public class KMLDocument
 	}
 
 	/**
-	 * Sets the information of an incident from the XML document.
-	 * 
-	 * @param poiList the list of incidents.
-	 * @return true if the incident was parsed and created correctly and false otherwise.
-	 */
-	private boolean parseIncident( PoiList poiList )
-	{
-		return parseBlog( poiList );
-	}
-
-	/**
 	 * Parses the XML file and fills in the data of the PoiList which will create new objects as necessary.
 	 * 
 	 * @param poiList the linked list of POIs to add new objects to.
 	 * @return true if the parsing was completed successfully and false otherwise.
 	 */
-	private boolean parseBlog( PoiList poiList )
+	private boolean populatePOIDataFromXMLSource( PoiList poiList )
 	{
 		Element documentRoot = this.doc.getDocumentElement();
 		if (documentRoot == null)
@@ -656,15 +648,31 @@ public class KMLDocument
 
 		if (nodeList != null && nodeList.getLength() > 0)
 		{
-			Blog blog = (Blog) poiList.getCurrent();
+			POI poi = poiList.getCurrent();
 			for (int i = 0; i < nodeList.getLength(); i++)
 			{
-				// get the Item element
 				Element element = (Element) nodeList.item( i );
-				blog.setTitle( getTextValue( element, KML_TITLE ) );
-				blog.setDescription( getTextValue( element, KML_DESCRIPTION ) );
-				setExtendedData( blog, element ); // set tags imagepath etc.
-				setBlogLocation( blog, getTextValue( element, KML_COORDINATES ) );
+				poi.setTitle( getTextValue( element, KML_TITLE ) );
+				poi.setDescription( getTextValue( element, KML_DESCRIPTION ) );
+				setExtendedData( poi, element );
+				switch (poiList.getType())
+				{
+				case TRACE:
+					setTraceLocations( (Trace) poi, getTextValue( element, KML_COORDINATES ) );
+					break;
+				case BLOG: // do same things for both
+				case INCIDENT:
+					setBlogLocation( (Blog) poi, getTextValue( element, KML_COORDINATES ) );
+					break;
+				default:
+					Log.e( TAG, "Unknown datatype." );
+					return false;
+				}
+				// add a new node if needed.
+				if (i < nodeList.getLength() - 1)
+				{
+					poi = poiList.add();
+				}
 			}
 		}
 		return true;
@@ -698,73 +706,6 @@ public class KMLDocument
 				"Failed to load Blog coordinates from media due to a formatting error of the coordinates pairs in XML document, or they are missing." );
 		}
 
-	}
-
-	/**
-	 * Parse the XML Trace document and populate the Poilist with Trace objects.
-	 * 
-	 * @param poiList
-	 * @return true if successful and false otherwise.
-	 */
-	private boolean parseTrace( PoiList poiList )
-	{
-		// <?xml version="1.0" encoding="UTF-8"?>
-		// <kml xmlns="http://www.opengis.net/kml/2.2">
-		// <Document>
-		// <Style id="userLineType">
-		// <LineStyle>
-		// <color>7f00ffff</color>
-		// <width>1</width>
-		// </LineStyle>
-		// <PolyStyle>
-		// <color>7f00ffff</color>
-		// </PolyStyle>
-		// </Style>
-		// <Placemark>
-		// <name>My Favourite Trace</name>
-		// <description>Best Route through River Valley</description>
-		// <styleUrl>#userLineType</styleUrl>
-		// <LineString>
-		// <altitudeMode>relativeToGround</altitudeMode>
-		// <!-- tack on ',<altitude>' for traces with altitude -->
-		// <coordinates> -112.2550785337791,36.07954952145647
-		// -112.2549277039738,36.08117083492122
-		// -112.2552505069063,36.08260761307279
-		// -112.2564540158376,36.08395660588506
-		// -112.2580238976449,36.08511401044813
-		// -112.2595218489022,36.08584355239394
-		// -112.2608216347552,36.08612634548589
-		// -112.262073428656,36.08626019085147
-		// -112.2633204928495,36.08621519860091
-		// -112.2644963846444,36.08627897945274
-		// -112.2656969554589,36.08649599090644
-		// </coordinates>
-		// </LineString>
-		// </Placemark>
-		// </Document>
-		// </kml>
-		Element documentElement = this.doc.getDocumentElement();
-		if (documentElement == null)
-		{
-			Log.e( TAG, "Unable to parse trace document because there was no root element. Is the XML file well formed?" );
-			return false;
-		}
-		NodeList nodeList = documentElement.getElementsByTagName( KML_DOCUMENT );
-
-		if (nodeList != null && nodeList.getLength() > 0)
-		{
-			Trace trace = (Trace) poiList.getCurrent();
-			for (int i = 0; i < nodeList.getLength(); i++)
-			{
-				// get the Item element
-				Element element = (Element) nodeList.item( i );
-				trace.setTitle( getTextValue( element, KML_TITLE ) );
-				trace.setDescription( getTextValue( element, KML_DESCRIPTION ) );
-				setExtendedData( trace, element );
-				setTraceLocations( trace, getTextValue( element, KML_COORDINATES ) );
-			}
-		}
-		return false;
 	}
 
 	/**
