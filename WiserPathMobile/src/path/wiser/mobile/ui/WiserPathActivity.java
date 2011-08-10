@@ -6,6 +6,9 @@ import path.wiser.mobile.R;
 import path.wiser.mobile.geo.MapOverlayItems;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -53,5 +56,43 @@ public class WiserPathActivity extends MapActivity
 	{
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	// Menu activity methods here below
+	@Override
+	public boolean onCreateOptionsMenu( Menu menu )
+	{
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate( R.menu.map_controls, menu );
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected( MenuItem item )
+	{
+		// Handle item selection
+		switch (item.getItemId())
+		{
+		case R.id.use_server_data:
+			return viewOnlineData();
+
+		case R.id.use_mobile_data:
+			return viewMobileData();
+
+		default:
+			return super.onOptionsItemSelected( item );
+		}
+	}
+
+	private boolean viewMobileData()
+	{
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	private boolean viewOnlineData()
+	{
+		// TODO Auto-generated method stub
+		return true;
 	}
 }
