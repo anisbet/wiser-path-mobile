@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import android.os.Environment;
 import android.util.Log;
 
 /**
@@ -41,7 +42,22 @@ public class MediaWriter extends MediaIO
 		// Find the root of the external storage.
 		// See http://developer.android.com/guide/topics/data/data-storage.html#filesExternal
 		// See http://stackoverflow.com/questions/3551821/android-write-to-sd-card-folder
-		File file = getPath( path, fileName );
+
+		// get an input stream to read from.
+		// this.fileName = fileName;
+		File dir = Environment.getExternalStorageDirectory();
+		File file = new File( dir, path + "/" + fileName );
+		// FileInputStream is = null;
+		// try
+		// {
+		// is = new FileInputStream( file );
+		// }
+		// catch (FileNotFoundException e1)
+		// {
+		// // TODO Auto-generated catch block
+		// e1.printStackTrace();
+		// }
+		// File file = getPath( path, fileName );
 		try
 		{
 			FileOutputStream fOut = new FileOutputStream( file );
