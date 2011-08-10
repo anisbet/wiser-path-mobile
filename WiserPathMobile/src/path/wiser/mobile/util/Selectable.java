@@ -32,29 +32,34 @@ public abstract class Selectable extends WiserActivityHelper
 	 * when the activity first loads to load the last version of the activity if
 	 * any.
 	 * If there is none this method must set the activity to a new activity.
+	 * @return TODO
 	 */
-	protected abstract void previous();
+	protected abstract boolean previous();
 
 	/**
 	 * Uploads the Activity, deletes the current activity on success and if any.
+	 * @return TODO
 	 */
-	protected abstract void upload();
+	protected abstract boolean upload();
 
 	/**
 	 * Deletes the current activity record if any. If none a new activity
 	 * is created.
+	 * @return TODO
 	 */
-	protected abstract void delete();
+	protected abstract boolean delete();
 
 	/**
 	 * Saves the current activity.
+	 * @return TODO
 	 */
-	protected abstract void save();
+	protected abstract boolean save();
 
 	/**
 	 * Selects the next Activity for display if any.
+	 * @return TODO
 	 */
-	protected abstract void next();
+	protected abstract boolean next();
 
 	/**
 	 * @return the currentRecordId of the activity.
