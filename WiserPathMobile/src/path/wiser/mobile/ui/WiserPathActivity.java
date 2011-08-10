@@ -3,9 +3,19 @@ package path.wiser.mobile.ui;
 import java.util.List;
 
 import path.wiser.mobile.R;
+import path.wiser.mobile.geo.Blog;
+import path.wiser.mobile.geo.Incident;
 import path.wiser.mobile.geo.MapOverlayItems;
+import path.wiser.mobile.geo.POI;
+import path.wiser.mobile.geo.Trace;
+import path.wiser.mobile.util.MapBlogMVC;
+import path.wiser.mobile.util.MapIncidentMVC;
+import path.wiser.mobile.util.MapTraceMVC;
+import path.wiser.mobile.util.ModelViewController;
+import path.wiser.mobile.util.PoiList;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -26,9 +36,12 @@ import com.google.android.maps.OverlayItem;
 public class WiserPathActivity extends MapActivity
 {
 
-	private List<Overlay>	mapOverlays;
-	private Drawable		drawable;
-	private MapOverlayItems	itemizedOverlay;
+	private static final String	TAG	= "WiserPathActivity";
+	private List<Overlay>		mapOverlays;
+	private Drawable			drawable;
+	private MapOverlayItems		itemizedOverlay;
+	private boolean				useOnlineData;
+	private boolean				useDeviceData;				// Selection from the map_controls menu.
 
 	/** Called when the activity is first created. */
 	@Override
@@ -64,6 +77,8 @@ public class WiserPathActivity extends MapActivity
 	{
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate( R.menu.map_controls, menu );
+		this.useDeviceData = menu.getItem( R.id.use_mobile_data ).isChecked();
+		this.useOnlineData = menu.getItem( R.id.use_server_data ).isChecked();
 		return true;
 	}
 
@@ -74,25 +89,117 @@ public class WiserPathActivity extends MapActivity
 		switch (item.getItemId())
 		{
 		case R.id.use_server_data:
-			return viewOnlineData();
+			this.useOnlineData = !this.useOnlineData;
+			return viewOnlineData( this.useOnlineData );
 
 		case R.id.use_mobile_data:
-			return viewMobileData();
+			this.useDeviceData = !this.useDeviceData;
+			return viewMobileData( this.useDeviceData );
 
 		default:
 			return super.onOptionsItemSelected( item );
 		}
 	}
 
-	private boolean viewMobileData()
+	/**
+	 * @param isDisplayed TODO
+	 * @return True if the request was successful and false otherwise.
+	 */
+	private boolean viewMobileData( boolean isDisplayed )
 	{
-		// TODO Auto-generated method stub
-		return true;
+		boolean result = false;
+		if (isDisplayed == false)
+		{
+			return result;
+		}
+		// TODO get the data stored on the device.
+		// to do that you need to get the saved POIs
+		PoiList poiList = new PoiList( POI.Type.BLOG );
+		result = poiList.deserialize();
+		if (result == true)
+		{
+			display( poiList );
+		}
+
+		// poiList = new PoiList( POI.Type.TRACE );
+		// result = poiList.deserialize();
+		// if (result == true)
+		// {
+		// display( poiList );
+		// }
+		//
+		// poiList = new PoiList( POI.Type.INCIDENT );
+		// result = poiList.deserialize();
+		// if (result == true)
+		// {
+		// display( poiList );
+		// }
+
+		// for each item on the list create a MVC to convert the POI to something useful on the map.
+
+		return result;
 	}
 
-	private boolean viewOnlineData()
+	private void display( PoiList poiList )
 	{
-		// TODO Auto-generated method stub
-		return true;
+		// get each poi and use appropriate MVC
+		POI currentPoi = poiList.getCurrent();
+		ModelViewController mvc = null;
+		switch (poiList.getType())
+		{
+		case TRACE:
+			mvc = new MapTraceMVC( this, (Trace) currentPoi );
+			break;
+		case BLOG:
+			mvc = new MapBlogMVC( this, (Blog) currentPoi );
+			break;
+		case INCIDENT:
+			mvc = new MapIncidentMVC( this, (Incident) currentPoi );
+			break;
+		default:
+			Log.w( TAG, "Asked to display an unknown type of POI???" );
+			return;
+		}
+		mvc.update();
+
+		while (currentPoi.getNext() != null) // TODO will this work??
+		{
+			mvc = null;
+			switch (poiList.getType())
+			{
+			case TRACE:
+				mvc = new MapTraceMVC( this, (Trace) currentPoi );
+				break;
+			case BLOG:
+				mvc = new MapBlogMVC( this, (Blog) currentPoi );
+				break;
+			case INCIDENT:
+				mvc = new MapIncidentMVC( this, (Incident) currentPoi );
+				break;
+			default:
+				Log.w( TAG, "Asked to display an unknown type of POI???" );
+				return;
+			}
+			mvc.update();
+		}
+	}
+
+	/**
+	 * @param isDisplayed TODO
+	 * @return
+	 */
+	private boolean viewOnlineData( boolean isDisplayed )
+	{
+		if (isDisplayed == false)
+		{
+			return false;
+		}
+		// TODO get data from Wiser Path Online
+		// to accomplish that you will have to query Wiser Path for Traces and POIs via the HTTPService
+		// You will have to figure out what Wiser wants for input to get the results you want to display.
+		// Then you have to parse the return HTML extract the information and convert it to a displayable
+		// result in the Google map.
+
+		return false;
 	}
 }
