@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<item android:title="@string/menu_map_controls_title">
+<menu>
+    <group android:checkableBehavior="all">
+        <item android:id="@+id/use_server_data" android:checked="false"
+              android:title="@string/menu_use_server_data_title" />
+        <item android:id="@+id/use_mobile_data" android:checked="true"
+              android:title="@string/menu_use_mobile_data_title" />
+    </group>
+</menu>
+</item>
+</menu>
