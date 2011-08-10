@@ -79,38 +79,38 @@ public class TraceActivity extends Selectable
 	}
 
 	@Override
-	protected void previous()
+	protected boolean previous()
 	{
 		// TODO Auto-generated method stub
-
+		return false;
 	}
 
 	@Override
-	protected void upload()
+	protected boolean upload()
 	{
 		// TODO Auto-generated method stub
-
+		return false;
 	}
 
 	@Override
-	protected void delete()
+	protected boolean delete()
 	{
 		// TODO Auto-generated method stub
-
+		return false;
 	}
 
 	@Override
-	protected void save()
+	protected boolean save()
 	{
 		// TODO Auto-generated method stub
-
+		return false;
 	}
 
 	@Override
-	protected void next()
+	protected boolean next()
 	{
 		// TODO Auto-generated method stub
-
+		return false;
 	}
 
 	@Override

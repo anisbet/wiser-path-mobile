@@ -109,36 +109,32 @@ public class PointOfInterestActivity extends Selectable
 		switch (item.getItemId())
 		{
 		case R.id.Previous:
-			previous();
-			return true;
+			return previous();
 		case R.id.Upload:
-			upload();
-			return true;
+			return upload();
 		case R.id.Delete:
-			delete();
-			return true;
+			return delete();
 		case R.id.Save:
-			save();
-			return true;
+			return save();
 		case R.id.Next:
-			next();
-			return true;
+			return next();
 		default:
 			return super.onOptionsItemSelected( item );
 		}
 	}
 
 	@Override
-	protected void delete()
+	protected boolean delete()
 	{
 		Blog currentBlog = (Blog) this.blogs.deleteCurrent();
 		BlogMVC mvc = new BlogMVC( this, currentBlog );
 		mvc = new BlogMVC( this, currentBlog );
 		mvc.update();
+		return true;
 	}
 
 	@Override
-	protected void next()
+	protected boolean next()
 	{
 		Blog currentBlog = (Blog) this.blogs.getCurrent();
 		BlogMVC mvc = new BlogMVC( this, currentBlog );
@@ -153,10 +149,11 @@ public class PointOfInterestActivity extends Selectable
 		{
 			this.gps = new GPS( this ); // this will run until a location is stored when locationChange fires.
 		}
+		return true;
 	}
 
 	@Override
-	protected void previous()
+	protected boolean previous()
 	{
 		Blog currentBlog = (Blog) this.blogs.getCurrent();
 		BlogMVC mvc = new BlogMVC( this, currentBlog );
@@ -171,10 +168,11 @@ public class PointOfInterestActivity extends Selectable
 		{
 			this.gps = new GPS( this ); // this will run until a location is stored when locationChange fires.
 		}
+		return true;
 	}
 
 	@Override
-	protected void save()
+	protected boolean save()
 	{
 		Blog currentBlog = (Blog) this.blogs.getCurrent();
 		BlogMVC mvc = new BlogMVC( this, currentBlog );
@@ -188,12 +186,15 @@ public class PointOfInterestActivity extends Selectable
 		else
 		{
 			// text = String.format( res.getString( R.string.poi_blog_save_success_msg ) );
+			return false;
 		}
+		return true;
 	}
 
 	@Override
-	protected void upload()
+	protected boolean upload()
 	{
+		boolean result = true;
 		Blog currentBlog = (Blog) this.blogs.getCurrent();
 		BlogMVC mvc = new BlogMVC( this, currentBlog );
 		// sync the data from the UI to the blog
@@ -208,23 +209,28 @@ public class PointOfInterestActivity extends Selectable
 			if (currentBlog.isUploaded())
 			{
 				text = String.format( res.getString( R.string.poi_blog_post_success_msg ) );
-				// TODO delete currentBlog.
 			}
 			else
 			{
 				text = String.format( res.getString( R.string.poi_blog_post_fail_msg ) );
+				result = false;
 			}
 		}
 		else
 		{
 			text = String.format( res.getString( R.string.poi_blog_post_invalid_msg ) );
+			result = false;
 		}
 		msg = Html.fromHtml( text );
 		showMessage( msg );
 		// get the next Blog after deletion.
-		currentBlog = (Blog) this.blogs.deleteCurrent();
+		if (result == true)
+		{
+			currentBlog = (Blog) this.blogs.deleteCurrent();
+		}
 		mvc = new BlogMVC( this, currentBlog );
 		mvc.update();
+		return result;
 	}
 
 	/*
