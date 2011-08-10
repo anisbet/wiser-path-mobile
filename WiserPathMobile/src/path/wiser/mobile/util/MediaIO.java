@@ -17,6 +17,10 @@ import android.util.Log;
  */
 public abstract class MediaIO extends Activity
 {
+	// ///////////////////////////
+	// Note to Developer: MediaIO, MediaWriter and MediaReader support only saving to external directories (ie the SD
+	// card)
+	// ///////////////////////////
 	protected static boolean	externalStorageAvailable;
 	protected static boolean	externalStorageWriteable;
 	protected String			TAG;
@@ -66,6 +70,8 @@ public abstract class MediaIO extends Activity
 	}
 
 	/**
+	 * Deletes the argument fileName from the argument path if possible.
+	 * 
 	 * @param path
 	 * @param fileName
 	 * @return true if the file was deleted and false otherwise.
