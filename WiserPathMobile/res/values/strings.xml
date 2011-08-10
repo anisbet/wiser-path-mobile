@@ -52,4 +52,9 @@
     <string name="menu_delete_title">Delete</string><string name="menu_delete_title_condensed">Delete</string>
     <string name="menu_upload_title">Upload</string><string name="menu_upload_title_condensed">Upload</string>
     <string name="menu_save_title">Save</string><string name="menu_save_title_condensed">Save</string>
+    
+    <!-- Map Controls for WiserPathActivity Menu -->
+    <string name="menu_map_controls_title">Map Options</string>
+    <string name="menu_use_server_data_title">Show online data</string>
+    <string name="menu_use_mobile_data_title">Show data from device</string>
 </resources>
