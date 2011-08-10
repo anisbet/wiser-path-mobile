@@ -44,4 +44,12 @@
     <string name="poi_blog_post_fail_msg">Dang, your blog wasn&#96;t posted, try again later.</string>
     <string name="poi_blog_post_invalid_msg">Your blog isn&#96;t finished yet</string>
     <string name="poi_blog_save_success_msg">Saved</string>
+    
+    <!-- Menus -->
+    <!-- Navigation Menu -->
+    <string name="menu_previous_title">Previous</string><string name="menu_previous_title_condensed">Previous</string>
+    <string name="menu_next_title">Next</string><string name="menu_next_title_condensed">Next</string>
+    <string name="menu_delete_title">Delete</string><string name="menu_delete_title_condensed">Delete</string>
+    <string name="menu_upload_title">Upload</string><string name="menu_upload_title_condensed">Upload</string>
+    <string name="menu_save_title">Save</string><string name="menu_save_title_condensed">Save</string>
 </resources>
