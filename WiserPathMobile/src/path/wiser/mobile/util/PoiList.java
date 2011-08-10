@@ -171,7 +171,7 @@ public class PoiList
 		{
 		case TRACE:
 			return new Trace();
-
+		case INCIDENT: // essentially a blog.
 		default:
 			return new Blog();
 		}
