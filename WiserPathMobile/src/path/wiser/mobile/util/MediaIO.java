@@ -5,10 +5,8 @@ package path.wiser.mobile.util;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
-import path.wiser.mobile.WPEnvironment;
 import android.app.Activity;
 import android.os.Environment;
 import android.util.Log;
@@ -68,43 +66,14 @@ public abstract class MediaIO extends Activity
 	}
 
 	/**
-	 * @param path on device.
-	 * @param fileName name of the file to save as.
-	 * @return the path of the requested object type.
-	 */
-	protected File getPath( String path, String fileName )
-	{
-		File storage = null;
-		// TODO add selector to SettingsActivity to determine if the internal or external storage should be used.
-		if (isExternalStorageAvailable() && WPEnvironment.isPreferExternalStorage())
-		{
-			storage = getExternalFilesDir( path );
-		}
-		else
-		{
-			// storage = getFilesDir(); // place files under the application's directory. // TODO fix me
-			// storage = getDir( "data", MODE_WORLD_WRITEABLE ); // place files under the application's 'data'
-			// directory
-		}
-
-		File dir = new File( storage.getAbsolutePath() + path );
-
-		if (storage.exists() == false)
-		{
-			storage.mkdirs();
-		}
-
-		return new File( dir, fileName );
-	}
-
-	/**
 	 * @param path
 	 * @param fileName
 	 * @return true if the file was deleted and false otherwise.
 	 */
 	public boolean removeFile( String path, String fileName )
 	{
-		File file = getPath( path, fileName );
+		File dir = Environment.getExternalStorageDirectory();
+		File file = new File( dir, path + "/" + fileName );
 		if (file.exists())
 		{
 			return file.delete();
@@ -136,44 +105,4 @@ public abstract class MediaIO extends Activity
 		return externalStorageAvailable && externalStorageWriteable;
 	}
 
-	/**
-	 * @param path
-	 * @param fileName
-	 * @return
-	 */
-	protected FileInputStream getInputStream( String path, String fileName )
-	{
-		// first off find out if there is external storage and if that is the preference for the user.
-		if (deviceHasWritableExternalMedia() && WPEnvironment.isPreferExternalStorage())
-		{
-			File storage = Environment.getExternalStorageDirectory();
-
-			// File dir = new File( storage.getAbsolutePath() + path + "/" + fileName );
-
-			// Log.i( TAG, "Data read from :" + dir.getAbsolutePath() );
-
-			try
-			{
-				// File dir = new File( storage.getAbsolutePath() + path + "/" + fileName );
-				File dir = getExternalFilesDir( path + "/" + fileName );
-				return new FileInputStream( dir );
-			}
-			catch (Exception e)
-			{
-				Log.e( TAG, /* dir.getAbsolutePath() + */" file was not found, are manifest permissions set?" );
-			}
-		}
-		else
-		{
-			try
-			{
-				return openFileInput( fileName );
-			}
-			catch (FileNotFoundException e)
-			{
-				Log.e( TAG, "can't read the file " + fileName );
-			}
-		}
-		return null;
-	}
 }
