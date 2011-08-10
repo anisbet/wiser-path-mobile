@@ -83,10 +83,10 @@ public class IncidentActivity extends PointOfInterestActivity
 	 * @see path.wiser.mobile.ui.PointOfInterestActivity#delete()
 	 */
 	@Override
-	protected void delete()
+	protected boolean delete()
 	{
 		// TODO Auto-generated method stub
-
+		return false;
 	}
 
 	/*
@@ -96,8 +96,9 @@ public class IncidentActivity extends PointOfInterestActivity
 	 * We don't save multiple incidents.
 	 */
 	@Override
-	protected void next()
+	protected boolean next()
 	{
+		return false;
 	}
 
 	/*
@@ -107,21 +108,22 @@ public class IncidentActivity extends PointOfInterestActivity
 	 * We don't save multiple incidents.
 	 */
 	@Override
-	protected void previous()
+	protected boolean previous()
 	{
+		return false;
 	}
 
 	@Override
-	protected void save()
+	protected boolean save()
 	{
 		// TODO Auto-generated method stub
-
+		return false;
 	}
 
 	@Override
-	protected void upload()
+	protected boolean upload()
 	{
 		// TODO Auto-generated method stub
-
+		return false;
 	}
 }
