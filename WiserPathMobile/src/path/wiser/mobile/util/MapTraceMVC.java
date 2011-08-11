@@ -3,8 +3,8 @@
  */
 package path.wiser.mobile.util;
 
+import path.wiser.mobile.geo.WPMapLayerItems;
 import path.wiser.mobile.geo.Trace;
-import path.wiser.mobile.ui.WiserPathActivity;
 
 /**
  * @author andrewnisbet
@@ -13,7 +13,7 @@ import path.wiser.mobile.ui.WiserPathActivity;
 public class MapTraceMVC implements ModelViewController
 {
 
-	public MapTraceMVC( WiserPathActivity wiserPathActivity, Trace currentPoi )
+	public MapTraceMVC( Trace currentPoi, WPMapLayerItems itemizedOverlay )
 	{
 		// TODO Auto-generated constructor stub
 	}
