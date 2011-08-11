@@ -38,7 +38,7 @@ public class BlogMVC implements ModelViewController
 		{
 			// take the values from the blog and write them to screen
 			TextView textView = (TextView) poi.findViewById( R.id.Poi_Title );
-			textView.setText( blog.getPoiTitle() );
+			textView.setText( blog.getTitle() );
 			textView = (TextView) poi.findViewById( R.id.Poi_Blog );
 			textView.setText( blog.getDescription() );
 			textView = (TextView) poi.findViewById( R.id.Poi_Tag );

@@ -144,9 +144,30 @@ public class Blog extends POI
 		return extension;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see path.wiser.mobile.geo.POI#setIsIncident(java.lang.String)
+	 */
 	public void setIsIncident( String isIncident )
 	{
 		this.isIncident = Boolean.parseBoolean( isIncident );
+	}
+
+	/**
+	 * @return double latitude.
+	 */
+	public double getLatitude()
+	{
+		return this.location.getLatitude();
+	}
+
+	/**
+	 * @return
+	 */
+	public double getLongitude()
+	{
+		return this.location.getLongitude();
 	}
 
 }

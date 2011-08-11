@@ -483,7 +483,7 @@ public class KMLDocument
 	private Node getName( POI poi )
 	{
 		Element title = doc.createElement( KML_TITLE );
-		Text text = doc.createTextNode( poi.getPoiTitle() );
+		Text text = doc.createTextNode( poi.getTitle() );
 		title.appendChild( text );
 		return title;
 	}
@@ -674,8 +674,9 @@ public class KMLDocument
 					poi = poiList.add();
 				}
 			}
+			return true;
 		}
-		return true;
+		return false; // returns false if there is nothing to do.
 	}
 
 	/**

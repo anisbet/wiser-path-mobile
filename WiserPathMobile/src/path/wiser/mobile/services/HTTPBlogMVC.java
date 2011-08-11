@@ -67,7 +67,7 @@ public class HTTPBlogMVC implements ModelViewController
 		String formToken = WiserPathConnection.getFormToken( WiserPathConnection.getContent() );
 		WiserPathConnection.setAllowRedirects( true );
 		WiserPathConnection connection = WiserPathConnection.getInstance( url );
-		connection.addFormData( "title", this.blog.getPoiTitle() );
+		connection.addFormData( "title", this.blog.getTitle() );
 		connection.addFormData( "body", this.blog.getDescription() );
 		connection.addFormData( "form_token", formToken );
 		connection.addFormData( "form_id", "geoblog_node_form" );
@@ -107,7 +107,7 @@ public class HTTPBlogMVC implements ModelViewController
 		String formToken = WiserPathConnection.getFormToken( WiserPathConnection.getContent() );
 		// send the image data.
 		WiserPathConnection connection = WiserPathConnection.getInstance( url );
-		connection.addFormData( "title", this.blog.getPoiTitle() );
+		connection.addFormData( "title", this.blog.getTitle() );
 		connection.addFormData( "field_photo[0][fid]", "0" );
 		connection.addFormData( "field_photo[0][list]", "1" );
 		// connection.addImageData( "files[field_photo_0]", "spitz.jpg", "/home/anisbet/Downloads/spitz.jpg" );
