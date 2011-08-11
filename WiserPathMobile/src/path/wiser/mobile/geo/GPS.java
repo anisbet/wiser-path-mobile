@@ -7,6 +7,7 @@ import path.wiser.mobile.Units;
 import path.wiser.mobile.ui.PointOfInterestActivity;
 import path.wiser.mobile.ui.TraceActivity;
 import path.wiser.mobile.ui.WiserActivityHelper;
+import path.wiser.mobile.ui.WiserPathActivity;
 import android.content.Context;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -37,6 +38,14 @@ public class GPS
 	 * @param activty the trace activity.
 	 */
 	public GPS( TraceActivity activity )
+	{
+		long minimumTime = computeMinimumTime();
+		float minDistance = computeMinimumDistance();
+		this.locationManager = (LocationManager) activity.getSystemService( Context.LOCATION_SERVICE );
+		locationManager.requestLocationUpdates( LocationManager.GPS_PROVIDER, minimumTime, minDistance, activity );
+	}
+
+	public GPS( WiserPathActivity activity )
 	{
 		long minimumTime = computeMinimumTime();
 		float minDistance = computeMinimumDistance();
