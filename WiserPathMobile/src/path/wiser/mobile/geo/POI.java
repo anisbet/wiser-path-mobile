@@ -49,7 +49,7 @@ public abstract class POI implements Comparable<POI>
 	/**
 	 * @return the title
 	 */
-	public String getPoiTitle()
+	public String getTitle()
 	{
 		return title;
 	}
