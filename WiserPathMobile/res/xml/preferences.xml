@@ -57,12 +57,12 @@
 		   android:summary="@string/s_use_location_summary"
 		   android:key="USE_LOCATION" />
 		   <!-- Do we allow users to select units of measure currently default it metric -->
-	 <!--  <ListPreference
-	        android:title="Units"
-	        android:summary="Select desired recording units"
+	 	<ListPreference
+	        android:title="@string/s_activity_title"
+	        android:summary="@string/s_activity_summary"
 	        android:key="unitsPref"
-	        android:defaultValue="kms"
-	        android:entries="@array/listArray"
-	        android:entryValues="@array/listValues" /> -->
+	        android:defaultValue="1"
+	        android:entries="@array/activityList"
+	        android:entryValues="@array/activityListValues" />
     </PreferenceCategory>
 </PreferenceScreen>
