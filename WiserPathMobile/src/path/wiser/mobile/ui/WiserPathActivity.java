@@ -42,30 +42,30 @@ import com.google.android.maps.Overlay;
 public class WiserPathActivity extends MapActivity implements LocationListener
 {
 
-	private static final String					TAG				= "WiserPathActivity";
-	private static final int					ZOOM_SETTING	= 14;									// 1 is world
-																										// view.
-	private static final GeoPoint				CENTER_POINT	= new GeoPoint( 53545556, -113490000 ); // City hall
-																										// Edmonton
-																										// where
-																										// map opens
-	private List<Overlay>						map;
+	private static final String				TAG				= "WiserPathActivity";
+	private static final int				ZOOM_SETTING	= 14;									// 1 is world
+																									// view.
+	private static final GeoPoint			CENTER_POINT	= new GeoPoint( 53545556, -113490000 ); // City hall
+																									// Edmonton
+																									// where
+																									// map opens
+	private List<Overlay>					map;
 	// this is a collection of objects references of WPMapLayerItems. We keep it for convenience because
 	// we manipulate the layer items by layer and I don't know if Google adds its own layers.
 	private HashMap<Type, WPMapLayerItems>	mobileLayers;
-	private MapController						mapController;
+	private MapController					mapController;
 	@SuppressWarnings("unused")
-	private GPS									locationManager;										// it is used it
-																										// fires
-																										// events for
-																										// this
-																										// screen.
-	private boolean								useOnlineData;
-	private boolean								useDeviceData;											// Selection
-																										// from
-																										// the
-																										// map_controls
-																										// menu.
+	private GPS								locationManager;										// it is used it
+																									// fires
+																									// events for
+																									// this
+																									// screen.
+	private boolean							useOnlineData;
+	private boolean							useDeviceData;											// Selection
+																									// from
+																									// the
+																									// map_controls
+																									// menu.
 
 	/** Called when the activity is first created. */
 	@Override
@@ -121,7 +121,7 @@ public class WiserPathActivity extends MapActivity implements LocationListener
 	@Override
 	protected boolean isRouteDisplayed()
 	{
-		// TODO Auto-generated method stub
+		// TODO resolve what this does and implement with Trace.
 		return false;
 	}
 
@@ -156,7 +156,7 @@ public class WiserPathActivity extends MapActivity implements LocationListener
 	}
 
 	/**
-	 * @param isDisplayed TODO
+	 * @param isDisplayed flag to switch layer on and off.
 	 * @return True if the request was successful and false otherwise.
 	 */
 	private boolean viewMobileData( boolean isDisplayed )
@@ -164,7 +164,8 @@ public class WiserPathActivity extends MapActivity implements LocationListener
 		boolean result = false;
 		if (isDisplayed == false)
 		{
-			return removeMobileDataLayers();
+			// this.mobileLayers.remove( Type.BLOG );
+			return removeMobileDataLayers( true );
 		}
 		// get the data stored on the device to do that you need to get the saved POIs
 		PoiList poiList = new PoiList( POI.Type.BLOG );
@@ -198,23 +199,33 @@ public class WiserPathActivity extends MapActivity implements LocationListener
 	}
 
 	/**
+	 * @param flushCache TODO
 	 * @return true always.
 	 */
-	private boolean removeMobileDataLayers()
+	private boolean removeMobileDataLayers( boolean flushCache )
 	{
 		Iterator<Type> it = mobileLayers.keySet().iterator();
 		while (it.hasNext())
 		{
 			POI.Type thisLayerType = it.next();
-			// get rid of local reference.
-			WPMapLayerItems thisLayer = mobileLayers.remove( thisLayerType );
+			// get rid of local reference or just get rid of map reference maybe we should just clear them or even
+			// better just remove them from the map but keep them in local store to restore for efficiency.
+			// TODO test implications for updating data.
+			WPMapLayerItems thisLayer = null;
+			if (flushCache)
+			{
+				thisLayer = mobileLayers.remove( thisLayerType );
+			}
+			else
+			{
+				thisLayer = mobileLayers.get( thisLayerType );
+			}
+
 			if (thisLayer == null)
 			{
 				continue;
 			}
-			// TODO get rid of map reference maybe we should just clear them or even better just remove them from the
-			// map but
-			// keep them in local store to restore for efficiency.
+
 			this.map.remove( thisLayer );
 		}
 		return true;
@@ -224,14 +235,14 @@ public class WiserPathActivity extends MapActivity implements LocationListener
 	 * Displays all the POI objects stored on the argument PoiList for reuse.
 	 * 
 	 * @param poiList
-	 * @param currentLayer the layer we are adding the items of the poi list too.
+	 * @param whichLayer the layer we are adding the items of the poi list too.
 	 */
-	private void display( PoiList poiList, WPMapLayerItems currentLayer )
+	private void display( PoiList poiList, WPMapLayerItems whichLayer )
 	{
 		// get each poi and use appropriate MVC
 		POI currentPoi = poiList.getCurrent();
 		// get a model view controller.
-		ModelViewController mvc = getMVC( poiList.getType(), currentPoi, currentLayer );
+		ModelViewController mvc = getMVC( poiList.getType(), currentPoi, whichLayer );
 		if (mvc == null) // can happen for an undefined type.
 		{
 			return;
@@ -241,7 +252,7 @@ public class WiserPathActivity extends MapActivity implements LocationListener
 		while (currentPoi.getNext() != null) // Loop through the rest.
 		{
 			currentPoi = poiList.next();
-			mvc = getMVC( poiList.getType(), currentPoi, currentLayer );
+			mvc = getMVC( poiList.getType(), currentPoi, whichLayer );
 			if (mvc == null) // can happen for an undefined type.
 			{
 				return;

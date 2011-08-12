@@ -3,7 +3,9 @@
  */
 package path.wiser.mobile.ui;
 
+import path.wiser.mobile.ActivityType;
 import path.wiser.mobile.R;
+import path.wiser.mobile.Units;
 import path.wiser.mobile.WPEnvironment;
 import path.wiser.mobile.WiserPathMobile;
 import path.wiser.mobile.services.Credential;
@@ -79,6 +81,8 @@ public class SettingsActivity extends PreferenceActivity
 		}
 		useSDCardPreference.setEnabled( MediaIO.deviceHasWritableExternalMedia() ); // if true enable and disable
 																					// otherwise.
+		// TODO figure out how to get the preference for activity type. for now just set it to Walk
+		Units.setActivityType( ActivityType.WALK );
 	}
 
 	@Override
