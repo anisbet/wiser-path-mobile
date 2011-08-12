@@ -12,7 +12,12 @@ package path.wiser.mobile;
  */
 public enum ActivityType
 {
-	WALK, RUN, HIKE, // uses altitude
+	// these activity types are used to set the granularity of location recording of the GPS.
+	// It is important that this list remain synchronized with the /res/values/array_list.xml
+	// and /res/xml/preferences.xml
+	WALK,
+	RUN,
+	HIKE, // uses altitude
 	BIKE,
 	DRIVE
 }
