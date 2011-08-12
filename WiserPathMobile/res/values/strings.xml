@@ -39,6 +39,11 @@
     <string name="s_invalid_user_name_msg">Sorry name must be between 1 and 60 characters</string>
     <string name="s_invalid_email_msg">Sorry the email address is invalid</string>
     
+     <!-- Preference for activity type -->
+    <string name="s_activity_title">Activity</string>
+    <string name="s_activity_summary">Select type of activity</string>
+    <string name="s_default_activity">Walk</string>
+    
     <!-- PointOfInterestActivity messages -->
     <string name="poi_blog_post_success_msg">Your Geo-blog was successfully posted.</string>
     <string name="poi_blog_post_fail_msg">Dang, your blog wasn&#96;t posted, try again later.</string>

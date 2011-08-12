@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+    <string-array name="activityList">
+        <item>Walk</item>
+        <item>Run</item>
+        <item>Hike</item>
+        <item>Bike</item>
+        <item>Drive</item>
+    </string-array>
+
+    <string-array name="activityListValues">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
+</resources>
