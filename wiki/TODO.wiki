@@ -6,3 +6,10 @@
   # WiserPath tab should be able to search and display a route based on criteria like scenic or fastest.
   # Traces to include POIs if the trace is running and become part of the trace, not a standalone POI (also Incidents).
   # Finish UI refactoring and get Map working properly.
+
+==Feature Request==
+  # Give the Wiser Map a menu to select and control data from WP and/or WPM. *Done*
+
+==Future Implementation==
+  * The team leader would like to see the map pan as the user moves and the GPS updates. *Done but not tested*.
+  * There should be a limit to the zoom level so that we can simplify data display.  *Done*. The problem is that as the we move across the map the desired POIs should be loaded as we move into a new reference frame (as defined by the bounding box of the tab screen boundaries), and the POIs that are no longer visible should be dumped from cache. *Needs implementing*.
