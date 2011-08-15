@@ -1,0 +1,12 @@
+
+= Introduction =
+
+POIs, Traces and incidents are stored locally before being uploaded to the Wiser Path Website. After they are uploaded they are deleted from the device. Before that they are saved as KML documents on the device. Currently these are stored in the SD card installed on the device. I have not yet implemented storage to the application's directory yet. There are some good examples of how to do this on the web and the classes that need to be changed are:
+  # path.wiser.mobile.util.MediaIO
+  # path.wiser.mobile.util.MediaReader
+  # path.wiser.mobile.util.MediaWriter
+
+
+= Details =
+
+MediaIO is an abstract super class of Reader and Writer. MediaIO Checks the user's preferences about where storage should occur and tests if that is actually possible, ie is there even an SD card installed. If there is no card, serializable objects should be written to the applications data directory with WORLD write permissions. The code for this is not done, but the code for recording the preference and forbidding the SDCard selection in the UI is implemented in the preferences screen.
