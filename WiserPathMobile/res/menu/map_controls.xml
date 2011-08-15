@@ -4,9 +4,9 @@
 <item android:title="@string/menu_map_controls_title">
 <menu>
     <group android:checkableBehavior="all">
-        <item android:id="@+id/use_server_data" android:checked="false"
+        <item android:id="@+id/use_server_data"
               android:title="@string/menu_use_server_data_title" />
-        <item android:id="@+id/use_mobile_data" android:checked="true"
+        <item android:id="@+id/use_mobile_data"
               android:title="@string/menu_use_mobile_data_title" />
     </group>
 </menu>
