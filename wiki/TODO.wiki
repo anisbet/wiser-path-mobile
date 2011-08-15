@@ -6,6 +6,7 @@
   # WiserPath tab should be able to search and display a route based on criteria like scenic or fastest.
   # Traces to include POIs if the trace is running and become part of the trace, not a standalone POI (also Incidents).
   # Finish UI refactoring and get Map working properly.
+  # [local_storage Local Storage]
 
 ==Feature Request==
   # Give the Wiser Map a menu to select and control data from WP and/or WPM. *Done*
