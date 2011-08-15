@@ -6,7 +6,6 @@ package path.wiser.mobile.util;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
@@ -48,17 +47,18 @@ public class MediaReader extends MediaIO
 		File dir = Environment.getExternalStorageDirectory();
 		File file = new File( dir, path + "/" + fileName );
 		FileInputStream is = null;
+		BufferedReader br = null;
 		try
 		{
 			is = new FileInputStream( file );
+			br = new BufferedReader( new InputStreamReader( is ), BUFFER_SIZE ); // 2nd arg is buffer size
 		}
-		catch (FileNotFoundException e1)
+		catch (Exception e1)
 		{
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			Log.w( TAG, this.fileName + " IO error reading file. File may not exist." );
+			return "";
 		}
 
-		BufferedReader br = new BufferedReader( new InputStreamReader( is ), BUFFER_SIZE ); // 2nd arg is buffer size
 		StringBuffer fileString = new StringBuffer();
 		String text = null;
 		try

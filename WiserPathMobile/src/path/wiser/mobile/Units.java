@@ -10,8 +10,8 @@ package path.wiser.mobile;
 public class Units
 {
 
-	private static MeasurementSystem	measurementSystem;
-	private static ActivityType			activityType;
+	private static MeasurementSystem	measurementSystem	= MeasurementSystem.METRIC;
+	private static ActivityType			activityType		= ActivityType.WALK;
 
 	private Units()
 	{

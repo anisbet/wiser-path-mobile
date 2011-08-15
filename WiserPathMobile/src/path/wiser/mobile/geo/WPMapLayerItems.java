@@ -21,11 +21,13 @@ public class WPMapLayerItems extends ItemizedOverlay<OverlayItem>
 {
 
 	private ArrayList<OverlayItem>	overlayItems	= new ArrayList<OverlayItem>();
+	private MapLayerType			layerDataType;
 
-	public WPMapLayerItems( Drawable defaultMarker )
+	public WPMapLayerItems( Drawable defaultMarker, MapLayerType type )
 	{
 		// center the icon on the bottom boundary of the image.
 		super( boundCenterBottom( defaultMarker ) );
+		this.layerDataType = type;
 	}
 
 	/**
@@ -55,6 +57,14 @@ public class WPMapLayerItems extends ItemizedOverlay<OverlayItem>
 	public void clear()
 	{
 		this.overlayItems.clear();
+	}
+
+	/**
+	 * @return the layerDataType
+	 */
+	public final MapLayerType getLayerType()
+	{
+		return layerDataType;
 	}
 
 }
