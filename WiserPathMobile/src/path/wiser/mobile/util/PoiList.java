@@ -20,6 +20,7 @@ public class PoiList
 
 	private POI			head	= null;
 	private POI.Type	myType;
+	private int			count	= 0;
 
 	/**
 	 * @param type the type of list to create.
@@ -72,6 +73,7 @@ public class PoiList
 		{
 			// There is only a head so clear me.
 			this.head = createNewEntry();
+			// count not effected.
 		}
 		else
 			if (this.head.getPrevious() == null)
@@ -79,6 +81,7 @@ public class PoiList
 				// this is the head of the list
 				this.head = this.head.getNext();
 				this.head.setPrevious( null );
+				this.count--;
 			}
 			else
 				if (this.head.getNext() == null)
@@ -86,7 +89,7 @@ public class PoiList
 					// I am the end of the list
 					this.head = this.head.getPrevious();
 					this.head.setNext( null );
-
+					this.count--;
 				}
 				else
 				{
@@ -94,6 +97,7 @@ public class PoiList
 					this.head.getPrevious().setNext( this.head.getNext() );
 					this.head.getNext().setPrevious( this.head.getPrevious() );
 					this.head = this.head.getNext();
+					this.count--;
 				}
 		return this.head;
 	}
@@ -116,6 +120,7 @@ public class PoiList
 		p.setPrevious( this.head );
 		this.head.setNext( p );
 		this.head = this.head.getNext();
+		this.count++;
 
 		return this.head;
 	}
@@ -177,8 +182,19 @@ public class PoiList
 		}
 	}
 
+	/**
+	 * @return Type of object this is.
+	 */
 	public POI.Type getType()
 	{
 		return this.myType;
+	}
+
+	/**
+	 * @return true if the list is empty and false otherwise.
+	 */
+	public boolean isEmpty()
+	{
+		return this.count < 2 && this.head.isValid() == false;
 	}
 }

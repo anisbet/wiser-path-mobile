@@ -3,8 +3,7 @@
  */
 package path.wiser.mobile.util;
 
-import path.wiser.mobile.geo.Blog;
-import path.wiser.mobile.geo.WPMapLayerItems;
+import path.wiser.mobile.ui.WiserPathActivity;
 
 /**
  * @author andrewnisbet
@@ -17,9 +16,9 @@ public class MapIncidentMVC extends MapBlogMVC
 	 * @param currentPoi
 	 * @param itemizedOverlay
 	 */
-	public MapIncidentMVC( Blog currentPoi, WPMapLayerItems itemizedOverlay )
+	public MapIncidentMVC( PoiList currentPoi, WiserPathActivity activity )
 	{
-		super( currentPoi, itemizedOverlay );
+		super( currentPoi, activity );
 		// TODO Auto-generated constructor stub
 	}
 

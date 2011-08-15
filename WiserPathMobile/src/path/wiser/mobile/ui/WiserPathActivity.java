@@ -1,23 +1,14 @@
 package path.wiser.mobile.ui;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import path.wiser.mobile.R;
-import path.wiser.mobile.geo.Blog;
 import path.wiser.mobile.geo.GPS;
-import path.wiser.mobile.geo.Incident;
 import path.wiser.mobile.geo.POI;
-import path.wiser.mobile.geo.POI.Type;
-import path.wiser.mobile.geo.Trace;
 import path.wiser.mobile.geo.WPMapLayerItems;
 import path.wiser.mobile.util.MapBlogMVC;
-import path.wiser.mobile.util.MapIncidentMVC;
-import path.wiser.mobile.util.MapTraceMVC;
 import path.wiser.mobile.util.ModelViewController;
 import path.wiser.mobile.util.PoiList;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
@@ -42,30 +33,28 @@ import com.google.android.maps.Overlay;
 public class WiserPathActivity extends MapActivity implements LocationListener
 {
 
-	private static final String				TAG				= "WiserPathActivity";
-	private static final int				ZOOM_SETTING	= 14;									// 1 is world
-																									// view.
-	private static final GeoPoint			CENTER_POINT	= new GeoPoint( 53545556, -113490000 ); // City hall
-																									// Edmonton
-																									// where
-																									// map opens
-	private List<Overlay>					map;
-	// this is a collection of objects references of WPMapLayerItems. We keep it for convenience because
-	// we manipulate the layer items by layer and I don't know if Google adds its own layers.
-	private HashMap<Type, WPMapLayerItems>	mobileLayers;
-	private MapController					mapController;
+	private static final String		TAG				= "WiserPathActivity";
+	private static final int		ZOOM_SETTING	= 12;									// 1 is world
+																							// view.
+	private static final GeoPoint	CENTER_POINT	= new GeoPoint( 53545556, -113490000 ); // City hall
+																							// Edmonton
+																							// where
+																							// map opens
+	private boolean					mobile			= false;
+	private boolean					server			= false;
+	private List<Overlay>			map;
+	private MapController			mapController;
 	@SuppressWarnings("unused")
-	private GPS								locationManager;										// it is used it
-																									// fires
-																									// events for
-																									// this
-																									// screen.
-	private boolean							useOnlineData;
-	private boolean							useDeviceData;											// Selection
-																									// from
-																									// the
-																									// map_controls
-																									// menu.
+	private GPS						locationManager;										// it is used it
+																							// fires
+																							// events for
+																							// this
+																							// screen.
+
+	// from
+	// the
+	// map_controls
+	// menu.
 
 	/** Called when the activity is first created. */
 	@Override
@@ -81,41 +70,41 @@ public class WiserPathActivity extends MapActivity implements LocationListener
 		mapController.setZoom( ZOOM_SETTING );
 		mapController.setCenter( CENTER_POINT );
 		locationManager = new GPS( this );
-
-		// now make the container to store the overlayItems.
-		mobileLayers = new HashMap<POI.Type, WPMapLayerItems>();
 		// now create an overlay with a specific Icon. Make new mobileLayers for incidents and traces as well as data
 		// from
 		// server.
 		map = mapView.getOverlays();
 
 		// assign an icon to this overlay.
-		Drawable blogIcon = this.getResources().getDrawable( R.drawable.ic_tee_poi_blue );
-		WPMapLayerItems blogOverlay = new WPMapLayerItems( blogIcon );
+		// Drawable blogIcon = this.getResources().getDrawable( R.drawable.ic_tee_poi_blue );
+		// WPMapLayerItems blogOverlay = new WPMapLayerItems( blogIcon );
 		// now keep a reference to the mobileLayers.
-		mobileLayers.put( POI.Type.BLOG, blogOverlay );
-		map.add( blogOverlay );
+		// mobileLayers.put( POI.Type.BLOG, blogOverlay );
+		// map.add( blogOverlay );
 
-		// Now the Incidents
-		// change this to the appropriate icon for an incident.
-		Drawable incidentIcon = this.getResources().getDrawable( R.drawable.icon );
-		WPMapLayerItems incidentsOverlay = new WPMapLayerItems( incidentIcon );
-		mobileLayers.put( POI.Type.INCIDENT, incidentsOverlay );
-		map.add( incidentsOverlay );
-
-		// Now the Incidents
-		// change this to the appropriate icon for an incident.
-		Drawable traceIcon = this.getResources().getDrawable( R.drawable.icon );
-		WPMapLayerItems traceOverlay = new WPMapLayerItems( traceIcon );
-		mobileLayers.put( POI.Type.TRACE, traceOverlay );
-		map.add( traceOverlay );
+		// // Now the Incidents
+		// // change this to the appropriate icon for an incident.
+		// Drawable incidentIcon = this.getResources().getDrawable( R.drawable.icon );
+		// WPMapLayerItems incidentsOverlay = new WPMapLayerItems( incidentIcon );
+		// mobileLayers.put( POI.Type.INCIDENT, incidentsOverlay );
+		// map.add( incidentsOverlay );
+		//
+		// // Now the Incidents
+		// // change this to the appropriate icon for an incident.
+		// Drawable traceIcon = this.getResources().getDrawable( R.drawable.icon );
+		// WPMapLayerItems traceOverlay = new WPMapLayerItems( traceIcon );
+		// mobileLayers.put( POI.Type.TRACE, traceOverlay );
+		// map.add( traceOverlay );
 
 		// this places a Wiser path POI 'tee' icon on west ed mall.
+		// Drawable blogIcon = this.getResources().getDrawable( R.drawable.ic_tee_poi_blue );
+		// WPMapLayerItems blogOverlay = new WPMapLayerItems( blogIcon, MapLayerType.MOBILE_BLOG );
 		// GeoPoint point = new GeoPoint( 53522780, -113623052 ); // WGS84 * 1e6
 		// OverlayItem overlayitem = new OverlayItem( point, "West Edmonton Mall", "The greatest indoor show on Earth!"
 		// );
 		// blogOverlay.addOverlayItem( overlayitem );
 		// map.add( blogOverlay );
+
 	}
 
 	@Override
@@ -131,8 +120,6 @@ public class WiserPathActivity extends MapActivity implements LocationListener
 	{
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate( R.menu.map_controls, menu );
-		this.useDeviceData = menu.getItem( R.id.use_mobile_data ).isChecked();
-		this.useOnlineData = menu.getItem( R.id.use_server_data ).isChecked();
 		return true;
 	}
 
@@ -143,12 +130,14 @@ public class WiserPathActivity extends MapActivity implements LocationListener
 		switch (item.getItemId())
 		{
 		case R.id.use_server_data:
-			this.useOnlineData = !this.useOnlineData;
-			return viewOnlineData( this.useOnlineData );
+			server = !server;
+			item.setChecked( server );
+			return viewOnlineData( server );
 
 		case R.id.use_mobile_data:
-			this.useDeviceData = !this.useDeviceData;
-			return viewMobileData( this.useDeviceData );
+			mobile = !mobile;
+			item.setChecked( mobile );
+			return viewMobileData( mobile );
 
 		default:
 			return super.onOptionsItemSelected( item );
@@ -161,19 +150,16 @@ public class WiserPathActivity extends MapActivity implements LocationListener
 	 */
 	private boolean viewMobileData( boolean isDisplayed )
 	{
-		boolean result = false;
 		if (isDisplayed == false)
 		{
-			// this.mobileLayers.remove( Type.BLOG );
-			return removeMobileDataLayers( true );
+			return removeMobileDataLayers();
 		}
 		// get the data stored on the device to do that you need to get the saved POIs
 		PoiList poiList = new PoiList( POI.Type.BLOG );
-		result = poiList.deserialize();
+		boolean result = poiList.deserialize();
 		if (result == true)
 		{
-			WPMapLayerItems currentLayer = clearOverlayItemsFromMap( poiList.getType() );
-			display( poiList, currentLayer );
+			display( poiList );
 		}
 
 		// for each item on the list create a MVC to convert the POI to something useful on the map.
@@ -184,51 +170,37 @@ public class WiserPathActivity extends MapActivity implements LocationListener
 		// {
 		// display( poiList );
 		// }
-		//
+
 		poiList = new PoiList( POI.Type.INCIDENT );
 		result = poiList.deserialize();
 		if (result == true)
 		{
-			// by clearing and passing the layer here we give flexibility later to mixed types on one layer.
-			// and you don't necessarily need to clear the list, just add to it or subtract from it.
-			WPMapLayerItems currentLayer = clearOverlayItemsFromMap( poiList.getType() );
-			display( poiList, currentLayer );
+			display( poiList );
 		}
 
-		return result;
+		return result; // TODO if one fails return false otherwise true. Fix so that result is not reset by previous
+						// display calls.
 	}
 
 	/**
-	 * @param flushCache TODO
-	 * @return true always.
+	 * @return
 	 */
-	private boolean removeMobileDataLayers( boolean flushCache )
+	private boolean removeMobileDataLayers()
 	{
-		Iterator<Type> it = mobileLayers.keySet().iterator();
-		while (it.hasNext())
+		// to do this go through all the layers and see if they are mobile layers.
+		for (Overlay layer : this.map)
 		{
-			POI.Type thisLayerType = it.next();
-			// get rid of local reference or just get rid of map reference maybe we should just clear them or even
-			// better just remove them from the map but keep them in local store to restore for efficiency.
-			// TODO test implications for updating data.
-			WPMapLayerItems thisLayer = null;
-			if (flushCache)
+			switch (( (WPMapLayerItems) layer ).getLayerType())
 			{
-				thisLayer = mobileLayers.remove( thisLayerType );
+			case MOBILE_BLOG:
+			case MOBILE_INCIDENT:
+			case MOBILE_TRACE:
+				return this.map.remove( layer );
+			default:
+				return false;
 			}
-			else
-			{
-				thisLayer = mobileLayers.get( thisLayerType );
-			}
-
-			if (thisLayer == null)
-			{
-				continue;
-			}
-
-			this.map.remove( thisLayer );
 		}
-		return true;
+		return false;
 	}
 
 	/**
@@ -237,67 +209,23 @@ public class WiserPathActivity extends MapActivity implements LocationListener
 	 * @param poiList
 	 * @param whichLayer the layer we are adding the items of the poi list too.
 	 */
-	private void display( PoiList poiList, WPMapLayerItems whichLayer )
+	private void display( PoiList poiList )
 	{
-		// get each poi and use appropriate MVC
-		POI currentPoi = poiList.getCurrent();
-		// get a model view controller.
-		ModelViewController mvc = getMVC( poiList.getType(), currentPoi, whichLayer );
-		if (mvc == null) // can happen for an undefined type.
+		ModelViewController mvc = null;
+		switch (poiList.getType())
 		{
-			return;
-		}
-		mvc.update(); // Reads the items to the overlay.
-
-		while (currentPoi.getNext() != null) // Loop through the rest.
-		{
-			currentPoi = poiList.next();
-			mvc = getMVC( poiList.getType(), currentPoi, whichLayer );
-			if (mvc == null) // can happen for an undefined type.
-			{
-				return;
-			}
-			mvc.update();
-		}
-	}
-
-	/**
-	 * Clears the requested layer of items from map and returns a fresh empty layer.
-	 * 
-	 * @param type
-	 * @return an empty list ready to be repopulated with new items.
-	 */
-	private WPMapLayerItems clearOverlayItemsFromMap( POI.Type type )
-	{
-		WPMapLayerItems thisLayer = mobileLayers.get( type );
-		thisLayer.clear();
-		return thisLayer;
-	}
-
-	/**
-	 * Returns the appropriate ModelViewController for displaying a certain type of POI in the WiserPathActivity
-	 * (Google) Map.
-	 * 
-	 * @param type
-	 * @param poi
-	 * @param currentOverlay which layer to draw items on.
-	 * @return ModelViewController for the type of poi we need to display
-	 */
-	private ModelViewController getMVC( Type type, POI poi, WPMapLayerItems currentOverlay )
-	{
-
-		switch (type)
-		{
-		case TRACE:
-			return new MapTraceMVC( (Trace) poi, currentOverlay );
+		// case TRACE:
+		// return new MapTraceMVC( (Trace) poi, this );
 		case BLOG:
-			return new MapBlogMVC( (Blog) poi, currentOverlay );
-		case INCIDENT:
-			return new MapIncidentMVC( (Incident) poi, currentOverlay );
+			mvc = new MapBlogMVC( poiList, this );
+			break;
+		// case INCIDENT:
+		// return new MapIncidentMVC( poiList, this );
 		default:
 			Log.w( TAG, "Asked for an unknown type of ModelViewController." );
+			return;
 		}
-		return null;
+		mvc.update();
 	}
 
 	/**
@@ -342,5 +270,14 @@ public class WiserPathActivity extends MapActivity implements LocationListener
 	@Override
 	public void onStatusChanged( String provider, int status, Bundle extras )
 	{
+	}
+
+	/**
+	 * @return the map
+	 */
+	public final List<Overlay> getMap()
+	{
+		// This method is used for Model View Controllers.
+		return map;
 	}
 }
