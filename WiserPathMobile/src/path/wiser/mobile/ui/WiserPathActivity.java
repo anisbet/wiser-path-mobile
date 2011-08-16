@@ -7,6 +7,8 @@ import path.wiser.mobile.geo.GPS;
 import path.wiser.mobile.geo.POI;
 import path.wiser.mobile.geo.WPMapLayerItems;
 import path.wiser.mobile.util.MapBlogMVC;
+import path.wiser.mobile.util.MapIncidentMVC;
+import path.wiser.mobile.util.MapTraceMVC;
 import path.wiser.mobile.util.ModelViewController;
 import path.wiser.mobile.util.PoiList;
 import android.location.Location;
@@ -34,12 +36,10 @@ public class WiserPathActivity extends MapActivity implements LocationListener
 {
 
 	private static final String		TAG				= "WiserPathActivity";
-	private static final int		ZOOM_SETTING	= 12;									// 1 is world
-																							// view.
-	private static final GeoPoint	CENTER_POINT	= new GeoPoint( 53545556, -113490000 ); // City hall
-																							// Edmonton
-																							// where
-																							// map opens
+	// 1 is world view.
+	private static final int		ZOOM_SETTING	= 12;
+	// City hall, Edmonton where map opens
+	private static final GeoPoint	CENTER_POINT	= new GeoPoint( 53545556, -113490000 );
 	private boolean					mobile			= false;
 	private boolean					server			= false;
 	private List<Overlay>			map;
@@ -51,12 +51,11 @@ public class WiserPathActivity extends MapActivity implements LocationListener
 																							// this
 																							// screen.
 
-	// from
-	// the
-	// map_controls
-	// menu.
-
-	/** Called when the activity is first created. */
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.google.android.maps.MapActivity#onCreate(android.os.Bundle)
+	 */
 	@Override
 	public void onCreate( Bundle savedInstanceState )
 	{
@@ -64,57 +63,34 @@ public class WiserPathActivity extends MapActivity implements LocationListener
 		setContentView( R.layout.wiserpath_tab );
 		MapView mapView = (MapView) findViewById( R.id.mapview );
 		mapView.setBuiltInZoomControls( true );
-
 		mapView.setStreetView( true );
+
 		mapController = mapView.getController();
 		mapController.setZoom( ZOOM_SETTING );
 		mapController.setCenter( CENTER_POINT );
-		locationManager = new GPS( this );
-		// now create an overlay with a specific Icon. Make new mobileLayers for incidents and traces as well as data
-		// from
-		// server.
 		map = mapView.getOverlays();
 
-		// assign an icon to this overlay.
-		// Drawable blogIcon = this.getResources().getDrawable( R.drawable.ic_tee_poi_blue );
-		// WPMapLayerItems blogOverlay = new WPMapLayerItems( blogIcon );
-		// now keep a reference to the mobileLayers.
-		// mobileLayers.put( POI.Type.BLOG, blogOverlay );
-		// map.add( blogOverlay );
-
-		// // Now the Incidents
-		// // change this to the appropriate icon for an incident.
-		// Drawable incidentIcon = this.getResources().getDrawable( R.drawable.icon );
-		// WPMapLayerItems incidentsOverlay = new WPMapLayerItems( incidentIcon );
-		// mobileLayers.put( POI.Type.INCIDENT, incidentsOverlay );
-		// map.add( incidentsOverlay );
-		//
-		// // Now the Incidents
-		// // change this to the appropriate icon for an incident.
-		// Drawable traceIcon = this.getResources().getDrawable( R.drawable.icon );
-		// WPMapLayerItems traceOverlay = new WPMapLayerItems( traceIcon );
-		// mobileLayers.put( POI.Type.TRACE, traceOverlay );
-		// map.add( traceOverlay );
-
-		// this places a Wiser path POI 'tee' icon on west ed mall.
-		// Drawable blogIcon = this.getResources().getDrawable( R.drawable.ic_tee_poi_blue );
-		// WPMapLayerItems blogOverlay = new WPMapLayerItems( blogIcon, MapLayerType.MOBILE_BLOG );
-		// GeoPoint point = new GeoPoint( 53522780, -113623052 ); // WGS84 * 1e6
-		// OverlayItem overlayitem = new OverlayItem( point, "West Edmonton Mall", "The greatest indoor show on Earth!"
-		// );
-		// blogOverlay.addOverlayItem( overlayitem );
-		// map.add( blogOverlay );
-
+		// for locating the user on the map.
+		locationManager = new GPS( this );
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.google.android.maps.MapActivity#isRouteDisplayed()
+	 */
 	@Override
 	protected boolean isRouteDisplayed()
 	{
-		// TODO resolve what this does and implement with Trace.
 		return false;
 	}
 
 	// Menu activity methods here below
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+	 */
 	@Override
 	public boolean onCreateOptionsMenu( Menu menu )
 	{
@@ -123,6 +99,11 @@ public class WiserPathActivity extends MapActivity implements LocationListener
 		return true;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+	 */
 	@Override
 	public boolean onOptionsItemSelected( MenuItem item )
 	{
@@ -156,20 +137,27 @@ public class WiserPathActivity extends MapActivity implements LocationListener
 		}
 		// get the data stored on the device to do that you need to get the saved POIs
 		PoiList poiList = new PoiList( POI.Type.BLOG );
+		int failCount = 0;
 		boolean result = poiList.deserialize();
 		if (result == true)
 		{
 			display( poiList );
 		}
+		else
+		{
+			failCount++;
+		}
 
-		// for each item on the list create a MVC to convert the POI to something useful on the map.
-		// TODO test the serialization and deserialization of Traces and Incidents and then un comment this code.
-		// poiList = new PoiList( POI.Type.TRACE );
-		// result = poiList.deserialize();
-		// if (result == true)
-		// {
-		// display( poiList );
-		// }
+		poiList = new PoiList( POI.Type.TRACE );
+		result = poiList.deserialize();
+		if (result == true)
+		{
+			display( poiList );
+		}
+		else
+		{
+			failCount++;
+		}
 
 		poiList = new PoiList( POI.Type.INCIDENT );
 		result = poiList.deserialize();
@@ -177,13 +165,16 @@ public class WiserPathActivity extends MapActivity implements LocationListener
 		{
 			display( poiList );
 		}
+		else
+		{
+			failCount++;
+		}
 
-		return result; // TODO if one fails return false otherwise true. Fix so that result is not reset by previous
-						// display calls.
+		return failCount == 0;
 	}
 
 	/**
-	 * @return
+	 * @return true if the layers were removed and false otherwise.
 	 */
 	private boolean removeMobileDataLayers()
 	{
@@ -206,7 +197,7 @@ public class WiserPathActivity extends MapActivity implements LocationListener
 	/**
 	 * Displays all the POI objects stored on the argument PoiList for reuse.
 	 * 
-	 * @param poiList
+	 * @param poiList list of objects to draw on the map.
 	 * @param whichLayer the layer we are adding the items of the poi list too.
 	 */
 	private void display( PoiList poiList )
@@ -214,13 +205,18 @@ public class WiserPathActivity extends MapActivity implements LocationListener
 		ModelViewController mvc = null;
 		switch (poiList.getType())
 		{
-		// case TRACE:
-		// return new MapTraceMVC( (Trace) poi, this );
+		case TRACE:
+			mvc = new MapTraceMVC( poiList, this );
+			break;
+
 		case BLOG:
 			mvc = new MapBlogMVC( poiList, this );
 			break;
-		// case INCIDENT:
-		// return new MapIncidentMVC( poiList, this );
+
+		case INCIDENT:
+			mvc = new MapIncidentMVC( poiList, this );
+			break;
+
 		default:
 			Log.w( TAG, "Asked for an unknown type of ModelViewController." );
 			return;
@@ -229,8 +225,8 @@ public class WiserPathActivity extends MapActivity implements LocationListener
 	}
 
 	/**
-	 * @param isDisplayed TODO
-	 * @return
+	 * @param isDisplayed true if you want the layer's data displayed and false if you want it hidden.
+	 * @return true if everything went well and false otherwise.
 	 */
 	private boolean viewOnlineData( boolean isDisplayed )
 	{
