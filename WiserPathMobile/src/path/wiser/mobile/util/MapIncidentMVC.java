@@ -13,13 +13,13 @@ public class MapIncidentMVC extends MapBlogMVC
 {
 
 	/**
-	 * @param currentPoi
+	 * @param poiList
 	 * @param itemizedOverlay
 	 */
-	public MapIncidentMVC( PoiList currentPoi, WiserPathActivity activity )
+	public MapIncidentMVC( PoiList poiList, WiserPathActivity activity )
 	{
-		super( currentPoi, activity );
-		// TODO Auto-generated constructor stub
+		super( poiList, activity );
+		// that's it for incidents unless you want to add something fancier later.
 	}
 
 }
