@@ -16,7 +16,7 @@
 		android:layout_y="45px"
 		android:layout_x="50px"
 		android:layout_height="150px" 
-		android:id="@+id/Poi_Photo" 
+		android:id="@+id/photo_preview" 
 		android:layout_width="150px"
 		android:src="@drawable/edmonton"/>
 	
@@ -25,7 +25,7 @@
 		android:layout_x="210px" 
 		android:layout_height="wrap_content" 
 		android:layout_width="wrap_content"
-		android:id="@+id/Poi_Camera"
+		android:id="@+id/camera_button"
 		android:src="@drawable/camera_normal"/>
 		
 	<EditText 
