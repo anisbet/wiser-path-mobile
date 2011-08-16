@@ -35,7 +35,7 @@ import android.util.Log;
  * @author andrewnisbet
  * 
  */
-public class KMLDocument
+public class KMLDocument implements WPXMLDocument
 {
 	public enum ExtendedDataType
 	{
@@ -116,13 +116,11 @@ public class KMLDocument
 
 	}
 
-	/**
-	 * Call this method for each POI and then call the {@link #serialize()} method to write to file.
-	 * A POI is not serialized if the {@link POI#isValid()} returns false.
-	 * 
-	 * @param poi the object to output.
+	/* (non-Javadoc)
+	 * @see path.wiser.mobile.util.WPXMLDocument#output(path.wiser.mobile.geo.POI)
 	 */
-	public void output( POI poi )
+	@Override
+	public void setOutput( POI poi )
 	{
 		if (poi == null || poi.isValid() == false)
 		{
@@ -488,11 +486,10 @@ public class KMLDocument
 		return title;
 	}
 
-	/**
-	 * Writes the XML tree to media. To be called after the all the POI objects have {@link #output(POI)}ed.
-	 * 
-	 * @return true if the document was successfully written and false otherwise.
+	/* (non-Javadoc)
+	 * @see path.wiser.mobile.util.WPXMLDocument#serialize()
 	 */
+	@Override
 	public boolean serialize()
 	{
 		if (this.isSerializing == false) return false; // not permitted when you requested to deserialize.
@@ -547,12 +544,10 @@ public class KMLDocument
 
 	}
 
-	/**
-	 * Retrieves the list from disk.
-	 * 
-	 * @param poiList
-	 * @return true if the operation was successful and false otherwise.
+	/* (non-Javadoc)
+	 * @see path.wiser.mobile.util.WPXMLDocument#deserialize(path.wiser.mobile.util.PoiList)
 	 */
+	@Override
 	public boolean deserialize( PoiList poiList )
 	{
 		if (this.isSerializing)
