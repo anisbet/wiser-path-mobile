@@ -45,10 +45,11 @@
     <string name="s_default_activity">Walk</string>
     
     <!-- PointOfInterestActivity messages -->
-    <string name="poi_blog_post_success_msg">Your Geo-blog was successfully posted.</string>
-    <string name="poi_blog_post_fail_msg">Dang, your blog wasn&#96;t posted, try again later.</string>
+    <string name="poi_blog_post_success_msg">Your geo-blog was successfully posted.</string>
+    <string name="poi_blog_post_fail_msg">Dang, your geo-blog wasn&#96;t posted, try again later.</string>
     <string name="poi_blog_post_invalid_msg">Your blog isn&#96;t finished yet</string>
     <string name="poi_blog_save_success_msg">Saved</string>
+    <string name="poi_blog_save_not_success_msg">Save failed</string>
     
     <!-- Menus -->
     <!-- Navigation Menu -->
