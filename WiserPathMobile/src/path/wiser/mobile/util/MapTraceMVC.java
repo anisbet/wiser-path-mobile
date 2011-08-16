@@ -3,42 +3,37 @@
  */
 package path.wiser.mobile.util;
 
-import path.wiser.mobile.geo.WPMapLayerItems;
-import path.wiser.mobile.geo.Trace;
+import path.wiser.mobile.geo.POI;
+import path.wiser.mobile.ui.WiserPathActivity;
+
+import com.google.android.maps.OverlayItem;
 
 /**
  * @author andrewnisbet
  * 
  */
-public class MapTraceMVC implements ModelViewController
+public class MapTraceMVC extends MapBlogMVC
 {
 
-	public MapTraceMVC( Trace currentPoi, WPMapLayerItems itemizedOverlay )
+	public MapTraceMVC( PoiList poiList, WiserPathActivity activity )
 	{
-		// TODO Auto-generated constructor stub
+		super( poiList, activity );
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see path.wiser.mobile.util.ModelViewController#update()
-	 */
 	@Override
-	public void update()
+	protected OverlayItem getLayerItem( POI blog )
 	{
-		// TODO Auto-generated method stub
+		// TODO change this so the super classes layer item is populated correctly.
+		// this is how a blog does it:
 
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see path.wiser.mobile.util.ModelViewController#change()
-	 */
-	@Override
-	public void change()
-	{
-		// TODO Auto-generated method stub
+		// GeoPoint point = new GeoPoint( 53522780, -113623052 ); // WGS84 * 1e6
+		// OverlayItem layerItem = new OverlayItem( point, "West Edmonton Mall", "The greatest indoor show on Earth!"
+		// );
+		// int lat = (int) ( ( (Blog) blog ).getLatitude() * 1E6 );
+		// int lon = (int) ( ( (Blog) blog ).getLongitude() * 1E6 );
+		// GeoPoint point = new GeoPoint( lat, lon );
+		// return new OverlayItem( point, blog.getTitle(), blog.getDescription() );
+		return null;
 
 	}
 
