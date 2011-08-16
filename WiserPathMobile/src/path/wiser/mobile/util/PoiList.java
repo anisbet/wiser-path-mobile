@@ -139,12 +139,12 @@ public class PoiList
 			myHead = myHead.getPrevious();
 		}
 		// now at the head proceed through the list
-		KMLDocument doc = new KMLDocument( this.getType(), true );
-		doc.output( myHead );
+		WPXMLDocument doc = new KMLDocument( this.getType(), true );
+		doc.setOutput( myHead );
 		while (myHead.getNext() != null)
 		{
 			myHead = myHead.getNext();
-			doc.output( myHead );
+			doc.setOutput( myHead );
 		}
 		doc.serialize();
 		return false;
@@ -158,7 +158,7 @@ public class PoiList
 	public boolean deserialize()
 	{
 		// go to the head of the list but use a local head so we don't lose our place
-		KMLDocument doc = new KMLDocument( this.getType(), false );
+		WPXMLDocument doc = new KMLDocument( this.getType(), false );
 		return doc.deserialize( this );
 	}
 
