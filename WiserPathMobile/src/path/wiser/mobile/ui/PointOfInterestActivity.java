@@ -10,12 +10,18 @@ import path.wiser.mobile.geo.POI;
 import path.wiser.mobile.services.HTTPService;
 import path.wiser.mobile.util.PoiList;
 import path.wiser.mobile.util.Selectable;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -27,8 +33,9 @@ import android.widget.TextView;
  */
 public class PointOfInterestActivity extends Selectable
 {
-	protected PoiList	blogs	= null;
-	protected GPS		gps		= null;
+	public static final int	CAMERA_PIC_REQUEST	= 1337;
+	protected PoiList		blogs				= null;
+	protected GPS			gps					= null;
 
 	public PointOfInterestActivity()
 	{
@@ -72,12 +79,15 @@ public class PointOfInterestActivity extends Selectable
 
 		// TODO add handling of images. Default image, From Camera and saving.
 		// ImageView imageView = (ImageView) findViewById( R.id.Poi_Photo );
-		// ImageButton cameraButton = (ImageButton) findViewById(
-		// R.id.Poi_Camera );
-		// cameraButton.setOnClickListener( new CameraActivity() );
-
-		// Get the database
-		// this.db = new WiserDatabase( this );
+		ImageButton cameraButton = (ImageButton) findViewById( R.id.camera_button );
+		cameraButton.setOnClickListener( new OnClickListener()
+		{
+			public void onClick( View touchedView )
+			{
+				Intent cameraIntent = new Intent( android.provider.MediaStore.ACTION_IMAGE_CAPTURE );
+				startActivityForResult( cameraIntent, CAMERA_PIC_REQUEST );
+			}
+		} );
 
 	}
 
@@ -185,7 +195,7 @@ public class PointOfInterestActivity extends Selectable
 		}
 		else
 		{
-			// text = String.format( res.getString( R.string.poi_blog_save_success_msg ) );
+			text = String.format( res.getString( R.string.poi_blog_save_not_success_msg ) );
 			return false;
 		}
 		return true;
@@ -263,4 +273,58 @@ public class PointOfInterestActivity extends Selectable
 			this.gps = null;
 		}
 	}
+
+	// /////////////////// Camera activity methods ///////////////////
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onActivityResult(int, int, android.content.Intent)
+	 */
+	@Override
+	protected void onActivityResult( int requestCode, int resultCode, Intent data )
+	{
+		if (requestCode == CAMERA_PIC_REQUEST)
+		{
+			if (resultCode == RESULT_OK)
+			{
+				setPreview( data );
+				String imagePath = getImagePath( data );
+				Blog currentBlog = (Blog) this.blogs.getCurrent();
+				currentBlog.setImagePath( imagePath );
+				showMessage( res.getString( R.string.camera_success_msg ) );
+			}
+			else
+			{
+				showMessage( res.getString( R.string.camera_fail_msg ) );
+			}
+		}
+		// ignore others if any
+	}
+
+	/**
+	 * Sets the thumbnail image in the host activities preview window.
+	 * 
+	 * @param data intent to extract thumbnail from.
+	 */
+	private void setPreview( Intent data )
+	{
+		Bitmap thumbnail = (Bitmap) data.getExtras().get( "data" );
+		ImageView image = (ImageView) findViewById( R.id.photo_preview );
+		image.setImageBitmap( thumbnail );
+	}
+
+	/**
+	 * Gets the bitmap saves it to user selected storage and returns the path to the image as a String.
+	 * 
+	 * @param data intent that gives us the image.
+	 * @return path to the image.
+	 */
+	private String getImagePath( Intent data )
+	{
+		// Bitmap thumbnail = (Bitmap) data.getExtras().get( "data" );
+		// ImageView image = (ImageView) activity.findViewById( R.id.photo_preview );
+		// image.setImageBitmap( thumbnail );
+		return "/foo/bar/image.jpg";
+	}
+
 }
