@@ -51,6 +51,10 @@
     <string name="poi_blog_save_success_msg">Saved</string>
     <string name="poi_blog_save_not_success_msg">Save failed</string>
     
+    <!-- Camera messages -->
+    <string name="camera_success_msg">Picture captured</string>
+    <string name="camera_fail_msg">Sorry, failed to get that shot</string>
+    
     <!-- Menus -->
     <!-- Navigation Menu -->
     <string name="menu_previous_title">Previous</string><string name="menu_previous_title_condensed">Previous</string>
