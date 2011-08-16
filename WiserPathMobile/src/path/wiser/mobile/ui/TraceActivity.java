@@ -119,4 +119,11 @@ public class TraceActivity extends Selectable
 		// TODO Auto-generated method stub
 
 	}
+
+	@Override
+	public void setCurrentPOIImage( String imagePath )
+	{
+		// TODO Auto-generated method stub
+
+	}
 }
