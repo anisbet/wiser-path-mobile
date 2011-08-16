@@ -77,8 +77,7 @@ public class PointOfInterestActivity extends Selectable
 		textView = (TextView) findViewById( R.id.Poi_Tag );
 		textView.setOnTouchListener( new ClearTextView() );
 
-		// TODO add handling of images. Default image, From Camera and saving.
-		// ImageView imageView = (ImageView) findViewById( R.id.Poi_Photo );
+		// Invoke the camera when the button is clicked.
 		ImageButton cameraButton = (ImageButton) findViewById( R.id.camera_button );
 		cameraButton.setOnClickListener( new OnClickListener()
 		{
@@ -321,6 +320,7 @@ public class PointOfInterestActivity extends Selectable
 	 */
 	private String getImagePath( Intent data )
 	{
+		// TODO finish this
 		// Bitmap thumbnail = (Bitmap) data.getExtras().get( "data" );
 		// ImageView image = (ImageView) activity.findViewById( R.id.photo_preview );
 		// image.setImageBitmap( thumbnail );
