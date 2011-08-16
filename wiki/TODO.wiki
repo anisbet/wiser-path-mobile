@@ -7,6 +7,7 @@
   # Traces to include POIs if the trace is running and become part of the trace, not a standalone POI (also Incidents).
   # Finish UI refactoring and get Map working properly.
   # [LocalStorage Local Storage]
+  # GPX file format. Wiser path accepts GPX format for [Serialization] of WP data.
 
 ==Feature Request==
   # Give the Wiser Map a menu to select and control data from WP and/or WPM. *Done*
