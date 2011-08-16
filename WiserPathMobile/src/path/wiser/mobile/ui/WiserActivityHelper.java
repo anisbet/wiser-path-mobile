@@ -196,6 +196,4 @@ public abstract class WiserActivityHelper extends Activity implements LocationLi
 
 	}
 
-	public abstract void setCurrentPOIImage( String imagePath );
-
 }
