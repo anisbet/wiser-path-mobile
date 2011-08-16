@@ -22,8 +22,10 @@ import com.google.android.maps.OverlayItem;
  */
 public class MapBlogMVC implements ModelViewController
 {
-	protected PoiList			blogList;
-	protected WiserPathActivity	activity;
+	protected PoiList			poiList		= null;
+	protected WiserPathActivity	activity	= null;
+	protected Drawable			icon		= null;
+	protected WPMapLayerItems	layer		= null;
 
 	/**
 	 * @param poiList.
@@ -31,8 +33,28 @@ public class MapBlogMVC implements ModelViewController
 	 */
 	public MapBlogMVC( PoiList poiList, WiserPathActivity activity )
 	{
-		this.blogList = poiList;
+		this.poiList = poiList;
 		this.activity = activity;
+		switch (poiList.getType())
+		{
+		case BLOG:
+			icon = activity.getResources().getDrawable( R.drawable.ic_tee_poi_blue );
+			layer = new WPMapLayerItems( icon, MapLayerType.MOBILE_BLOG );
+			break;
+
+		case INCIDENT:
+			icon = activity.getResources().getDrawable( R.drawable.icon );
+			layer = new WPMapLayerItems( icon, MapLayerType.MOBILE_INCIDENT );
+			break;
+
+		case TRACE: // test what is required for a trace.
+			icon = activity.getResources().getDrawable( R.drawable.icon ); // not sure about implications of this.
+			layer = new WPMapLayerItems( icon, MapLayerType.MOBILE_TRACE );
+			break;
+
+		default:
+			break;
+		}
 	}
 
 	/*
@@ -43,27 +65,24 @@ public class MapBlogMVC implements ModelViewController
 	@Override
 	public void update()
 	{
-		if (blogList.isEmpty())
+		if (poiList.isEmpty())
 		{
 			return;
 		}
 
-		Drawable blogIcon = activity.getResources().getDrawable( R.drawable.ic_tee_poi_blue );
-		WPMapLayerItems blogOverlay = new WPMapLayerItems( blogIcon, MapLayerType.MOBILE_BLOG );
 		List<Overlay> map = activity.getMap();
-
-		POI currentPoi = blogList.getCurrent();
+		POI currentPoi = poiList.getCurrent();
 		OverlayItem overlayitem = getLayerItem( currentPoi );
-		blogOverlay.addOverlayItem( overlayitem );
+		layer.addOverlayItem( overlayitem );
 
 		while (currentPoi.getNext() != null) // Loop through the rest of the list.
 		{
-			currentPoi = blogList.next();
+			currentPoi = poiList.next();
 			overlayitem = getLayerItem( currentPoi );
-			blogOverlay.addOverlayItem( overlayitem );
+			layer.addOverlayItem( overlayitem );
 		}
 
-		map.add( blogOverlay );
+		map.add( layer );
 
 	}
 
@@ -71,10 +90,10 @@ public class MapBlogMVC implements ModelViewController
 	 * @param blog
 	 * @return the formatted Blog as an OverlayItem
 	 */
-	private OverlayItem getLayerItem( POI blog )
+	protected OverlayItem getLayerItem( POI blog )
 	{
 		// GeoPoint point = new GeoPoint( 53522780, -113623052 ); // WGS84 * 1e6
-		// OverlayItem overlayitem = new OverlayItem( point, "West Edmonton Mall", "The greatest indoor show on Earth!"
+		// OverlayItem layer = new OverlayItem( point, "West Edmonton Mall", "The greatest indoor show on Earth!"
 		// );
 		int lat = (int) ( ( (Blog) blog ).getLatitude() * 1E6 );
 		int lon = (int) ( ( (Blog) blog ).getLongitude() * 1E6 );
@@ -91,7 +110,8 @@ public class MapBlogMVC implements ModelViewController
 	@Override
 	public void change()
 	{
-		// This has no meaning currently, but would be useful if you change something on the map to reflect the model.
+		// This has no meaning currently, but would be useful if you wanted to let the user
+		// drag their POIs on the map -- food for thought.
 
 	}
 
