@@ -1,45 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<AbsoluteLayout 
+<TableLayout 
 	android:id="@+id/Incident_Layout" 
-	android:layout_width="fill_parent" 
-	android:layout_height="fill_parent" 
+	android:layout_width="match_parent"  
+    android:layout_height="match_parent" 
+    android:shrinkColumns="*"  
+    android:stretchColumns="*"
 	xmlns:android="http://schemas.android.com/apk/res/android">
-	
-	<EditText 
-		android:id="@+id/Incident_Title" 
-		android:text="Title"  
-		android:layout_height="wrap_content" 
-		android:layout_width="fill_parent"/>
-
-	<ImageView 
-		android:layout_y="45px"
-		android:layout_x="50px"
-		android:layout_height="150px" 
-		android:id="@+id/Incident_Photo" 
-		android:layout_width="150px"
-		android:src="@drawable/fallen_tree"/>
-	
-	<ImageButton 
+	<TableRow
+		android:layout_height="wrap_content"  
+        android:layout_width="match_parent"  
+        android:gravity="center_horizontal">
+		<TextView
+	    	android:text="Title"
+	    	android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	    	android:layout_span="1" />
+		<EditText 
+			android:id="@+id/Incident_Title" 
+			android:text="Title"
+			android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+			android:layout_span="4"/>
+	</TableRow>
+	<TableRow
+		android:layout_height="wrap_content"  
+        android:layout_width="match_parent"  
+        android:gravity="center_horizontal">
+		<TextView
+	    	android:text="Content"
+	    	android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	    	android:layout_span="1" />
+		<EditText 
+			android:id="@+id/Incident_Blog" 
+			android:text="Report here" 
+			android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+			android:layout_span="4"/>
+	</TableRow>	
+	<TableRow
+		android:layout_height="wrap_content"  
+        android:layout_width="match_parent"  
+        android:gravity="center_horizontal">
+		<ImageView
+			android:layout_height="300px" 
+			android:id="@+id/Incident_Photo" 
+			android:layout_span="4"
+			android:src="@drawable/fallen_tree"/>
+	</TableRow>
+	<TableRow
+		android:layout_height="wrap_content"  
+       android:layout_width="match_parent"  
+       android:gravity="center_horizontal">
+        <EditText 
+		android:id="@+id/Incident_Tag" 
+		android:text="tags" 
+		android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+		android:layout_span="4"/>
+		<ImageButton 
 		android:layout_y="140px" 
 		android:layout_x="210px" 
 		android:layout_height="wrap_content" 
 		android:layout_width="wrap_content"
 		android:id="@+id/Incident_Camera"
 		android:src="@drawable/camera_normal"/>
-		
-	<EditText 
-		android:id="@+id/Incident_Blog" 
-		android:text="Report here" 
-		android:layout_y="200px" 
-		android:layout_height="120px" 
-		android:layout_width="fill_parent"/>
-		
-	<EditText 
-		android:id="@+id/Incident_Tag" 
-		android:text="tags" 
-		android:layout_y="330px" 
-		android:layout_height="45px" 
-		android:layout_width="fill_parent"/>
-	
-</AbsoluteLayout>
+	</TableRow>
+</TableLayout>
