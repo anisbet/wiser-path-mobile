@@ -24,6 +24,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.xml.sax.InputSource;
 
+import path.wiser.mobile.WPEnvironment;
 import path.wiser.mobile.geo.Blog;
 import path.wiser.mobile.geo.POI;
 import path.wiser.mobile.geo.POI.Type;
@@ -44,11 +45,11 @@ public class KMLDocument implements WPXMLDocument
 
 	// How and by what name the serialized documents appear as.
 	private static final String	LINE_TYPE					= "userLineType";
-	private static final String	TRACE_PATH					= "/trace";
+	// private static final String TRACE_PATH = "/trace";
 	private static final String	TRACE_FILENAME				= "trace.kml";
-	private static final String	BLOG_PATH					= "/blog";
+	// private static final String BLOG_PATH = "/blog";
 	private static final String	BLOG_FILENAME				= "blog.kml";
-	private static final String	INCIDENT_PATH				= "/incident";
+	// private static final String INCIDENT_PATH = "/incident";
 	private static final String	INCIDENT_FILENAME			= "incident.kml";
 	private static final String	TAG							= "KMLDocument";
 	private static final String	KML_DOCUMENT				= "Document";
@@ -116,7 +117,9 @@ public class KMLDocument implements WPXMLDocument
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see path.wiser.mobile.util.WPXMLDocument#output(path.wiser.mobile.geo.POI)
 	 */
 	@Override
@@ -486,7 +489,9 @@ public class KMLDocument implements WPXMLDocument
 		return title;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see path.wiser.mobile.util.WPXMLDocument#serialize()
 	 */
 	@Override
@@ -527,13 +532,13 @@ public class KMLDocument implements WPXMLDocument
 		switch (this.docType)
 		{
 		case TRACE:
-			mediaWriter.writeFile( TRACE_PATH, TRACE_FILENAME, sw.toString() );
+			mediaWriter.writeTextFile( WPEnvironment.TRACE_PATH, TRACE_FILENAME, sw.toString() );
 			return true;
 		case BLOG:
-			mediaWriter.writeFile( BLOG_PATH, BLOG_FILENAME, sw.toString() );
+			mediaWriter.writeTextFile( WPEnvironment.BLOG_PATH, BLOG_FILENAME, sw.toString() );
 			return true;
 		case INCIDENT:
-			mediaWriter.writeFile( INCIDENT_PATH, INCIDENT_FILENAME, sw.toString() );
+			mediaWriter.writeTextFile( WPEnvironment.INCIDENT_PATH, INCIDENT_FILENAME, sw.toString() );
 			return true;
 		default:
 			Log.e( TAG, "Unknown document type request, contact developer!" );
@@ -544,7 +549,9 @@ public class KMLDocument implements WPXMLDocument
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see path.wiser.mobile.util.WPXMLDocument#deserialize(path.wiser.mobile.util.PoiList)
 	 */
 	@Override
@@ -573,13 +580,13 @@ public class KMLDocument implements WPXMLDocument
 		switch (this.docType)
 		{
 		case TRACE:
-			input = mediaReader.readFile( TRACE_PATH, TRACE_FILENAME );
+			input = mediaReader.readTextFile( WPEnvironment.TRACE_PATH, TRACE_FILENAME );
 			break;
 		case BLOG:
-			input = mediaReader.readFile( BLOG_PATH, BLOG_FILENAME );
+			input = mediaReader.readTextFile( WPEnvironment.BLOG_PATH, BLOG_FILENAME );
 			break;
 		case INCIDENT:
-			input = mediaReader.readFile( INCIDENT_PATH, INCIDENT_FILENAME );
+			input = mediaReader.readTextFile( WPEnvironment.INCIDENT_PATH, INCIDENT_FILENAME );
 			break;
 		default:
 			Log.e( TAG, "Unknown document type request to read in, contact developer!" );
@@ -746,7 +753,7 @@ public class KMLDocument implements WPXMLDocument
 					if (whichDataElement.matches( KML_IMAGEPATH_ATTRIB_NAME ))
 					{
 						// this will throw a ClassCastException if the argument poi was not the expected type!
-						( (Blog) poi ).setImagePath( getTextValue( dataElement, KML_IMAGEPATH_ATTRIB_NAME ) );
+						( (Blog) poi ).setImageName( getTextValue( dataElement, KML_IMAGEPATH_ATTRIB_NAME ) );
 					}
 					else
 						if (whichDataElement.matches( KML_IS_INCIDENT_ATTRIB_NAME ))

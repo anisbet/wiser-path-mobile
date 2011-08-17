@@ -11,7 +11,15 @@ package path.wiser.mobile;
  */
 public final class WPEnvironment
 {
-	private static boolean	preferExternalStorage	= true;
+
+	/**
+	 * Default image quality for JPEG, the value is ignored if we save as PNG.
+	 */
+	public static final int		DEFAULT_IMAGE_QUALITY	= 50;
+	public static final String	TRACE_PATH				= "/trace";
+	public static final String	BLOG_PATH				= "/blog";
+	public static final String	INCIDENT_PATH			= "/incident";
+	private static boolean		preferExternalStorage	= true;
 
 	/**
 	 * @return the preferExternalStorage
@@ -22,7 +30,7 @@ public final class WPEnvironment
 	}
 
 	/**
-	 * @param preferExternalStorage the preferExternalStorage to set
+	 * @param preferExternalStorage the preferExternalStorage to set.
 	 */
 	public static final void setPreferExternalStorage( boolean preferExternalStorage )
 	{

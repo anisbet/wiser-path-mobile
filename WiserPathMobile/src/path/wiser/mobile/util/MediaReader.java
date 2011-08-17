@@ -9,6 +9,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Log;
 
@@ -39,7 +41,7 @@ public class MediaReader extends MediaIO
 	 * @param fileName the name of the file to read from the directory.
 	 * @return The content of the file as a String.
 	 */
-	public String readFile( String path, String fileName )
+	public String readTextFile( String path, String fileName )
 	{
 		// get an input stream to read from.
 		this.fileName = fileName;
@@ -83,5 +85,22 @@ public class MediaReader extends MediaIO
 		}
 
 		return fileString.toString();
+	}
+
+	public Bitmap readImageFile( String path, String imageName )
+	{
+		this.fileName = imageName;
+		File dir = Environment.getExternalStorageDirectory();
+		File file = new File( dir, path + "/" + fileName );
+		if (file.exists())
+		{
+			return BitmapFactory.decodeFile( file.toString() );
+		}
+		else
+		{
+			Log.e( TAG, this.fileName + " IO error reading file." );
+		}
+		// Read more: http://www.brighthub.com/mobile/google-android/articles/64048.aspx#ixzz1VJN2AYlv
+		return null;
 	}
 }

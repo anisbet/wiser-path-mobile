@@ -3,8 +3,6 @@
  */
 package path.wiser.mobile.geo;
 
-import java.io.File;
-
 import path.wiser.mobile.util.ImageType;
 import path.wiser.mobile.util.Tags;
 import android.location.Location;
@@ -19,7 +17,7 @@ public class Blog extends POI
 {
 	// a blog has a single location.
 	private Location	location	= null;
-	private String		imagePath	= null;
+	private String		imageName	= null;
 	private ImageType	extension;
 	protected boolean	isIncident;
 
@@ -60,23 +58,23 @@ public class Blog extends POI
 	 */
 	public boolean hasImage()
 	{
-		return this.imagePath != null && this.imagePath.length() > 0;
+		return this.imageName != null && this.imageName.length() > 0;
 	}
 
 	/**
-	 * @param imagePath the imagePath to set
+	 * @param name the imageName to set
 	 */
-	public void setImagePath( String imagePath )
+	public void setImageName( String name )
 	{
-		this.imagePath = imagePath;
+		this.imageName = name;
 	}
 
 	/**
-	 * @return the imagePath
+	 * @return the imageName
 	 */
 	public String getImagePath()
 	{
-		return imagePath;
+		return imageName;
 	}
 
 	/**
@@ -106,19 +104,7 @@ public class Blog extends POI
 	 */
 	public String getImageName()
 	{
-		String[] pathParts = this.imagePath.split( File.pathSeparator );
-		if (pathParts.length > 0)
-		{
-			// TODO test this.
-			String[] fileParts = pathParts[pathParts.length - 1].split( "." );
-			if (fileParts.length > 0)
-			{
-				this.setExtension( fileParts[fileParts.length - 1].toLowerCase() );
-			}
-			return pathParts[pathParts.length - 1];
-		}
-
-		return "";
+		return this.imageName;
 	}
 
 	/**

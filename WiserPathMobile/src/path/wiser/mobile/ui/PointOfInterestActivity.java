@@ -11,7 +11,6 @@ import path.wiser.mobile.services.HTTPService;
 import path.wiser.mobile.util.PoiList;
 import path.wiser.mobile.util.Selectable;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
 import android.text.Html;
@@ -21,7 +20,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -33,9 +31,10 @@ import android.widget.TextView;
  */
 public class PointOfInterestActivity extends Selectable
 {
-	public static final int	CAMERA_PIC_REQUEST	= 1337;
-	protected PoiList		blogs				= null;
-	protected GPS			gps					= null;
+	public static final int		CAMERA_PIC_REQUEST	= 1337;
+	private static final String	BLOG_IMAGE_PATH		= "/images";
+	protected PoiList			blogs				= null;
+	protected GPS				gps					= null;
 
 	public PointOfInterestActivity()
 	{
@@ -286,45 +285,17 @@ public class PointOfInterestActivity extends Selectable
 		{
 			if (resultCode == RESULT_OK)
 			{
-				setPreview( data );
-				String imagePath = getImagePath( data );
 				Blog currentBlog = (Blog) this.blogs.getCurrent();
-				currentBlog.setImagePath( imagePath );
+				BlogMVC mvc = new BlogMVC( this, currentBlog );
+				// It is important to pass on the intent to the MVC so it can save the file and update the blog with the
+				// file name.
+				mvc.setData( data );
+				mvc.change();
+				mvc.update(); // calling this will update the display the new image.
 				showMessage( res.getString( R.string.camera_success_msg ) );
-			}
-			else
-			{
-				showMessage( res.getString( R.string.camera_fail_msg ) );
 			}
 		}
 		// ignore others if any
-	}
-
-	/**
-	 * Sets the thumbnail image in the host activities preview window.
-	 * 
-	 * @param data intent to extract thumbnail from.
-	 */
-	private void setPreview( Intent data )
-	{
-		Bitmap thumbnail = (Bitmap) data.getExtras().get( "data" );
-		ImageView image = (ImageView) findViewById( R.id.photo_preview );
-		image.setImageBitmap( thumbnail );
-	}
-
-	/**
-	 * Gets the bitmap saves it to user selected storage and returns the path to the image as a String.
-	 * 
-	 * @param data intent that gives us the image.
-	 * @return path to the image.
-	 */
-	private String getImagePath( Intent data )
-	{
-		// TODO finish this
-		// Bitmap thumbnail = (Bitmap) data.getExtras().get( "data" );
-		// ImageView image = (ImageView) activity.findViewById( R.id.photo_preview );
-		// image.setImageBitmap( thumbnail );
-		return "/foo/bar/image.jpg";
 	}
 
 }
