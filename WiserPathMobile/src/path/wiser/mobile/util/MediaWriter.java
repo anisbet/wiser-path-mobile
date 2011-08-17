@@ -3,12 +3,16 @@
  */
 package path.wiser.mobile.util;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import path.wiser.mobile.WPEnvironment;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
 import android.os.Environment;
 import android.util.Log;
 
@@ -37,7 +41,7 @@ public class MediaWriter extends MediaIO
 	 * @return True if the file was written successfully and false otherwise.
 	 * 
 	 */
-	public boolean writeFile( String path, String fileName, String data )
+	public boolean writeTextFile( String path, String fileName, String data )
 	{
 		// Find the root of the external storage.
 		// See http://developer.android.com/guide/topics/data/data-storage.html#filesExternal
@@ -47,17 +51,7 @@ public class MediaWriter extends MediaIO
 		// this.fileName = fileName;
 		File dir = Environment.getExternalStorageDirectory();
 		File file = new File( dir, path + "/" + fileName );
-		// FileInputStream is = null;
-		// try
-		// {
-		// is = new FileInputStream( file );
-		// }
-		// catch (FileNotFoundException e1)
-		// {
-		// // TODO Auto-generated catch block
-		// e1.printStackTrace();
-		// }
-		// File file = getPath( path, fileName );
+
 		try
 		{
 			FileOutputStream fOut = new FileOutputStream( file );
@@ -81,4 +75,36 @@ public class MediaWriter extends MediaIO
 		return true;
 	}
 
+	/**
+	 * Writes a BMP image to the user's preferred location if possible.
+	 * 
+	 * @param path under the available directory -- either the SD card or the internal App directory.
+	 * @param fileName name of the image to write.
+	 * @param image BMP to write to file.
+	 * @return true if the operation was a success and false otherwise.
+	 */
+	public boolean writeImageFile( String path, String fileName, Bitmap image )
+	{
+		File dir = Environment.getExternalStorageDirectory();
+		File file = new File( dir, path + "/" + fileName );
+
+		FileOutputStream fileOutputStream;
+		try
+		{
+			fileOutputStream = new FileOutputStream( file.toString() );
+			BufferedOutputStream bufferedOutputStream = new BufferedOutputStream( fileOutputStream );
+			image.compress( CompressFormat.JPEG, WPEnvironment.DEFAULT_IMAGE_QUALITY, bufferedOutputStream );
+			bufferedOutputStream.flush();
+			bufferedOutputStream.close();
+		}
+		catch (Exception e)
+		{
+			Log.e( TAG, "Error occured while writing image." );
+			return false;
+		}
+
+		// Read more: http://www.brighthub.com/mobile/google-android/articles/64048.aspx#ixzz1VJ7dtwEV
+		return true;
+
+	}
 }
