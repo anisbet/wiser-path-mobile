@@ -1,128 +1,178 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<AbsoluteLayout 
-	android:id="@+id/LinearLayout01" 
-	android:layout_width="fill_parent" 
-	android:layout_height="fill_parent"
+<TableLayout 
+	android:id="@+id/Incident_Layout" 
+	android:layout_width="match_parent"  
+    android:layout_height="match_parent" 
+    android:shrinkColumns="*"  
+    android:stretchColumns="*"
 	xmlns:android="http://schemas.android.com/apk/res/android">
-	
-	<EditText 
+	<TableRow
+		android:layout_height="wrap_content"  
+        android:layout_width="match_parent"  
+        android:gravity="center_horizontal">
+		<TextView
+	    	android:text="Title"
+	    	android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	    	android:layout_span="1" />
+		<EditText 
 		android:text="Title" 
 		android:id="@+id/Trace_Title" 
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content"/>
-	<TableLayout 
-		android:id="@+id/TraceOutput" 
-		android:layout_y="45px"
-		android:layout_width="fill_parent" 
-		android:layout_height="fill_parent">
-		<TableRow android:id="@+id/Row1" 
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content">
+			android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+			android:layout_span="4"/>
+	</TableRow>
+	<TableRow
+		android:layout_height="wrap_content"  
+        android:layout_width="match_parent"  
+        android:gravity="center_horizontal">
 			<TextView 
-			android:text="Speed" 
-			android:id="@+id/TextViewSpeed" 
-			android:layout_width="150px" 
-			android:layout_height="wrap_content"/>
+				android:text="Speed" 
+				android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	    	android:layout_span="1"/>
 			<TextView 
-			android:text="30.3 kmh" 
-			android:id="@+id/Speed" 
-			android:layout_width="150px" 
-			android:layout_height="wrap_content"/>
+				android:text="30.3 kmh" 
+				android:id="@+id/Speed"
+				android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	    	android:layout_span="2"/>
 		</TableRow>
-		<TableRow android:id="@+id/Row2"
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content">
+		<TableRow android:layout_height="wrap_content"  
+        android:layout_width="match_parent"  
+        android:gravity="center_horizontal">
 			<TextView 
-			android:text="Distance" 
-			android:id="@+id/TextViewDistance" 
-			android:layout_width="150px" 
-			android:layout_height="wrap_content"/>
+				android:text="Distance"
+				android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	    	android:layout_span="1"/>
 			<TextView 
-			android:text="5 kms" 
-			android:id="@+id/Distance" 
-			android:layout_width="150px" 
-			android:layout_height="wrap_content"/>
+				android:text="5 kms" 
+				android:id="@+id/Distance"  
+				android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	    	android:layout_span="2"/>
 		</TableRow>
-		<TableRow android:id="@+id/Row3"
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content">
+		<TableRow android:layout_height="wrap_content"  
+        android:layout_width="match_parent"  
+        android:gravity="center_horizontal">
 			<TextView 
-			android:text="Latitude" 
-			android:id="@+id/TextViewLatitude" 
-			android:layout_width="150px" 
-			android:layout_height="wrap_content"/>
+				android:text="Latitude"
+				android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	    	android:layout_span="1"/>
 			<TextView 
-			android:text="10001944" 
-			android:id="@+id/Latitude" 
-			android:layout_width="150px" 
-			android:layout_height="wrap_content"/>
+				android:text="10001944" 
+				android:id="@+id/Latitude"
+				android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	    	android:layout_span="2"/>
 		</TableRow>
-		<TableRow android:id="@+id/Row4"
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content">
+		<TableRow android:layout_height="wrap_content"  
+        android:layout_width="match_parent"  
+        android:gravity="center_horizontal">
 			<TextView 
-			android:text="Longitude" 
-			android:id="@+id/TextViewLongitude" 
-			android:layout_width="150px" 
-			android:layout_height="wrap_content"/>
+				android:text="Longitude"
+				android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	    	android:layout_span="1"/>
 			<TextView 
-			android:text="11001921" 
-			android:id="@+id/Longitude" 
-			android:layout_width="150px" 
-			android:layout_height="wrap_content"/>
+				android:text="11001921" 
+				android:id="@+id/Longitude"
+				android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	    	android:layout_span="2"/>
 		</TableRow>
-		<TableRow android:id="@+id/Row5"
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content">
+		<TableRow android:layout_height="wrap_content"  
+        android:layout_width="match_parent"  
+        android:gravity="center_horizontal">
 			<TextView 
-			android:text="Time" 
-			android:id="@+id/TextViewLongitude" 
-			android:layout_width="150px" 
-			android:layout_height="wrap_content"/>
+				android:text="Time" 
+				android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	    	android:layout_span="1"/>
 			<TextView 
-			android:text="23:12:45.1" 
-			android:id="@+id/Time" 
-			android:layout_width="150px" 
-			android:layout_height="wrap_content"/>
+				android:text="23:12:45.1" 
+				android:id="@+id/Time"
+				android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	    	android:layout_span="2"/>
 		</TableRow>
-		<TableRow android:id="@+id/Row6"
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content">
-			<TextView 
-			android:text="Direction" 
-			android:id="@+id/TextViewDirection" 
-			android:layout_width="150px" 
-			android:layout_height="wrap_content"/>
-			<TextView 
-			android:text="210" 
-			android:id="@+id/Direction" 
-			android:layout_width="150px" 
-			android:layout_height="wrap_content"/>
-		</TableRow>
-		<TableRow android:id="@+id/Row7"
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content">
-			<TextView 
-			android:text="Pace" 
-			android:id="@+id/TextViewPace" 
-			android:layout_width="150px" 
-			android:layout_height="wrap_content"/>
-			<TextView 
-			android:text="2.3 kph" 
-			android:id="@+id/Pace" 
-			android:layout_width="150px" 
-			android:layout_height="wrap_content"/>
-		</TableRow>
-	</TableLayout>
-	<EditText 
-		android:text="Describe your trace" 
-		android:id="@+id/Trace_Blog" 
-		android:layout_width="fill_parent" 
-		android:layout_height="90px"
-		android:layout_y="190px"
-		android:layout_x="2px"/>
-	<EditText 
+		<TableRow android:layout_height="wrap_content"  
+        android:layout_width="match_parent"  
+        android:gravity="center_horizontal">
+				<TextView 
+				android:text="Direction" 
+				android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	    	android:layout_span="1"/>
+				<TextView 
+				android:text="210" 
+				android:id="@+id/Direction"
+				android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	    	android:layout_span="2"/>
+			</TableRow>
+			<TableRow android:layout_height="wrap_content"  
+        android:layout_width="match_parent"  
+        android:gravity="center_horizontal">
+				<TextView 
+				android:text="Pace" 
+				android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	    	android:layout_span="1"/>
+				<TextView 
+				android:text="2.3 kph" 
+				android:id="@+id/Pace"
+				android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	    	android:layout_span="2"/>
+			</TableRow>
+	<TableRow
+		android:layout_height="wrap_content"  
+        android:layout_width="match_parent"  
+        android:gravity="center_horizontal">
+		<TextView
+	    	android:text="Content"
+	    	android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	    	android:layout_span="1" />
+		<EditText 
+			android:text="Describe your trace" 
+			android:id="@+id/Trace_Blog"  
+			android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+			android:layout_span="4"/>
+	</TableRow>
+	<TableRow
+		android:layout_height="wrap_content"  
+       android:layout_width="match_parent"  
+       android:gravity="center_horizontal">
+       <TextView
+	    	android:text="Tags"
+	    	android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	    	android:layout_span="1" />
+        <EditText 
+			android:text="tags" 
+			android:id="@+id/Trace_Tag" 
+			android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+			android:layout_span="4"/>
+	</TableRow>
+	<TableRow
+		android:layout_height="wrap_content"  
+       android:layout_width="match_parent"  
+       android:gravity="center_horizontal">
+		<ToggleButton 
+			android:id="@+id/Trace_StartStop" 
+			android:textOff="Start" 
+			android:textOn="Stop" 
+			android:layout_height="90px"
+			android:layout_span="2"/>
+	</TableRow>
+	<!-- <EditText 
 		android:text="tags" 
 		android:id="@+id/Trace_Tag" 
 		android:layout_width="fill_parent" 
@@ -141,5 +191,5 @@
 			android:textOn="Stop" 
 			android:layout_width="150px" 
 			android:layout_height="wrap_content"/>
-	</LinearLayout>
-</AbsoluteLayout>
+	</LinearLayout> -->
+</TableLayout>
