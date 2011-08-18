@@ -163,8 +163,8 @@
 	</TableRow>
 	<TableRow
 		android:layout_height="wrap_content"  
-       android:layout_width="match_parent"  
-       android:gravity="center_horizontal">
+       	android:layout_width="match_parent"  
+       	android:gravity="center_horizontal">
 		<ToggleButton 
 			android:id="@+id/Trace_StartStop" 
 			android:textOff="Start" 

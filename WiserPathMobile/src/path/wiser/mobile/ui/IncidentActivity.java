@@ -4,6 +4,8 @@
 package path.wiser.mobile.ui;
 
 import path.wiser.mobile.R;
+import path.wiser.mobile.geo.GPS;
+import path.wiser.mobile.util.PoiList;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,6 +18,10 @@ import android.widget.TextView;
  */
 public class IncidentActivity extends PointOfInterestActivity
 {
+
+	public static final int	CAMERA_PIC_REQUEST	= 1338;
+	protected PoiList		traces				= null;
+	protected GPS			gps					= null;
 
 	public IncidentActivity()
 	{

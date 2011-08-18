@@ -1,13 +1,21 @@
 package path.wiser.mobile.ui;
 
 import path.wiser.mobile.R;
+import path.wiser.mobile.geo.GPS;
+import path.wiser.mobile.geo.POI;
+import path.wiser.mobile.geo.Trace;
+import path.wiser.mobile.util.PoiList;
 import path.wiser.mobile.util.Selectable;
+import path.wiser.mobile.util.TraceMVC;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 /**
  * @author anisbet
@@ -15,6 +23,9 @@ import android.widget.TextView;
  */
 public class TraceActivity extends Selectable
 {
+	protected PoiList	traces	= null;
+	protected GPS		gps		= null;
+
 	public TraceActivity()
 	{
 		super( "TraceActivity" );
@@ -33,6 +44,31 @@ public class TraceActivity extends Selectable
 		textView.setOnTouchListener( new ClearTextView() );
 		textView = (TextView) findViewById( R.id.Trace_Tag );
 		textView.setOnTouchListener( new ClearTextView() );
+
+		this.gps = new GPS( this );
+		// create the container for many blogs
+		this.traces = new PoiList( POI.Type.TRACE );
+		Trace currentTrace = null;
+		// TODO trouble shoot this in the morning.
+		if (this.traces.deserialize()) // there was no blog to deserialize.
+		{
+			currentTrace = (Trace) traces.getCurrent();
+			TraceMVC mvc = new TraceMVC( this, currentTrace );
+			mvc.update();
+		}
+
+		// now set up the button that will start and stop the trace.
+		// Invoke the camera when the button is clicked.
+		ToggleButton startStopButton = (ToggleButton) findViewById( R.id.Trace_StartStop );
+		startStopButton.setOnClickListener( new OnClickListener()
+		{
+			public void onClick( View touchedView )
+			{
+				// Intent cameraIntent = new Intent( android.provider.MediaStore.ACTION_IMAGE_CAPTURE );
+				// startActivityForResult( cameraIntent, CAMERA_PIC_REQUEST );
+				// TODO start the trace activity and register it as running so POIs and Incidents.
+			}
+		} );
 	}
 
 	@Override
@@ -50,20 +86,15 @@ public class TraceActivity extends Selectable
 		switch (item.getItemId())
 		{
 		case R.id.Previous:
-			previous();
-			return true;
+			return previous();
 		case R.id.Upload:
-			upload();
-			return true;
+			return upload();
 		case R.id.Delete:
-			delete();
-			return true;
+			return delete();
 		case R.id.Save:
-			save();
-			return true;
+			return save();
 		case R.id.Next:
-			next();
-			return true;
+			return next();
 		default:
 			return super.onOptionsItemSelected( item );
 		}
