@@ -11,6 +11,8 @@ import android.location.Location;
 /**
  * A Trace is a set of Locations that together make a route.
  * 
+ * A Trace is started on its creation and once stopped it cannot be restarted.
+ * 
  * @author andrewnisbet
  * 
  */
@@ -18,6 +20,7 @@ public class Trace extends POI implements ComputableTripMetrics
 {
 	private Vector<Location>		tracePoints		= null;
 	private ComputableTripMetrics	traceComputer	= null;
+	private boolean					isRunning		= false;
 
 	public enum TrailNode // used to identify which node you would like.
 	{
@@ -92,7 +95,7 @@ public class Trace extends POI implements ComputableTripMetrics
 	@Override
 	public boolean isValid()
 	{
-		// TODO Auto-generated method stub
+		// TODO compute validity of Trace
 		return false;
 	}
 
@@ -118,6 +121,31 @@ public class Trace extends POI implements ComputableTripMetrics
 		// this method has no meaning currently, but this flag is stored when the object
 		// is serialized. It does have meaning for Blogs and Incidents.
 		return;
+	}
+
+	/**
+	 * @return true if no locations have been recorded and false otherwise.
+	 */
+	public boolean needsLocation()
+	{
+		return this.tracePoints.size() == 0;
+	}
+
+	/**
+	 * @return true if the trace is currently running and false otherwise.
+	 */
+	public boolean isRunning()
+	{
+		return this.isRunning;
+	}
+
+	/**
+	 * Stops the recording of the trace.
+	 */
+	public void stop()
+	{
+		// TODO Implement stop
+
 	}
 
 }

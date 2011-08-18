@@ -13,7 +13,6 @@ import path.wiser.mobile.util.Selectable;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -55,7 +54,7 @@ public class PointOfInterestActivity extends Selectable
 		// create the container for many blogs
 		this.blogs = new PoiList( POI.Type.BLOG );
 		Blog currentBlog = null;
-		// TODO trouble shoot this in the morning.
+
 		if (this.blogs.deserialize()) // there was no blog to deserialize.
 		{
 			currentBlog = (Blog) blogs.getCurrent();
@@ -122,7 +121,6 @@ public class PointOfInterestActivity extends Selectable
 	{
 		Blog currentBlog = (Blog) this.blogs.deleteCurrent();
 		BlogMVC mvc = new BlogMVC( this, currentBlog );
-		mvc = new BlogMVC( this, currentBlog );
 		mvc.update();
 		return true;
 	}
@@ -215,8 +213,7 @@ public class PointOfInterestActivity extends Selectable
 			text = String.format( res.getString( R.string.poi_blog_post_invalid_msg ) );
 			result = false;
 		}
-		msg = Html.fromHtml( text );
-		showMessage( msg );
+		this.showMessage( text );
 		// get the next Blog after deletion.
 		if (result == true)
 		{
