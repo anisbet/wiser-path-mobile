@@ -51,6 +51,13 @@
     <string name="poi_blog_save_success_msg">Saved</string>
     <string name="poi_blog_save_not_success_msg">Save failed</string>
     
+    <!-- Trace messages -->
+    <string name="poi_trace_post_success_msg">Your trace was successfully uploaded.</string>
+    <string name="poi_trace_post_fail_msg">Dang, your trace wasn&#96;t uploaded, try again later.</string>
+    <string name="poi_trace_post_invalid_msg">Your trace isn&#96;t finished yet</string>
+    <string name="poi_trace_save_success_msg">Saved</string>
+    <string name="poi_trace_save_not_success_msg">Save failed</string>
+    
     <!-- Camera messages -->
     <string name="camera_success_msg">Picture captured</string>
     <string name="camera_fail_msg">Sorry, failed to get that shot</string>

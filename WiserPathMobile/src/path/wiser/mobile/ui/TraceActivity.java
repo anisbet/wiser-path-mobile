@@ -4,11 +4,13 @@ import path.wiser.mobile.R;
 import path.wiser.mobile.geo.GPS;
 import path.wiser.mobile.geo.POI;
 import path.wiser.mobile.geo.Trace;
+import path.wiser.mobile.services.HTTPService;
 import path.wiser.mobile.util.PoiList;
 import path.wiser.mobile.util.Selectable;
 import path.wiser.mobile.util.TraceMVC;
 import android.location.Location;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -49,7 +51,7 @@ public class TraceActivity extends Selectable
 		// create the container for many blogs
 		this.traces = new PoiList( POI.Type.TRACE );
 		Trace currentTrace = null;
-		// TODO trouble shoot this in the morning.
+
 		if (this.traces.deserialize()) // there was no blog to deserialize.
 		{
 			currentTrace = (Trace) traces.getCurrent();
@@ -101,53 +103,146 @@ public class TraceActivity extends Selectable
 	}
 
 	@Override
-	public void onPause()
-	{
-		// TODO Save current state to the database when the user selects moves
-		// away from this screens
-		super.onPause();
-
-	}
-
-	@Override
 	protected boolean previous()
 	{
-		// TODO Auto-generated method stub
-		return false;
+		Trace currentTrace = (Trace) this.traces.getCurrent();
+		if (currentTrace.isRunning())
+		{
+			currentTrace.stop();
+		}
+		TraceMVC mvc = new TraceMVC( this, currentTrace );
+		// write data from UI to blog
+		mvc.change();
+		currentTrace = (Trace) this.traces.previous();
+		mvc = new TraceMVC( this, currentTrace );
+		// update the ui to the new blog
+		mvc.update();
+		// if this is a new blog you may need to add a location so check for GPS and if none start it.
+		if (currentTrace.needsLocation())
+		{
+			this.gps = new GPS( this ); // this will run until a location is stored when locationChange fires.
+		}
+		return true;
 	}
 
 	@Override
 	protected boolean upload()
 	{
-		// TODO Auto-generated method stub
-		return false;
+		boolean result = true;
+		Trace currentTrace = (Trace) this.traces.getCurrent();
+		if (currentTrace.isRunning())
+		{
+			currentTrace.stop();
+		}
+		TraceMVC mvc = new TraceMVC( this, currentTrace );
+		// sync the data from the UI to the blog
+		mvc.change();
+		// Make sure the currentBlog is ready to go.
+		if (currentTrace.isValid())
+		{
+			// get the HTTPService for posting data.
+			HTTPService service = HTTPService.getInstance();
+			service.uploadTrace( currentTrace );
+			// upload the currentBlog.
+			if (currentTrace.isUploaded())
+			{
+				text = String.format( res.getString( R.string.poi_blog_post_success_msg ) );
+			}
+			else
+			{
+				text = String.format( res.getString( R.string.poi_blog_post_fail_msg ) );
+				result = false;
+			}
+		}
+		else
+		{
+			text = String.format( res.getString( R.string.poi_blog_post_invalid_msg ) );
+			result = false;
+		}
+		msg = Html.fromHtml( text );
+		showMessage( msg );
+		// get the next Blog after deletion.
+		if (result == true)
+		{
+			currentTrace = (Trace) this.traces.deleteCurrent();
+		}
+		mvc = new TraceMVC( this, currentTrace );
+		mvc.update();
+		return result;
 	}
 
 	@Override
 	protected boolean delete()
 	{
-		// TODO Auto-generated method stub
-		return false;
+		Trace currentTrace = (Trace) this.traces.getCurrent();
+		if (currentTrace.isRunning())
+		{
+			currentTrace.stop();
+		}
+		currentTrace = (Trace) this.traces.deleteCurrent();
+		TraceMVC mvc = new TraceMVC( this, currentTrace );
+		mvc.update();
+		return true;
 	}
 
 	@Override
 	protected boolean save()
 	{
-		// TODO Auto-generated method stub
-		return false;
+		Trace currentTrace = (Trace) this.traces.getCurrent();
+		if (currentTrace.isRunning())
+		{
+			currentTrace.stop();
+		}
+		TraceMVC mvc = new TraceMVC( this, currentTrace );
+		// sync the data from the UI to the blog
+		mvc.change();
+
+		if (this.traces.serialize())
+		{
+			text = String.format( res.getString( R.string.poi_trace_save_success_msg ) );
+		}
+		else
+		{
+			text = String.format( res.getString( R.string.poi_trace_save_not_success_msg ) );
+			return false;
+		}
+		return true;
 	}
 
 	@Override
 	protected boolean next()
 	{
-		// TODO Auto-generated method stub
-		return false;
+		// TODO This method will have to stop the current trace and then load the next.
+		Trace currentTrace = (Trace) this.traces.getCurrent();
+		if (currentTrace.isRunning())
+		{
+			currentTrace.stop();
+		}
+		TraceMVC mvc = new TraceMVC( this, currentTrace );
+		// write data from UI to Trace
+		mvc.change();
+		currentTrace = (Trace) this.traces.next();
+		mvc = new TraceMVC( this, currentTrace );
+		// update the ui to the new Trace
+		mvc.update();
+		// if this is a new blog you may need to add a location so check for GPS and if none start it.
+		if (currentTrace.needsLocation())
+		{
+			this.gps = new GPS( this ); // this will run until a location is stored when locationChange fires.
+		}
+		return true;
 	}
 
 	@Override
 	public void onLocationChanged( Location location )
 	{
-		// TODO Auto-generated method stub
-
+		// triggers an update to the display
+		Trace currentTrace = (Trace) this.traces.getCurrent();
+		if (currentTrace.isRunning())
+		{
+			currentTrace.setLocation( location );
+			TraceMVC mvc = new TraceMVC( this, currentTrace );
+			mvc.update();
+		}
 	}
 }

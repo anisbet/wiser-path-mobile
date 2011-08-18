@@ -9,6 +9,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 import path.wiser.mobile.geo.Blog;
+import path.wiser.mobile.geo.Trace;
 import android.util.Log;
 
 /**
@@ -271,6 +272,12 @@ public class HTTPService
 			Log.e( "HTTPService", "The URL for posting images is malformed. Please contact administrator." );
 		}
 		return null; // Could this also send the user to the HELP url?
+	}
+
+	public void uploadTrace( Trace currentTrace )
+	{
+		// TODO Finish me!!!!!
+
 	}
 
 }
