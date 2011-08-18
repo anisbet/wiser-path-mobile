@@ -31,10 +31,9 @@ import android.widget.TextView;
  */
 public class PointOfInterestActivity extends Selectable
 {
-	public static final int		CAMERA_PIC_REQUEST	= 1337;
-	private static final String	BLOG_IMAGE_PATH		= "/images";
-	protected PoiList			blogs				= null;
-	protected GPS				gps					= null;
+	public static final int	CAMERA_PIC_REQUEST	= 1337;
+	protected PoiList		blogs				= null;
+	protected GPS			gps					= null;
 
 	public PointOfInterestActivity()
 	{
@@ -88,19 +87,6 @@ public class PointOfInterestActivity extends Selectable
 		} );
 
 	}
-
-	// This method gets run onCreate() as well.
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see path.wiser.mobile.ui.WiserActivityHelper#onResume()
-	 */
-	// public void onResume()
-	// {
-	// super.onResume();
-	// // load previous image.
-	// previous();
-	// }
 
 	@Override
 	public boolean onCreateOptionsMenu( Menu menu )
@@ -261,6 +247,7 @@ public class PointOfInterestActivity extends Selectable
 		if (currentBlog.needsLocation())
 		{
 			currentBlog.setLocation( location );
+			// TODO this is just for testing remove.
 			if (location != null)
 			{
 				this.print( "LOCATION CHANGED " + location.getLongitude() + " long " + location.getLatitude() + " lat." );
