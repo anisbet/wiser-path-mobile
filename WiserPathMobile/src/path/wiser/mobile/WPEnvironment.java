@@ -3,6 +3,8 @@
  */
 package path.wiser.mobile;
 
+import path.wiser.mobile.util.ImageType;
+
 /**
  * Storage for WiserPathEnvironment variables.
  * 
@@ -20,6 +22,7 @@ public final class WPEnvironment
 	public static final String	BLOG_PATH				= "/blog";
 	public static final String	INCIDENT_PATH			= "/incident";
 	private static boolean		preferExternalStorage	= true;
+	private static ImageType	imageType				= ImageType.JPG;
 
 	/**
 	 * @return the preferExternalStorage
@@ -35,5 +38,26 @@ public final class WPEnvironment
 	public static final void setPreferExternalStorage( boolean preferExternalStorage )
 	{
 		WPEnvironment.preferExternalStorage = preferExternalStorage;
+	}
+
+	/**
+	 * Sets the preferred image type used by Wiser Path Mobile.
+	 * Currently only JPG is supported.
+	 * 
+	 * @param type
+	 */
+	public static void setImageType( ImageType type )
+	{
+		WPEnvironment.imageType = type;
+	}
+
+	/**
+	 * that will be used applciation wide. Currently only JPG is supported.
+	 * 
+	 * @return ImageType as a String in lower case.
+	 */
+	public static String getImageExtension()
+	{
+		return WPEnvironment.imageType.toString();
 	}
 }
