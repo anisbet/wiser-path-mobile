@@ -24,7 +24,9 @@ public class Trace extends POI implements ComputableTripMetrics
 
 	public enum TrailNode // used to identify which node you would like.
 	{
-		HEAD, TAIL, PREV_TAIL,
+		HEAD, /* the list head of the trace */
+		TAIL, /* the tail of the trace. */
+		PREV_TAIL, /* the penultimate tail */
 	}
 
 	public Trace()
