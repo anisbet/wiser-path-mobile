@@ -7,7 +7,6 @@ import path.wiser.mobile.geo.Trace;
 import path.wiser.mobile.services.HTTPService;
 import path.wiser.mobile.util.PoiList;
 import path.wiser.mobile.util.Selectable;
-import path.wiser.mobile.util.TraceMVC;
 import android.location.Location;
 import android.os.Bundle;
 import android.text.Html;
