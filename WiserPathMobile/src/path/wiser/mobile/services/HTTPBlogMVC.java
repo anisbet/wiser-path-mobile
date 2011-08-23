@@ -82,7 +82,7 @@ public class HTTPBlogMVC implements ModelViewController
 	}
 
 	/**
-	 * The name of this method reflects the menu item this method immitates if you were
+	 * The name of this method reflects the menu item this method imitates if you were
 	 * using WiserPath online.
 	 * 
 	 * @return True if the Blog is uploaded and false otherwise.
