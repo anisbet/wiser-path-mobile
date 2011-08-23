@@ -50,4 +50,11 @@ public class GPXDocument implements WPXMLDocument
 		return false;
 	}
 
+	@Override
+	public String getAsXMLContent( POI poi )
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

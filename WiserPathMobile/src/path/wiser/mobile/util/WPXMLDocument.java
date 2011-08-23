@@ -28,4 +28,10 @@ public interface WPXMLDocument
 	 */
 	public abstract boolean deserialize( PoiList poiList );
 
+	/**
+	 * @param poi to be represented as XML.
+	 * @return The xml as a String.
+	 */
+	public abstract String getAsXMLContent( POI poi );
+
 }
