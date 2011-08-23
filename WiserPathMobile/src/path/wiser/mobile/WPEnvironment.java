@@ -21,6 +21,7 @@ public final class WPEnvironment
 	public static final String	TRACE_PATH				= "/trace";
 	public static final String	BLOG_PATH				= "/blog";
 	public static final String	INCIDENT_PATH			= "/incident";
+	public static final String	TRACE_UPLOAD_EXTENSION	= ".gpx";
 	private static boolean		preferExternalStorage	= true;
 	private static ImageType	imageType				= ImageType.JPG;
 
