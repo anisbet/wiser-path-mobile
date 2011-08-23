@@ -46,11 +46,11 @@ public class KMLDocument implements WPXMLDocument
 	// How and by what name the serialized documents appear as.
 	private static final String	LINE_TYPE					= "userLineType";
 	// private static final String TRACE_PATH = "/trace";
-	private static final String	TRACE_FILENAME				= "trace.kml";
+	public static final String	TRACE_FILENAME				= "trace.kml";
 	// private static final String BLOG_PATH = "/blog";
-	private static final String	BLOG_FILENAME				= "blog.kml";
+	public static final String	BLOG_FILENAME				= "blog.kml";
 	// private static final String INCIDENT_PATH = "/incident";
-	private static final String	INCIDENT_FILENAME			= "incident.kml";
+	public static final String	INCIDENT_FILENAME			= "incident.kml";
 	private static final String	TAG							= "KMLDocument";
 	private static final String	KML_DOCUMENT				= "Document";
 	private static final String	KML_TITLE					= "name";
@@ -821,6 +821,13 @@ public class KMLDocument implements WPXMLDocument
 		}
 
 		return text;
+	}
+
+	@Override
+	public String getAsXMLContent( POI poi )
+	{
+		// TODO Not important yet but should output a specific POI as XML.
+		return null;
 	}
 
 }
