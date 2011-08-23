@@ -25,11 +25,12 @@ import android.util.Log;
  */
 public class HTTPService
 {
-	private final static String	WP_URL						= "http://wiserpath-dev.bus.ualberta.ca";	// login
+	private final static String	WP_URL						= "http://wiserpath-dev.bus.ualberta.ca";	// server URL
 	private final static String	LOGIN_PATH					= "/user/login";
 	private final static String	SIGNUP_PATH					= "/user/register";
 	private static final String	GEOBLOG_PATH				= "/node/add/geoblog";
 	private static final String	GEOPHOTO_PATH				= "/node/add/geophoto";
+	private static final String	GEOTRACE_PATH				= "/node/add/gpstrace";
 
 	private final static int	SUCCESS_LOGIN_CODE			= 302;										// if
 																										// all
@@ -47,6 +48,7 @@ public class HTTPService
 																										// is
 																										// offline
 	public final static int		SUCCESS_BLOG_UPLOAD			= 200;
+	public static final int		SUCCESS_TRACE_UPLOAD		= 200;
 	// used for logging in.
 	private static final String	LOGIN_PASSWORD_PARAM		= "pass";
 	private static final String	LOGIN_NAME_PARAM			= "name";
@@ -174,6 +176,17 @@ public class HTTPService
 	}
 
 	/**
+	 * @param currentTrace
+	 */
+	public void uploadTrace( Trace trace )
+	{
+		// TODO Finish me!!!!!
+		HTTPTraceMVC traceMVC = new HTTPTraceMVC( this, trace );
+		traceMVC.update(); // upload the blog using content dependent criteria.
+		traceMVC.change(); // set the isUploaded Flag.
+	}
+
+	/**
 	 * @return The URL to the WiserPath Registration page.
 	 * @throws MalformedURLException
 	 */
@@ -274,10 +287,19 @@ public class HTTPService
 		return null; // Could this also send the user to the HELP url?
 	}
 
-	public void uploadTrace( Trace currentTrace )
+	public URL getGeotraceURL( Trace trace )
 	{
-		// TODO Finish me!!!!!
-
+		try
+		{
+			// return new URL( "http://wiserpath-dev.bus.ualberta.ca/node/add/gpstrace" );
+			// );
+			return new URL( WP_URL + GEOTRACE_PATH );
+		}
+		catch (MalformedURLException e)
+		{
+			Log.e( "HTTPService", "The URL for posting traces is malformed. Please contact administrator." );
+		}
+		return null; // Could this also send the user to the HELP url?
 	}
 
 }
