@@ -187,6 +187,33 @@ public class WiserPathConnection
 	}
 
 	/**
+	 * Adds XML content to the multi-part form.
+	 * 
+	 * @param attribName attribute name of the form field.
+	 * @param fileName of the XML file being uploaded.
+	 * @param content string.
+	 */
+	public void addXMLData( String attribName, String fileName, String content )
+	{
+		try
+		{
+			DataOutputStream contentStream = new DataOutputStream( connection.getOutputStream() );
+			contentStream.writeBytes( "--" + BOUNDARY + "\r\n" );
+			contentStream.writeBytes( "Content-Disposition: form-data; name=\"" + attribName + "\"; filename=\"" + fileName + "\"" + "\r\n" );
+			// TODO add more image types if necessary
+			contentStream.writeBytes( "Content-Type: application/octet-stream\r\n\r\n" );
+			byte[] data = content.getBytes( "UTF-8" );
+			contentStream.write( data );
+			contentStream.writeBytes( "\r\n" );
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+
+	}
+
+	/**
 	 * Allows the user to append multipart data to be sent by POST.
 	 * 
 	 * Use this method to sent your content type for string data like 'name="Andrew"' with a content
