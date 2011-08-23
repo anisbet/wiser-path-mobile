@@ -7,6 +7,7 @@ import path.wiser.mobile.geo.Trace;
 import path.wiser.mobile.services.HTTPService;
 import path.wiser.mobile.util.PoiList;
 import path.wiser.mobile.util.Selectable;
+import path.wiser.mobile.util.TraceMVC;
 import android.location.Location;
 import android.os.Bundle;
 import android.text.Html;
@@ -67,7 +68,8 @@ public class TraceActivity extends Selectable
 			{
 				// Intent cameraIntent = new Intent( android.provider.MediaStore.ACTION_IMAGE_CAPTURE );
 				// startActivityForResult( cameraIntent, CAMERA_PIC_REQUEST );
-				// TODO start the trace activity and register it as running so POIs and Incidents.
+				// TODO start the trace activity and register it as running so POIs and Incidents. This
+				// should be done as a service so that it continues to run if the app is eventually minimized.
 			}
 		} );
 	}
