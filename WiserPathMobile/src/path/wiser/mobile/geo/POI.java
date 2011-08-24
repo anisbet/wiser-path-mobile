@@ -27,6 +27,12 @@ public abstract class POI implements Comparable<POI>
 	private POI			previous	= null;
 	private POI			next		= null;
 	private Type		type;
+	private long		id;
+
+	public POI()
+	{
+		this.id = System.currentTimeMillis();
+	}
 
 	/**
 	 * @return the isUploaded
@@ -175,5 +181,15 @@ public abstract class POI implements Comparable<POI>
 	 * @param isIncident
 	 */
 	public abstract void setIsIncident( String isIncident );
+
+	/**
+	 * Milliseconds in System time.
+	 * 
+	 * @return ID of this POI.
+	 */
+	public String getID()
+	{
+		return String.valueOf( this.id );
+	}
 
 }

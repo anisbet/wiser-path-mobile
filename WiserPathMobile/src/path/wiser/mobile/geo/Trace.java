@@ -21,6 +21,8 @@ public class Trace extends POI implements ComputableTripMetrics
 	private Vector<Location>		tracePoints		= null;
 	private ComputableTripMetrics	traceComputer	= null;
 	private boolean					isRunning		= false;
+	// Storage for blogs and incidents associated with this Trace.
+	private Vector<POI>				associatedBlogs	= null;
 
 	public enum TrailNode // used to identify which node you would like.
 	{
@@ -35,6 +37,27 @@ public class Trace extends POI implements ComputableTripMetrics
 		this.tracePoints = new Vector<Location>();
 		this.traceComputer = new TraceComputer( tracePoints );
 		this.tags = new Tags();
+		this.associatedBlogs = new Vector<POI>();
+	}
+
+	/**
+	 * Adds a Blog or Incident to the Trace.
+	 * 
+	 * @param blog
+	 */
+	public void setPoi( Blog blog )
+	{
+		this.associatedBlogs.add( blog );
+	}
+
+	/**
+	 * Returns the POIs that are associated with this Trace.
+	 * 
+	 * @return stored POIs
+	 */
+	public Vector<POI> getPois()
+	{
+		return this.associatedBlogs;
 	}
 
 	/*
@@ -148,6 +171,14 @@ public class Trace extends POI implements ComputableTripMetrics
 	{
 		// TODO Implement stop
 
+	}
+
+	/**
+	 * @return true if there are related blogs and false otherwise.
+	 */
+	public boolean hasRelatedPOIs()
+	{
+		return this.associatedBlogs.size() > 0;
 	}
 
 }
