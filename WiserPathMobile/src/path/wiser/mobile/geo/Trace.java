@@ -125,6 +125,14 @@ public class Trace extends POI implements ComputableTripMetrics
 	}
 
 	/**
+	 * @return
+	 */
+	public Vector<Location> getLocations()
+	{
+		return this.tracePoints;
+	}
+
+	/**
 	 * @return all the coordinates as a list of lat long in a big string.
 	 */
 	public String getCoordinates()
