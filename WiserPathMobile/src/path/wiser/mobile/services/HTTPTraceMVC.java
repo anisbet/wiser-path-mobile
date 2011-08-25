@@ -66,7 +66,7 @@ public class HTTPTraceMVC implements ModelViewController
 		connection.addFormData( "field_tracefile[0][fid]", "0" );
 		connection.addFormData( "field_tracefile[0][list]", "1" );
 		// connection.addImageData( "files[field_photo_0]", "spitz.jpg", "/home/anisbet/Downloads/spitz.jpg" );
-		connection.addXMLData( "files[field_tracefile_0]", getFileName( this.trace ), traceDocument.getAsXMLContent( this.trace ) );
+		connection.addXMLData( "files[field_tracefile_0]", getFileName( this.trace ), traceDocument.getXMLContent( this.trace ) );
 		connection.addFormData( "teaser_include", "1" );
 		connection.addFormData( "body", this.trace.getDescription() );
 		connection.addFormData( "changed", "" );
