@@ -1,9 +1,10 @@
 /**
  * 
  */
-package path.wiser.mobile.util;
+package path.wiser.mobile.geo;
 
 import path.wiser.mobile.ui.WiserPathActivity;
+import path.wiser.mobile.util.PoiList;
 
 /**
  * @author andrewnisbet

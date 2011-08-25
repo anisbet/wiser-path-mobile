@@ -1,10 +1,10 @@
 /**
  * 
  */
-package path.wiser.mobile.util;
+package path.wiser.mobile.geo;
 
-import path.wiser.mobile.geo.POI;
 import path.wiser.mobile.ui.WiserPathActivity;
+import path.wiser.mobile.util.PoiList;
 
 import com.google.android.maps.OverlayItem;
 
