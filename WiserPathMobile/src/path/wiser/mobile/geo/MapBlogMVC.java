@@ -1,13 +1,11 @@
-package path.wiser.mobile.util;
+package path.wiser.mobile.geo;
 
 import java.util.List;
 
 import path.wiser.mobile.R;
-import path.wiser.mobile.geo.Blog;
-import path.wiser.mobile.geo.MapLayerType;
-import path.wiser.mobile.geo.POI;
-import path.wiser.mobile.geo.WPMapLayerItems;
 import path.wiser.mobile.ui.WiserPathActivity;
+import path.wiser.mobile.util.ModelViewController;
+import path.wiser.mobile.util.PoiList;
 import android.graphics.drawable.Drawable;
 
 import com.google.android.maps.GeoPoint;

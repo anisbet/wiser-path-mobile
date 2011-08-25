@@ -4,11 +4,11 @@ import java.util.List;
 
 import path.wiser.mobile.R;
 import path.wiser.mobile.geo.GPS;
+import path.wiser.mobile.geo.MapBlogMVC;
+import path.wiser.mobile.geo.MapIncidentMVC;
+import path.wiser.mobile.geo.MapTraceMVC;
 import path.wiser.mobile.geo.POI;
 import path.wiser.mobile.geo.WPMapLayerItems;
-import path.wiser.mobile.util.MapBlogMVC;
-import path.wiser.mobile.util.MapIncidentMVC;
-import path.wiser.mobile.util.MapTraceMVC;
 import path.wiser.mobile.util.ModelViewController;
 import path.wiser.mobile.util.PoiList;
 import android.location.Location;
