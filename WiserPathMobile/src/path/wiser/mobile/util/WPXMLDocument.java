@@ -32,6 +32,6 @@ public interface WPXMLDocument
 	 * @param poi to be represented as XML.
 	 * @return The xml as a String.
 	 */
-	public abstract String getAsXMLContent( POI poi );
+	public abstract String getXMLContent( POI poi );
 
 }

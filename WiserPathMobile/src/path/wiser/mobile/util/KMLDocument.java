@@ -824,7 +824,7 @@ public class KMLDocument implements WPXMLDocument
 	}
 
 	@Override
-	public String getAsXMLContent( POI poi )
+	public String getXMLContent( POI poi )
 	{
 		// TODO Not important yet but should output a specific POI as XML.
 		return null;
