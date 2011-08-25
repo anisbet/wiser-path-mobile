@@ -23,6 +23,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
 import path.wiser.mobile.geo.POI;
+import path.wiser.mobile.geo.POI.Type;
 import path.wiser.mobile.geo.Trace;
 import android.location.Location;
 import android.util.Log;
@@ -41,14 +42,15 @@ public class GPXDocument implements WPXMLDocument
 	private static final String	GPX_NAME			= "name";
 	private static final String	GPX_DESCRIPTION		= "desc";
 	private static final String	GPX_EXTENSIONS		= "extensions";
-	private static final String	WP_APPLICATION		= "WP:application";
-	// private static final String WP_ACTIVITY = "WP:activity";
-	private static final String	WP_RELATED_POI		= "WP:relatedPOI";
 	private static final String	GPX_TRACK			= "trk";
 	private static final String	GPX_TRACK_SEQUENCE	= "trkseg";
 	private static final String	GPX_TRACK_POINT		= "trkpt";
 	private static final String	GPX_ELEVATION		= "ele";
 	private static final String	GPX_TIME			= "time";
+
+	// private static final String WP_ACTIVITY = "WP:activity";
+	private static final String	WP_RELATED_POI		= "WP:relatedPOI";
+	private static final String	WP_APPLICATION		= "WP:application";
 	private static final String	WP_IS_INCIDENT		= "WP:isIncident";
 	private static final String	WP_TAGS				= "WP:tags";
 
@@ -60,7 +62,7 @@ public class GPXDocument implements WPXMLDocument
 	@Override
 	public void setOutput( POI poi )
 	{
-		// TODO Auto-generated method stub
+		// TODO See KMLDocument example.
 
 	}
 
@@ -72,7 +74,7 @@ public class GPXDocument implements WPXMLDocument
 	@Override
 	public boolean serialize()
 	{
-		// TODO Auto-generated method stub
+		// TODO See KMLDocument example.
 		return false;
 	}
 
@@ -84,12 +86,12 @@ public class GPXDocument implements WPXMLDocument
 	@Override
 	public boolean deserialize( PoiList poiList )
 	{
-		// TODO Auto-generated method stub
+		// TODO See KMLDocument example.
 		return false;
 	}
 
 	@Override
-	public String getAsXMLContent( POI poi )
+	public String getXMLContent( POI poi )
 	{
 		switch (poi.getType())
 		{
@@ -108,7 +110,7 @@ public class GPXDocument implements WPXMLDocument
 	private String createXML( Trace poi )
 	{
 		Document doc = getNewDoc();
-		doc.appendChild( getMetaData( doc, poi ) );
+		doc.appendChild( setMetaData( doc, poi ) );
 		doc.appendChild( getTripData( doc, poi ) );
 		// convert the doc to a string.
 		return getDocumentAsString( doc );
@@ -216,10 +218,10 @@ public class GPXDocument implements WPXMLDocument
 
 	/**
 	 * @param doc
-	 * @param trace
-	 * @return
+	 * @param poi
+	 * @return Element metadata.
 	 */
-	private Node getMetaData( Document doc, Trace trace )
+	private Node setMetaData( Document doc, POI poi )
 	{
 		// <metadata>
 		// <name>Road Biking 14 Jul</name>
@@ -246,23 +248,35 @@ public class GPXDocument implements WPXMLDocument
 		// </extensions>
 		// </metadata>
 		Element elementMetaData = doc.createElement( GPX_METADATA );
-		elementMetaData.appendChild( createNewElement( doc, GPX_NAME, trace.getTitle() ) );
-		elementMetaData.appendChild( createNewElement( doc, GPX_DESCRIPTION, trace.getDescription() ) );
+		elementMetaData.appendChild( createNewElement( doc, GPX_NAME, poi.getTitle() ) );
+		elementMetaData.appendChild( createNewElement( doc, GPX_DESCRIPTION, poi.getDescription() ) );
 		// add the extensions
 		Element elementExtensions = doc.createElement( GPX_EXTENSIONS );
 		elementExtensions.appendChild( createNewElement( doc, WP_APPLICATION, "Wiser Path Mobile" ) );
 		// TODO elementExtensions.appendChild( createNewElement( doc, WP_ACTIVITY, poi.getActivity() ) );
-		setTags( doc, elementExtensions, trace );
-		elementExtensions.appendChild( createNewElement( doc, WP_IS_INCIDENT, String.valueOf( trace.isIncident() ) ) );
-		setRelatedBlogs( doc, elementExtensions, trace ); // TODO add this kind of functionality to KMLDocuments.
+		setTags( doc, elementExtensions, poi );
+		elementExtensions.appendChild( createNewElement( doc, WP_IS_INCIDENT, String.valueOf( poi.isIncident() ) ) );
+		// only traces can have associated blogs or incidents.
+		if (poi.getType() == Type.TRACE)
+		{
+			// TODO add this kind of functionality to KMLDocuments.
+			setRelatedBlogs( doc, elementExtensions, (Trace) poi );
+		}
 		elementMetaData.appendChild( elementExtensions );
 
 		return elementMetaData;
 	}
 
-	private void setTags( Document doc, Element elementExtensions, Trace trace )
+	/**
+	 * Sets the document's tags.
+	 * 
+	 * @param doc
+	 * @param elementExtensions
+	 * @param poi
+	 */
+	private void setTags( Document doc, Element elementExtensions, POI poi )
 	{
-		Tags tags = trace.getTags();
+		Tags tags = poi.getTags();
 		Node elementTags = createNewElement( doc, WP_TAGS, tags.toString() );
 		elementExtensions.appendChild( elementTags );
 	}
