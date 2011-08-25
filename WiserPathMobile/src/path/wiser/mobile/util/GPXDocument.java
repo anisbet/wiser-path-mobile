@@ -3,11 +3,19 @@
  */
 package path.wiser.mobile.util;
 
+import java.io.StringWriter;
 import java.util.Vector;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -16,6 +24,7 @@ import org.w3c.dom.Text;
 
 import path.wiser.mobile.geo.POI;
 import path.wiser.mobile.geo.Trace;
+import android.location.Location;
 import android.util.Log;
 
 /**
@@ -27,14 +36,21 @@ import android.util.Log;
 public class GPXDocument implements WPXMLDocument
 {
 
-	private static final String	TAG				= "GPXDocument";
-	private static final String	GPX_METADATA	= "metadata";
-	private static final String	GPX_NAME		= "name";
-	private static final String	GPX_DESCRIPTION	= "desc";
-	private static final String	GPX_EXTENSIONS	= "extensions";
-	private static final String	WP_APPLICATION	= "WP:application";
-	private static final String	WP_ACTIVITY		= "WP:activity";
-	private static final String	WP_RELATED_POI	= "WP:relatedPOI";
+	private static final String	TAG					= "GPXDocument";
+	private static final String	GPX_METADATA		= "metadata";
+	private static final String	GPX_NAME			= "name";
+	private static final String	GPX_DESCRIPTION		= "desc";
+	private static final String	GPX_EXTENSIONS		= "extensions";
+	private static final String	WP_APPLICATION		= "WP:application";
+	// private static final String WP_ACTIVITY = "WP:activity";
+	private static final String	WP_RELATED_POI		= "WP:relatedPOI";
+	private static final String	GPX_TRACK			= "trk";
+	private static final String	GPX_TRACK_SEQUENCE	= "trkseg";
+	private static final String	GPX_TRACK_POINT		= "trkpt";
+	private static final String	GPX_ELEVATION		= "ele";
+	private static final String	GPX_TIME			= "time";
+	private static final String	WP_IS_INCIDENT		= "WP:isIncident";
+	private static final String	WP_TAGS				= "WP:tags";
 
 	/*
 	 * (non-Javadoc)
@@ -86,14 +102,116 @@ public class GPXDocument implements WPXMLDocument
 		default:
 			Log.e( TAG, "Undefined POI type." );
 		}
-		return null;
+		return "";
 	}
 
 	private String createXML( Trace poi )
 	{
 		Document doc = getNewDoc();
 		doc.appendChild( getMetaData( doc, poi ) );
-		return null;
+		doc.appendChild( getTripData( doc, poi ) );
+		// convert the doc to a string.
+		return getDocumentAsString( doc );
+	}
+
+	/**
+	 * Returns the document as an XML string.
+	 * 
+	 * @param doc
+	 * @return XML string of the document.
+	 */
+	private String getDocumentAsString( Document doc )
+	{
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		Transformer transformer = null;
+		try
+		{
+			transformer = transformerFactory.newTransformer();
+		}
+		catch (TransformerConfigurationException e)
+		{
+			Log.e( TAG, "TransformerConfigurationException " );
+			return "";
+		}
+
+		transformer.setOutputProperty( OutputKeys.INDENT, "yes" );
+		// serialize tree to string
+		StringWriter stringWriter = new StringWriter();
+		StreamResult result = new StreamResult( stringWriter );
+		DOMSource source = new DOMSource( doc );
+		try
+		{
+			transformer.transform( source, result );
+		}
+		catch (TransformerException e)
+		{
+			Log.e( TAG, "TransformerException " );
+			return "";
+		}
+		// for testing
+		return stringWriter.toString();
+	}
+
+	/**
+	 * Converts and returns an element containing all the locations as XML.
+	 * 
+	 * @param doc
+	 * @param poi
+	 * @return
+	 */
+	private Node getTripData( Document doc, Trace poi )
+	{
+		// TODO create trip data section.
+		// <trk>
+		// <name>Lap 1</name>
+		// <extensions>
+		// <TO:calories>118</TO:calories>
+		// </extensions>
+		// <trkseg>
+		// <trkpt lat="53.517711" lon="-113.545767">
+		// <ele>626</ele>
+		// <time>2010-07-14T09:15:30</time>
+		// </trkpt>
+		// <trkpt lat="53.517738" lon="-113.545757">
+		// <ele>626</ele>
+		// <time>2010-07-14T09:15:33</time>
+		// <type>Resting</type>
+		// </trkpt>
+		// </trkseq>
+		// </trk>
+		Element elementTrip = doc.createElement( GPX_TRACK );
+		elementTrip.appendChild( createNewElement( doc, GPX_NAME, poi.getTitle() ) );
+		// <trkseg>
+		Element elementTripSequence = doc.createElement( GPX_TRACK_SEQUENCE );
+		Vector<android.location.Location> locations = poi.getLocations();
+		for (Location location : locations)
+		{
+			elementTripSequence.appendChild( getTrackPoint( doc, location ) );
+		}
+		elementTrip.appendChild( elementTripSequence );
+
+		return elementTrip;
+	}
+
+	/**
+	 * Creates a trip sequence for each location.
+	 * 
+	 * @param doc
+	 * @param location
+	 * @return trkpt element.
+	 */
+	private Node getTrackPoint( Document doc, Location location )
+	{
+		// <trkpt lat="53.517711" lon="-113.545767">
+		// <ele>626</ele>
+		// <time>2010-07-14T09:15:30</time>
+		// </trkpt>
+		Element elementTrackPoint = doc.createElement( GPX_TRACK_POINT );
+		elementTrackPoint.setAttribute( "lat", String.valueOf( location.getLatitude() ) );
+		elementTrackPoint.setAttribute( "lon", String.valueOf( location.getLongitude() ) );
+		elementTrackPoint.appendChild( createNewElement( doc, GPX_ELEVATION, String.valueOf( location.getAltitude() ) ) );
+		elementTrackPoint.appendChild( createNewElement( doc, GPX_TIME, String.valueOf( location.getTime() ) ) );
+		return elementTrackPoint;
 	}
 
 	/**
@@ -127,7 +245,6 @@ public class GPXDocument implements WPXMLDocument
 		// <TO:shared>False</TO:shared>
 		// </extensions>
 		// </metadata>
-		Element root = doc.getDocumentElement();
 		Element elementMetaData = doc.createElement( GPX_METADATA );
 		elementMetaData.appendChild( createNewElement( doc, GPX_NAME, trace.getTitle() ) );
 		elementMetaData.appendChild( createNewElement( doc, GPX_DESCRIPTION, trace.getDescription() ) );
@@ -135,12 +252,19 @@ public class GPXDocument implements WPXMLDocument
 		Element elementExtensions = doc.createElement( GPX_EXTENSIONS );
 		elementExtensions.appendChild( createNewElement( doc, WP_APPLICATION, "Wiser Path Mobile" ) );
 		// TODO elementExtensions.appendChild( createNewElement( doc, WP_ACTIVITY, poi.getActivity() ) );
+		setTags( doc, elementExtensions, trace );
+		elementExtensions.appendChild( createNewElement( doc, WP_IS_INCIDENT, String.valueOf( trace.isIncident() ) ) );
 		setRelatedBlogs( doc, elementExtensions, trace ); // TODO add this kind of functionality to KMLDocuments.
 		elementMetaData.appendChild( elementExtensions );
-		// TODO create trip data section.
-		root.appendChild( elementMetaData );
 
-		return null;
+		return elementMetaData;
+	}
+
+	private void setTags( Document doc, Element elementExtensions, Trace trace )
+	{
+		Tags tags = trace.getTags();
+		Node elementTags = createNewElement( doc, WP_TAGS, tags.toString() );
+		elementExtensions.appendChild( elementTags );
 	}
 
 	/**
