@@ -30,6 +30,22 @@
     <string name="s_use_external_storage">Save Data to SD Card</string>
     <string name="s_use_external_storage_summary">Use SD card for external file storage (if available)</string>
     
+    <!-- Display Labels on POIs -->
+    <string name="s_title">Title</string>
+    <string name="s_content">Content</string>
+    <string name="s_tags">Tags</string>
+    <string name="s_start">Start</string>
+    <string name="s_stop">Stop</string>
+    
+    <!-- Labels for trace -->
+    <string name="s_speed">Speed</string>
+    <string name="s_distance">Distance</string>
+    <string name="s_latitude">Latitude</string>
+    <string name="s_longitude">Longitude</string>
+    <string name="s_time">Time</string>
+    <string name="s_direction">Direction</string>
+    <string name="s_pace">Pace</string>
+    
     <!-- Messages -->
     <!-- Settings messages -->
     <string name="s_welcome_msg">Welcome to the Wiser Path Community %s!</string>
