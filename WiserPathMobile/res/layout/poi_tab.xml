@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<AbsoluteLayout 
-	android:id="@+id/Poi_Layout" 
-	android:layout_width="fill_parent" 
-	android:layout_height="fill_parent" 
+<TableLayout 
+	android:id="@+id/Incident_Layout" 
+	android:layout_width="match_parent"  
+    android:layout_height="match_parent" 
+    android:shrinkColumns="*"  
+    android:stretchColumns="*"
 	xmlns:android="http://schemas.android.com/apk/res/android">
-	
-	<EditText 
+	<!-- <EditText 
 		android:id="@+id/Poi_Title" 
 		android:text="Title"  
 		android:layout_height="wrap_content" 
@@ -40,6 +41,66 @@
 		android:text="tags" 
 		android:layout_y="330px" 
 		android:layout_height="45px" 
-		android:layout_width="fill_parent"/>
+		android:layout_width="fill_parent"/> -->
+	<TableRow
+		android:layout_height="wrap_content"  
+        android:layout_width="match_parent"  
+        android:gravity="center_horizontal">
+		<TextView
+	    	android:text="@string/s_title"
+	    	android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	    	android:layout_span="1" />
+		<EditText 
+			android:id="@+id/Poi_Title" 
+			android:text=""
+			android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+			android:layout_span="4"/>
+	</TableRow>
+	<TableRow
+		android:layout_height="wrap_content"  
+        android:layout_width="match_parent"  
+        android:gravity="center_horizontal">
+		<TextView
+	    	android:text="@string/s_content"
+	    	android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	    	android:layout_span="1" />
+		<EditText 
+			android:id="@+id/Poi_Blog" 
+			android:text="" 
+			android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+			android:layout_span="4"/>
+	</TableRow>	
+	<TableRow
+		android:layout_height="wrap_content"  
+        android:layout_width="match_parent"  
+        android:gravity="center_horizontal">
+		<ImageView
+			android:layout_height="300px" 
+			android:id="@+id/Poi_Photo" 
+			android:layout_span="4"
+			android:src="@drawable/fallen_tree"/>
+	</TableRow>
+	<TableRow
+		android:layout_height="wrap_content"  
+       android:layout_width="match_parent"  
+       android:gravity="center_horizontal">
+        <EditText 
+		android:id="@+id/Poi_Tag" 
+		android:text="@string/s_tags" 
+		android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+		android:layout_span="4"/>
+		<ImageButton 
+		android:layout_y="140px" 
+		android:layout_x="210px" 
+		android:layout_height="wrap_content" 
+		android:layout_width="wrap_content"
+		android:id="@+id/Poi_Camera"
+		android:src="@drawable/camera_normal"/>
+	</TableRow>
 	
-</AbsoluteLayout>
+</TableLayout>
