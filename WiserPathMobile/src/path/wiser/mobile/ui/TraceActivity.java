@@ -13,8 +13,6 @@ import android.text.Html;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -61,16 +59,8 @@ public class TraceActivity extends Selectable
 		// now set up the button that will start and stop the trace.
 		// Invoke the camera when the button is clicked.
 		ToggleButton startStopButton = (ToggleButton) findViewById( R.id.Trace_StartStop );
-		startStopButton.setOnClickListener( new OnClickListener()
-		{
-			public void onClick( View touchedView )
-			{
-				// Intent cameraIntent = new Intent( android.provider.MediaStore.ACTION_IMAGE_CAPTURE );
-				// startActivityForResult( cameraIntent, CAMERA_PIC_REQUEST );
-				// TODO start the trace activity and register it as running so POIs and Incidents. This
-				// should be done as a service so that it continues to run if the app is eventually minimized.
-			}
-		} );
+		TraceStartStopClickListener traceClickListener = new TraceStartStopClickListener( currentTrace );
+		startStopButton.setOnClickListener( traceClickListener );
 	}
 
 	@Override
