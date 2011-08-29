@@ -139,7 +139,7 @@
 	    	android:layout_height="wrap_content"
 	    	android:layout_span="1" />
 		<EditText 
-			android:text="Describe your trace" 
+			android:text="" 
 			android:id="@+id/Trace_Blog"  
 			android:layout_width="wrap_content"
 	    	android:layout_height="wrap_content"
@@ -155,7 +155,7 @@
 	    	android:layout_height="wrap_content"
 	    	android:layout_span="1" />
         <EditText 
-			android:text="tags" 
+			android:text="" 
 			android:id="@+id/Trace_Tag" 
 			android:layout_width="wrap_content"
 	    	android:layout_height="wrap_content"
