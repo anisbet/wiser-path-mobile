@@ -53,12 +53,27 @@
 		android:layout_height="wrap_content"  
        android:layout_width="match_parent"  
        android:gravity="center_horizontal">
+       <TextView
+	    	android:text="@string/s_tags"
+	    	android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	    	android:layout_span="1" />
         <EditText 
-		android:id="@+id/Incident_Tag" 
-		android:text="@string/s_tags" 
-		android:layout_width="wrap_content"
-    	android:layout_height="wrap_content"
-		android:layout_span="4"/>
+			android:text="" 
+			android:id="@+id/Incident_Tag" 
+			android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+			android:layout_span="4"/>
+	</TableRow>
+	<TableRow
+		android:layout_height="wrap_content"  
+       android:layout_width="match_parent"  
+       android:gravity="center_horizontal">
+        <TextView
+	    	android:text="@string/s_camera"
+	    	android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	    	android:layout_span="1" />
 		<ImageButton 
 		android:layout_y="140px" 
 		android:layout_x="210px" 
