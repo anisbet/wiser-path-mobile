@@ -47,7 +47,7 @@
 			android:layout_height="300px" 
 			android:id="@+id/photo_preview"
 			android:layout_span="4"
-			android:src="@drawable/fallen_tree"/>
+			android:src="@drawable/no_photo"/>
 	</TableRow>
 	<TableRow
 		android:layout_height="wrap_content"  
