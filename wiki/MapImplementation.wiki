@@ -27,6 +27,8 @@ protected boolean isRouteDisplayed()
 }
 }}}
 
+  # When you ship a release you will need a new 'release' API key from Google. This is done in a similar way to the debug key and is described [http://my.safaribooksonline.com/book/programming/android/9781449309473/getting-your-application-into-users-hands/ch04_id221336#X2ludGVybmFsX0ZsYXNoUmVhZGVyP3htbGlkPTk3ODE0NDkzMDk0NzMvMTA4 here].
+
 ==Feature Request==
   # Give the Wiser Map a menu to select and control data from WP and/or WPM.
 
