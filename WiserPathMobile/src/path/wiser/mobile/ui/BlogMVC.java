@@ -12,6 +12,7 @@ import path.wiser.mobile.util.ModelViewController;
 import path.wiser.mobile.util.Tags;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -55,14 +56,13 @@ public class BlogMVC implements ModelViewController
 			MediaReader mediaReader = new MediaReader();
 			Bitmap thumbnail = mediaReader.readImageFile( WPEnvironment.BLOG_PATH, this.blog.getImageName() );
 			ImageView imageView = (ImageView) this.activity.findViewById( R.id.photo_preview );
-			if (thumbnail != null)
+			if (thumbnail == null)
+			// set optional extra image if the first fails for some reason.
 			{
-				imageView.setImageBitmap( thumbnail );
+				thumbnail = BitmapFactory.decodeResource( activity.getResources(), R.drawable.no_photo );
+				activity.print( activity.getString( R.string.camera_fail_msg ) );
 			}
-			// else // set optional extra image if the first fails for some reason.
-			// {
-			// imageView.setImageBitmap( R.drawable.icon );
-			// }
+			imageView.setImageBitmap( thumbnail );
 		}
 		else
 		{
