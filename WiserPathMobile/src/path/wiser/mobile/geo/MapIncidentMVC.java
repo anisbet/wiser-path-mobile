@@ -10,7 +10,7 @@ import path.wiser.mobile.util.PoiList;
  * @author andrewnisbet
  * 
  */
-public class MapIncidentMVC extends MapBlogMVC
+public class MapIncidentMVC extends MapSinglePointMVC
 {
 
 	/**

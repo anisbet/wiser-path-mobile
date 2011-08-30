@@ -17,13 +17,13 @@ import com.google.android.maps.OverlayItem;
  * @author andrewnisbet
  * 
  */
-public class WPMapLayerItems extends ItemizedOverlay<OverlayItem>
+public class WPMapLayerPoints extends ItemizedOverlay<OverlayItem>
 {
 
-	private ArrayList<OverlayItem>	overlayItems	= new ArrayList<OverlayItem>();
-	private MapLayerType			layerDataType;
+	protected ArrayList<OverlayItem>	overlayItems	= new ArrayList<OverlayItem>();
+	protected MapLayerType				layerDataType;
 
-	public WPMapLayerItems( Drawable defaultMarker, MapLayerType type )
+	public WPMapLayerPoints( Drawable defaultMarker, MapLayerType type )
 	{
 		// center the icon on the bottom boundary of the image.
 		super( boundCenterBottom( defaultMarker ) );
@@ -31,11 +31,11 @@ public class WPMapLayerItems extends ItemizedOverlay<OverlayItem>
 	}
 
 	/**
-	 * @param overlay
+	 * @param item
 	 */
-	public void addOverlayItem( OverlayItem overlay )
+	public void addOverlayItem( OverlayItem item )
 	{
-		overlayItems.add( overlay );
+		overlayItems.add( item );
 		populate();
 	}
 
