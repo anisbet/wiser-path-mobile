@@ -13,7 +13,7 @@ import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
 /**
- * Places the Blog on the appropriate location on the map.
+ * Places the Blogs from the Blog list on the appropriate layer, at the appropriate locations on the map.
  * 
  * @author andrewnisbet
  * 

@@ -14,6 +14,8 @@ import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
 /**
+ * Places multiple traces with multiple points on the map as polylines.
+ * 
  * @author andrewnisbet
  * 
  */
