@@ -74,6 +74,10 @@ public class WiserPathActivity extends MapActivity implements LocationListener
 	}
 
 	/*
+	 * 
+	 * For accounting purposes, the server needs to know whether or not you are currently displaying any kind of route
+	 * information, such as a set of driving directions. Subclasses must implement this method to truthfully report this
+	 * information, or be in violation of our terms of use.
 	 * (non-Javadoc)
 	 * 
 	 * @see com.google.android.maps.MapActivity#isRouteDisplayed()
