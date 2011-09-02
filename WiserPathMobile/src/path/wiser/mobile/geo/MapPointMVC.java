@@ -18,18 +18,18 @@ import com.google.android.maps.OverlayItem;
  * @author andrewnisbet
  * 
  */
-public class MapSinglePointMVC implements ModelViewController
+public class MapPointMVC implements ModelViewController
 {
 	protected PoiList			poiList		= null;
 	protected WiserPathActivity	activity	= null;
 	protected Drawable			icon		= null;
-	protected WPMapLayerPoints	layer		= null;
+	protected MapLayer			layer		= null;
 
 	/**
 	 * @param poiList.
 	 * @param activity The over lay we add the items to.
 	 */
-	public MapSinglePointMVC( PoiList poiList, WiserPathActivity activity )
+	public MapPointMVC( PoiList poiList, WiserPathActivity activity )
 	{
 		this.poiList = poiList;
 		this.activity = activity;
@@ -37,17 +37,18 @@ public class MapSinglePointMVC implements ModelViewController
 		{
 		case BLOG:
 			icon = activity.getResources().getDrawable( R.drawable.ic_tee_poi_blue );
-			layer = new WPMapLayerPoints( icon, MapLayerType.MOBILE_BLOG );
+			layer = new MapLayer( icon, MapLayerType.MOBILE_BLOG );
 			break;
 
 		case INCIDENT:
 			icon = activity.getResources().getDrawable( R.drawable.icon );
-			layer = new WPMapLayerPoints( icon, MapLayerType.MOBILE_INCIDENT );
+			layer = new MapLayer( icon, MapLayerType.MOBILE_INCIDENT );
 			break;
 
 		case TRACE: // test what is required for a trace.
-			icon = activity.getResources().getDrawable( R.drawable.line_point ); // not sure about implications of this.
-			layer = new WPMapLayerPolyline( icon, MapLayerType.MOBILE_TRACE );
+			// icon = activity.getResources().getDrawable( R.drawable.line_point ); // not sure about implications of
+			// this.
+			// layer = new MapLayer( icon, MapLayerType.MOBILE_TRACE );
 			break;
 
 		default:

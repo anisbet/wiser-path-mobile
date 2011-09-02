@@ -4,10 +4,10 @@ import java.util.List;
 
 import path.wiser.mobile.R;
 import path.wiser.mobile.geo.GPS;
-import path.wiser.mobile.geo.MapMultiPointMVC;
-import path.wiser.mobile.geo.MapSinglePointMVC;
+import path.wiser.mobile.geo.MapTraceMVC;
+import path.wiser.mobile.geo.MapPointMVC;
 import path.wiser.mobile.geo.POI;
-import path.wiser.mobile.geo.WPMapLayerPoints;
+import path.wiser.mobile.geo.MapLayer;
 import path.wiser.mobile.util.ModelViewController;
 import path.wiser.mobile.util.PoiList;
 import android.location.Location;
@@ -184,7 +184,7 @@ public class WiserPathActivity extends MapActivity implements LocationListener
 		// to do this go through all the layers and see if they are mobile layers.
 		for (Overlay layer : this.map)
 		{
-			switch (( (WPMapLayerPoints) layer ).getLayerType())
+			switch (( (MapLayer) layer ).getLayerType())
 			{
 			case MOBILE_BLOG:
 			case MOBILE_INCIDENT:
@@ -209,12 +209,12 @@ public class WiserPathActivity extends MapActivity implements LocationListener
 		switch (poiList.getType())
 		{
 		case TRACE:
-			mvc = new MapMultiPointMVC( poiList, this );
+			mvc = new MapTraceMVC( poiList, this );
 			break;
 
 		case INCIDENT:
 		case BLOG:
-			mvc = new MapSinglePointMVC( poiList, this );
+			mvc = new MapPointMVC( poiList, this );
 			break;
 
 		// case INCIDENT:

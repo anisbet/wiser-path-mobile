@@ -189,4 +189,13 @@ public class Trace extends POI implements ComputableTripMetrics
 		return this.associatedBlogs.size() > 0;
 	}
 
+	/**
+	 * @return Location of first point recorded.
+	 */
+	public Location getInitialLocation()
+	{
+		// Could be null if no points recorded.
+		return this.tracePoints.firstElement();
+	}
+
 }
