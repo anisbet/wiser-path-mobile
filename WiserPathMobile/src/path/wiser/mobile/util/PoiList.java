@@ -6,6 +6,8 @@ package path.wiser.mobile.util;
 import path.wiser.mobile.geo.Blog;
 import path.wiser.mobile.geo.POI;
 import path.wiser.mobile.geo.Trace;
+import path.wiser.mobile.util.WPXMLDocument.Format;
+import android.util.Log;
 
 /**
  * PoiList is a linked list build with a difference. For one manages the creation and deletion of POI objects.
@@ -18,15 +20,28 @@ import path.wiser.mobile.geo.Trace;
 public class PoiList
 {
 
-	private POI			head	= null;
-	private POI.Type	myType;
-	private int			count	= 0;
+	private static final String	TAG		= "PoiList";
+	private POI					head	= null;
+	private POI.PoiType			myType;
+	private int					count	= 0;
+	private Format				format;
 
 	/**
 	 * @param type the type of list to create.
 	 */
-	public PoiList( POI.Type type )
+	public PoiList( POI.PoiType type )
 	{
+		this.format = Format.KML;
+		this.myType = type;
+		this.head = createNewEntry();
+	}
+
+	/**
+	 * @param type the type of list to create.
+	 */
+	public PoiList( POI.PoiType type, Format format )
+	{
+		this.format = format;
 		this.myType = type;
 		this.head = createNewEntry();
 	}
@@ -134,12 +149,24 @@ public class PoiList
 	{
 		// go to the head of the list but use a local head so we don't lose our place
 		POI myHead = this.head;
+		WPXMLDocument doc = null;
 		while (myHead.getPrevious() != null)
 		{
 			myHead = myHead.getPrevious();
 		}
 		// now at the head proceed through the list
-		WPXMLDocument doc = new KMLDocument( this.getType(), true );
+		switch (format)
+		{
+		case GPX:
+			doc = new GPXDocument( this.getType(), true );
+			break;
+		case KML:
+			doc = new KMLDocument( this.getType(), true );
+			break;
+		default:
+			Log.e( TAG, "Request to serialize a document in an unsupported format." );
+		}
+
 		doc.setOutput( myHead );
 		while (myHead.getNext() != null)
 		{
@@ -158,7 +185,18 @@ public class PoiList
 	public boolean deserialize()
 	{
 		// go to the head of the list but use a local head so we don't lose our place
-		WPXMLDocument doc = new KMLDocument( this.getType(), false );
+		WPXMLDocument doc = null;
+		switch (format)
+		{
+		case GPX:
+			doc = new GPXDocument( this.getType(), false );
+			break;
+		case KML:
+			doc = new KMLDocument( this.getType(), false );
+			break;
+		default:
+			Log.e( TAG, "Request to deserialize a document in an unsupported format." );
+		}
 		return doc.deserialize( this );
 	}
 
@@ -183,9 +221,9 @@ public class PoiList
 	}
 
 	/**
-	 * @return Type of object this is.
+	 * @return PoiType of object this is.
 	 */
-	public POI.Type getType()
+	public POI.PoiType getType()
 	{
 		return this.myType;
 	}

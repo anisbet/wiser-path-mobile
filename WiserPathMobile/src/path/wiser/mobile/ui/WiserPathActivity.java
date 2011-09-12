@@ -4,10 +4,10 @@ import java.util.List;
 
 import path.wiser.mobile.R;
 import path.wiser.mobile.geo.GPS;
-import path.wiser.mobile.geo.MapTraceMVC;
-import path.wiser.mobile.geo.MapPointMVC;
-import path.wiser.mobile.geo.POI;
 import path.wiser.mobile.geo.MapLayer;
+import path.wiser.mobile.geo.MapPointMVC;
+import path.wiser.mobile.geo.MapTraceMVC;
+import path.wiser.mobile.geo.POI;
 import path.wiser.mobile.util.ModelViewController;
 import path.wiser.mobile.util.PoiList;
 import android.location.Location;
@@ -139,7 +139,7 @@ public class WiserPathActivity extends MapActivity implements LocationListener
 			return removeMobileDataLayers();
 		}
 		// get the data stored on the device to do that you need to get the saved POIs
-		PoiList poiList = new PoiList( POI.Type.BLOG );
+		PoiList poiList = new PoiList( POI.PoiType.BLOG );
 		int failCount = 0;
 		boolean result = poiList.deserialize();
 		if (result == true)
@@ -151,7 +151,7 @@ public class WiserPathActivity extends MapActivity implements LocationListener
 			failCount++;
 		}
 
-		poiList = new PoiList( POI.Type.TRACE );
+		poiList = new PoiList( POI.PoiType.TRACE );
 		result = poiList.deserialize();
 		if (result == true)
 		{
@@ -162,7 +162,7 @@ public class WiserPathActivity extends MapActivity implements LocationListener
 			failCount++;
 		}
 
-		poiList = new PoiList( POI.Type.INCIDENT );
+		poiList = new PoiList( POI.PoiType.INCIDENT );
 		result = poiList.deserialize();
 		if (result == true)
 		{

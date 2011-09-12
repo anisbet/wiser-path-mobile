@@ -15,7 +15,7 @@ import android.location.Location;
  */
 public abstract class POI implements Comparable<POI>
 {
-	public enum Type
+	public enum PoiType
 	{
 		BLOG, TRACE, INCIDENT
 	}
@@ -26,7 +26,7 @@ public abstract class POI implements Comparable<POI>
 	protected Tags		tags		= null;
 	private POI			previous	= null;
 	private POI			next		= null;
-	private Type		type;
+	private PoiType		type;
 	private long		id;
 
 	public POI()
@@ -162,7 +162,7 @@ public abstract class POI implements Comparable<POI>
 	/**
 	 * @return the type
 	 */
-	public Type getType()
+	public PoiType getType()
 	{
 		return type;
 	}
@@ -170,7 +170,7 @@ public abstract class POI implements Comparable<POI>
 	/**
 	 * @param type the type to set
 	 */
-	protected void setType( Type type )
+	protected void setType( PoiType type )
 	{
 		this.type = type;
 	}

@@ -4,6 +4,10 @@ import path.wiser.mobile.geo.POI;
 
 public interface WPXMLDocument
 {
+	public enum Format
+	{
+		KML, GPX
+	}
 
 	/**
 	 * Call this method for each POI and then call the {@link #serialize()} method to write to file.

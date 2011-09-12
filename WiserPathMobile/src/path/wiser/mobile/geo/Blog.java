@@ -24,7 +24,7 @@ public class Blog extends POI
 	// TODO include image
 	public Blog()
 	{
-		this.setType( POI.Type.BLOG );
+		this.setType( POI.PoiType.BLOG );
 		this.tags = new Tags();
 	}
 

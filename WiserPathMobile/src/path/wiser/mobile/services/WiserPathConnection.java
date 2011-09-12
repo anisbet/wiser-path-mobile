@@ -93,7 +93,7 @@ public class WiserPathConnection
 		{
 			this.connection.setRequestProperty( "Cookie", wiserCookie.toString() );
 		}
-		this.connection.setRequestProperty( "Content-Type", "multipart/form-data; boundary=" + BOUNDARY );
+		this.connection.setRequestProperty( "Content-PoiType", "multipart/form-data; boundary=" + BOUNDARY );
 		// this.connection.setRequestProperty("Transfer-Encoding", "chunked");
 		try
 		{
@@ -172,7 +172,7 @@ public class WiserPathConnection
 			contentStream.writeBytes( "--" + BOUNDARY + "\r\n" );
 			contentStream.writeBytes( "Content-Disposition: form-data; name=\"" + attribName + "\"; filename=\"" + fileName + "\"" + "\r\n" );
 			// TODO add more image types if necessary
-			contentStream.writeBytes( "Content-Type: image/jpeg\r\n\r\n" );
+			contentStream.writeBytes( "Content-PoiType: image/jpeg\r\n\r\n" );
 			FileInputStream fStream = new FileInputStream( path );
 			byte[] data = new byte[len];
 			fStream.read( data );
@@ -201,7 +201,7 @@ public class WiserPathConnection
 			contentStream.writeBytes( "--" + BOUNDARY + "\r\n" );
 			contentStream.writeBytes( "Content-Disposition: form-data; name=\"" + attribName + "\"; filename=\"" + fileName + "\"" + "\r\n" );
 			// TODO add more image types if necessary
-			contentStream.writeBytes( "Content-Type: application/octet-stream\r\n\r\n" );
+			contentStream.writeBytes( "Content-PoiType: application/octet-stream\r\n\r\n" );
 			byte[] data = content.getBytes( "UTF-8" );
 			contentStream.write( data );
 			contentStream.writeBytes( "\r\n" );
@@ -293,7 +293,7 @@ public class WiserPathConnection
 
 			connection.setChunkedStreamingMode( 0 ); // so we don't exhaust the buffer and overly delay transmission.
 			connection.setInstanceFollowRedirects( redirect );
-			connection.setRequestProperty( "Content-Type", "application/x-www-form-urlencoded" );
+			connection.setRequestProperty( "Content-PoiType", "application/x-www-form-urlencoded" );
 			if (specialHeaderRequests != null)
 			{
 				// System.out.println(

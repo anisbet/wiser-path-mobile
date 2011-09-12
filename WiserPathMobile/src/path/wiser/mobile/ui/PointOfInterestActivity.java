@@ -52,7 +52,7 @@ public class PointOfInterestActivity extends Selectable
 		setContentView( R.layout.poi_tab );
 		this.gps = new GPS( this );
 		// create the container for many blogs
-		this.blogs = new PoiList( POI.Type.BLOG );
+		this.blogs = new PoiList( POI.PoiType.BLOG );
 		Blog currentBlog = null;
 
 		if (this.blogs.deserialize()) // there was no blog to deserialize.
