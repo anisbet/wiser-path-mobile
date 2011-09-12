@@ -22,9 +22,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
+import path.wiser.mobile.WPEnvironment;
 import path.wiser.mobile.geo.POI;
-import path.wiser.mobile.geo.POI.Type;
+import path.wiser.mobile.geo.POI.PoiType;
 import path.wiser.mobile.geo.Trace;
+import path.wiser.mobile.services.HTTPService;
 import android.location.Location;
 import android.util.Log;
 
@@ -53,6 +55,36 @@ public class GPXDocument implements WPXMLDocument
 	private static final String	WP_APPLICATION		= "WP:application";
 	private static final String	WP_IS_INCIDENT		= "WP:isIncident";
 	private static final String	WP_TAGS				= "WP:tags";
+	// private static final String TRACE_PATH = "/trace";
+	public static final String	TRACE_FILENAME		= "trace.gpx";
+	private static final String	BLOG_FILENAME		= "blog.gpx";
+	private static final String	INCIDENT_FILENAME	= "incident.gpx";
+	private PoiType				poiType;
+	private boolean				isSerializing;
+	private Node				doc;
+
+	/**
+	 * Used for uploading by {@link HTTPService}.
+	 */
+	public GPXDocument()
+	{
+		// Required but empty.
+	}
+
+	public GPXDocument( PoiType type, boolean openForWriting )
+	{
+		this.poiType = type;
+		this.isSerializing = openForWriting;
+		Document doc = getNewDoc();
+		if (this.isSerializing)
+		{
+			// Start creating the xml tree.
+			Element docRoot = doc.createElement( "gpx" );
+			docRoot.setAttribute( "xmlns:WP", "http://wiserpath.org/xml_ns/1_0" );
+			docRoot.setAttribute( "creator", "WiserPathMobile http://wiserpath.org" );
+			doc.appendChild( docRoot );
+		}
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -74,7 +106,54 @@ public class GPXDocument implements WPXMLDocument
 	@Override
 	public boolean serialize()
 	{
-		// TODO See KMLDocument example.
+		if (this.isSerializing == false) return false; // not permitted when you requested to deserialize.
+		// Output the XML
+		TransformerFactory transfac = TransformerFactory.newInstance();
+		Transformer trans = null;
+		try
+		{
+			trans = transfac.newTransformer();
+		}
+		catch (TransformerConfigurationException e)
+		{
+			Log.e( TAG, "TransformerConfigurationException " );
+			return false;
+		}
+
+		trans.setOutputProperty( OutputKeys.INDENT, "yes" );
+		// serialize tree to string
+		StringWriter sw = new StringWriter();
+		StreamResult result = new StreamResult( sw );
+		DOMSource source = new DOMSource( this.doc );
+		try
+		{
+			trans.transform( source, result );
+		}
+		catch (TransformerException e)
+		{
+			Log.e( TAG, "TransformerException " );
+			return false;
+		}
+		// for testing
+		System.out.println( sw.toString() );
+		// now write the data out to a file.
+		MediaWriter mediaWriter = new MediaWriter();
+		switch (this.poiType)
+		{
+		case TRACE:
+			mediaWriter.writeTextFile( WPEnvironment.TRACE_PATH, TRACE_FILENAME, sw.toString() );
+			return true;
+		case BLOG:
+			mediaWriter.writeTextFile( WPEnvironment.BLOG_PATH, BLOG_FILENAME, sw.toString() );
+			return true;
+		case INCIDENT:
+			mediaWriter.writeTextFile( WPEnvironment.INCIDENT_PATH, INCIDENT_FILENAME, sw.toString() );
+			return true;
+		default:
+			Log.e( TAG, "Unknown document type request, contact developer!" );
+			break;
+		}
+
 		return false;
 	}
 
@@ -257,7 +336,7 @@ public class GPXDocument implements WPXMLDocument
 		setTags( doc, elementExtensions, poi );
 		elementExtensions.appendChild( createNewElement( doc, WP_IS_INCIDENT, String.valueOf( poi.isIncident() ) ) );
 		// only traces can have associated blogs or incidents.
-		if (poi.getType() == Type.TRACE)
+		if (poi.getType() == PoiType.TRACE)
 		{
 			// TODO add this kind of functionality to KMLDocuments.
 			setRelatedBlogs( doc, elementExtensions, (Trace) poi );
@@ -282,6 +361,8 @@ public class GPXDocument implements WPXMLDocument
 	}
 
 	/**
+	 * Sets the reference values for Pois that were created during the trace.
+	 * 
 	 * @param document
 	 * @param elementExtensions
 	 * @param trace

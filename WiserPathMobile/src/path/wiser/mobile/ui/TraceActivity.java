@@ -46,7 +46,7 @@ public class TraceActivity extends Selectable
 
 		this.gps = new GPS( this );
 		// create the container for many blogs
-		this.traces = new PoiList( POI.Type.TRACE );
+		this.traces = new PoiList( POI.PoiType.TRACE );
 		Trace currentTrace = null;
 
 		if (this.traces.deserialize()) // there was no blog to deserialize.
@@ -92,6 +92,11 @@ public class TraceActivity extends Selectable
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see path.wiser.mobile.util.Selectable#previous()
+	 */
 	@Override
 	protected boolean previous()
 	{
@@ -115,10 +120,15 @@ public class TraceActivity extends Selectable
 		return true;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see path.wiser.mobile.util.Selectable#upload()
+	 */
 	@Override
 	protected boolean upload()
 	{
-		boolean result = true;
+		boolean isSuccessful = true;
 		Trace currentTrace = (Trace) this.traces.getCurrent();
 		if (currentTrace.isRunning())
 		{
@@ -136,29 +146,29 @@ public class TraceActivity extends Selectable
 			// upload the currentBlog.
 			if (currentTrace.isUploaded())
 			{
-				text = String.format( res.getString( R.string.poi_blog_post_success_msg ) );
+				text = String.format( res.getString( R.string.poi_trace_post_success_msg ) );
 			}
 			else
 			{
-				text = String.format( res.getString( R.string.poi_blog_post_fail_msg ) );
-				result = false;
+				text = String.format( res.getString( R.string.poi_trace_post_fail_msg ) );
+				isSuccessful = false;
 			}
 		}
 		else
 		{
-			text = String.format( res.getString( R.string.poi_blog_post_invalid_msg ) );
-			result = false;
+			text = String.format( res.getString( R.string.poi_trace_post_invalid_msg ) );
+			isSuccessful = false;
 		}
 		msg = Html.fromHtml( text );
 		showMessage( msg );
 		// get the next Blog after deletion.
-		if (result == true)
+		if (isSuccessful == true)
 		{
 			currentTrace = (Trace) this.traces.deleteCurrent();
 		}
 		mvc = new TraceMVC( this, currentTrace );
 		mvc.update();
-		return result;
+		return isSuccessful;
 	}
 
 	@Override

@@ -17,7 +17,7 @@ public class Incident extends Blog
 	 */
 	public Incident( Blog poi )
 	{
-		this.setType( POI.Type.INCIDENT );
+		this.setType( POI.PoiType.INCIDENT );
 		// you do this when you read the extended data and discover you are recording a Incident instead of a Blog.
 		this.description = poi.description;
 		this.isUploaded = poi.isUploaded;

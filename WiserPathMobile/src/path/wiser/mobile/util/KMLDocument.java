@@ -27,7 +27,7 @@ import org.xml.sax.InputSource;
 import path.wiser.mobile.WPEnvironment;
 import path.wiser.mobile.geo.Blog;
 import path.wiser.mobile.geo.POI;
-import path.wiser.mobile.geo.POI.Type;
+import path.wiser.mobile.geo.POI.PoiType;
 import path.wiser.mobile.geo.Trace;
 import android.location.Location;
 import android.util.Log;
@@ -79,7 +79,7 @@ public class KMLDocument implements WPXMLDocument
 																					// and
 																					// false if
 																					// that has been done
-	private Type				docType;											// type of document to write to file
+	private PoiType				docType;											// type of document to write to file
 																					// TRACE BLOG
 																					// etc.
 	private boolean				isSerializing;
@@ -90,7 +90,7 @@ public class KMLDocument implements WPXMLDocument
 	 * @param type of document you want.
 	 * @param openForWriting TODO
 	 */
-	public KMLDocument( Type type, boolean openForWriting )
+	public KMLDocument( PoiType type, boolean openForWriting )
 	{
 		this.docType = type;
 		// We need a Document
