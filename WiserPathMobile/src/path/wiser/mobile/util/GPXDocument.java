@@ -23,6 +23,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
 import path.wiser.mobile.WPEnvironment;
+import path.wiser.mobile.geo.Blog;
+import path.wiser.mobile.geo.Incident;
 import path.wiser.mobile.geo.POI;
 import path.wiser.mobile.geo.POI.PoiType;
 import path.wiser.mobile.geo.Trace;
@@ -61,7 +63,7 @@ public class GPXDocument implements WPXMLDocument
 	private static final String	INCIDENT_FILENAME	= "incident.gpx";
 	private PoiType				poiType;
 	private boolean				isSerializing;
-	private Node				doc;
+	private Document			doc;
 
 	/**
 	 * Used for uploading by {@link HTTPService}.
@@ -75,7 +77,7 @@ public class GPXDocument implements WPXMLDocument
 	{
 		this.poiType = type;
 		this.isSerializing = openForWriting;
-		Document doc = getNewDoc();
+		this.doc = getNewDoc();
 		if (this.isSerializing)
 		{
 			// Start creating the xml tree.
@@ -94,8 +96,32 @@ public class GPXDocument implements WPXMLDocument
 	@Override
 	public void setOutput( POI poi )
 	{
-		// TODO See KMLDocument example.
+		if (poi == null || poi.isValid() == false)
+		{
+			return; // this happens for the new element at the end of a list or for non-valid POIs.
+		}
+		// Create a new document for each POI object.
+		Element documentRoot = doc.getDocumentElement();
+		if (documentRoot == null)
+		{
+			Log.e( TAG, "Could not find the document root element. Did you call setOutput() on an empty document?" );
+			return;
+		}
 
+		switch (poi.getType())
+		{
+		case TRACE:
+			documentRoot.appendChild( getTripData( doc, (Trace) poi ) );
+			break;
+		case BLOG:
+			documentRoot.appendChild( getBlogData( doc, (Blog) poi ) ); // TODO not completed yet.
+			break;
+		case INCIDENT:
+			documentRoot.appendChild( getIncidentData( doc, (Incident) poi ) );
+			break;
+		default:
+			Log.e( TAG, "Unknown POI object type, please contact developer for assistance." );
+		}
 	}
 
 	/*
@@ -136,18 +162,19 @@ public class GPXDocument implements WPXMLDocument
 		}
 		// for testing
 		System.out.println( sw.toString() );
+
 		// now write the data out to a file.
 		MediaWriter mediaWriter = new MediaWriter();
 		switch (this.poiType)
 		{
 		case TRACE:
-			mediaWriter.writeTextFile( WPEnvironment.TRACE_PATH, TRACE_FILENAME, sw.toString() );
+			mediaWriter.writeTextFile( WPEnvironment.TRACE_PATH, TRACE_FILENAME, getDocumentAsString( doc ) );
 			return true;
 		case BLOG:
-			mediaWriter.writeTextFile( WPEnvironment.BLOG_PATH, BLOG_FILENAME, sw.toString() );
+			mediaWriter.writeTextFile( WPEnvironment.BLOG_PATH, BLOG_FILENAME, getDocumentAsString( doc ) );
 			return true;
 		case INCIDENT:
-			mediaWriter.writeTextFile( WPEnvironment.INCIDENT_PATH, INCIDENT_FILENAME, sw.toString() );
+			mediaWriter.writeTextFile( WPEnvironment.INCIDENT_PATH, INCIDENT_FILENAME, getDocumentAsString( doc ) );
 			return true;
 		default:
 			Log.e( TAG, "Unknown document type request, contact developer!" );
@@ -172,27 +199,44 @@ public class GPXDocument implements WPXMLDocument
 	@Override
 	public String getXMLContent( POI poi )
 	{
+		Document doc = getNewDoc();
+		doc.appendChild( setMetaData( doc, poi ) );
 		switch (poi.getType())
 		{
 		case TRACE:
-			return createXML( (Trace) poi );
+			doc.appendChild( getTripData( doc, (Trace) poi ) );
+			break;
 		case BLOG:
+			doc.appendChild( getBlogData( doc, (Blog) poi ) );
 			break;
 		case INCIDENT:
+			doc.appendChild( getIncidentData( doc, (Incident) poi ) );
 			break;
 		default:
 			Log.e( TAG, "Undefined POI type." );
 		}
-		return "";
+		return getDocumentAsString( doc );
 	}
 
-	private String createXML( Trace poi )
+	// private String createXML( Trace poi )
+	// {
+	// Document doc = getNewDoc();
+	// doc.appendChild( setMetaData( doc, poi ) );
+	// doc.appendChild( getTripData( doc, poi ) );
+	// // convert the doc to a string.
+	// return getDocumentAsString( doc );
+	// }
+
+	private Node getIncidentData( Document doc, Incident incident )
 	{
-		Document doc = getNewDoc();
-		doc.appendChild( setMetaData( doc, poi ) );
-		doc.appendChild( getTripData( doc, poi ) );
-		// convert the doc to a string.
-		return getDocumentAsString( doc );
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private Node getBlogData( Document doc, Blog blog )
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/**
