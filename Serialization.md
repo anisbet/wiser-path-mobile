@@ -1,0 +1,104 @@
+# Serialization of Blogs, Traces and Incidents in WiserPathMobile #
+
+## GPX Format Support ##
+
+Wiser Path online accepts GPX files so there is a new abstract class called WPXMLDocument that KMLDocument and GPXDocument implement.
+
+GPX is a more rigorous format and needs implementing.
+
+See [here](http://www.topografix.com/gpx_sample_files.asp) for specification.
+
+## KML Format Support ##
+
+The objects listed in the title are the current objects that Wiser Path Mobile handles. There are serialized and deserialized to media on the device in the event that the user does not wish to upload her data, or Wiser Path Mobile is stopped before the user has a chance to upload data.
+
+The standard for saving the data is KML 2.2 using standard tags for obvious data types as much as possible and special data types for things like image names. A good tutorial can be found
+[here](http://code.google.com/apis/kml/documentation/kml_tut.html).
+
+Blogs and Incidents will be using the following format:
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <Placemark>
+      <name>Nice Location for a new LRT</name>
+      <description>
+        <![CDATA[
+          <h1>CDATA Tags are useful!</h1>
+          <p><font color="red">Text is <i>more readable</i> and 
+          <b>easier to write</b> when you can avoid using entity 
+          references.</font></p>
+        ]]>
+      </description>
+      <!-- Optional image and tags we don't store extension we can figure it out; or is uploaded
+	       because if the blog is written to file it hasn't been uploaded. -->
+      <ExtendedData>
+        <Data name="imagePath">
+          <value>/path/to/image.jpg</value>
+        </Data>
+        <Data name="tag">
+          <value>LRT,LRT south,LRT downtown,#LRT Edmonton</value>
+        </Data>
+        <Data name="imagePath">
+          <value>/path/to/image.jpg</value>
+        </Data>
+        <!-- incidents use this flag -->
+        <Data name="isIncident">
+          <value>true</value>
+        </Data>
+      </ExtendedData>
+      <Point>
+        <coordinates>102.595626,14.996729</coordinates>
+      </Point>
+    </Placemark>
+  </Document>
+</kml>
+```
+
+This is how Traces are stored:
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <Style id="userLineType">
+      <LineStyle>
+        <color>7f00ffff</color>
+        <width>1</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>7f00ffff</color>
+      </PolyStyle>
+    </Style>
+    <Placemark>
+      <name>My Favourite Trace</name>
+      <description>Best Route through River Valley</description>
+      <styleUrl>#userLineType</styleUrl>
+      <LineString>
+        <altitudeMode>relativeToGround</altitudeMode>
+        <!-- tack on ',<altitude>' for traces with altitude -->
+        <coordinates> -112.2550785337791,36.07954952145647
+          -112.2549277039738,36.08117083492122
+          -112.2552505069063,36.08260761307279
+          -112.2564540158376,36.08395660588506
+          -112.2580238976449,36.08511401044813
+          -112.2595218489022,36.08584355239394
+          -112.2608216347552,36.08612634548589
+          -112.262073428656,36.08626019085147
+          -112.2633204928495,36.08621519860091
+          -112.2644963846444,36.08627897945274
+          -112.2656969554589,36.08649599090644
+        </coordinates>
+      </LineString>
+    </Placemark>
+  </Document>
+</kml>
+```
+
+The following are the list of classes effected by Serialization:
+  * POI.java
+  * Trace.java
+  * Blog.java
+  * Tags.java
+
+Serialization (and deserialization) are now finished and tested for Blogs but untested for other data types.

@@ -1,0 +1,13 @@
+# GeoBlog #
+
+A blog can be uploaded to WiserPath. It will be done through the URL:
+```
+http://wiserpath-dev.bus.ualberta.ca/node/add/geoblog?location=POINT(-12661564.422592%207074094.0927518)
+```
+where POINT is the coordinate of the device that is in Edmonton.
+
+# Details #
+
+When adding content to the above url:
+  1. user must be logged in or they are redirected to the login page.
+  1. a title, body and form token must be supplied with the posted data. The token can be found as a hidden field `name="form_token"` and `value="token_number"`.

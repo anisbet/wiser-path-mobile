@@ -1,0 +1,17 @@
+# TODO #
+  1. Fix POI so that it doesn't crash the app when it loads. DONE.
+  1. Authenticate user - tests show that you don't need a token from the form to authenticate but... DONE
+  1. Uploading a Geotagged Photo - these forms use a token and you must get it and return it with the post request. Also check out the API-key services for uploading images to Drupal. DONE
+  1. WiserPath tab should be able to search and display a route based on criteria like scenic or fastest.
+  1. Traces to include POIs if the trace is running and become part of the trace, not a standalone POI (also Incidents).
+  1. Finish UI refactoring and get Map working properly.
+  1. [Local Storage](LocalStorage.md)
+  1. GPX file format. Wiser path accepts GPX format for [Serialization](Serialization.md) of WP data. Currently can write out a trace to GPX, though not tested yet, it is the first step to uploading a trace to WP.
+  1. Place a trace on the map with the output of the above GPX feature.
+
+## Feature Request ##
+  1. Give the Wiser Map a menu to select and control data from WP and/or WPM. **Done**
+
+## Future Implementation ##
+  * The team leader would like to see the map pan as the user moves and the GPS updates. **Done but not tested**.
+  * There should be a limit to the zoom level so that we can simplify data display.  **Done**. The problem is that as the we move across the map the desired POIs should be loaded as we move into a new reference frame (as defined by the bounding box of the tab screen boundaries), and the POIs that are no longer visible should be dumped from cache. **Needs implementing**.

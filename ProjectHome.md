@@ -1,0 +1,2 @@
+This application allows users to create and store traces, POIs and incident reports during trips, which then can be uploaded to Wiser Path for sharing.
+Wiser Path can be found at http://wiserpath.bus.ualberta.ca/
